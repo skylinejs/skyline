@@ -1,0 +1,79 @@
+{
+  // Exclude files
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/.git": true,
+    "**/.DS_Store": true,
+    ".cache/": true,
+    ".jest-cache/": true,
+    "dist/": true,
+    "test-results/": true,
+    ".angular": true,
+    "package-lock.json": true,
+    "jest.config.ts": true,
+    ".editorconfig": true,
+    ".eslintignore": true,
+    "**/jest.config.ts": true,
+    "**/test-setup.ts": true,
+    "**/project.json": true,
+    "**/tsconfig.json": true,
+    "**/tsconfig.*.json": true,
+    ".svg-to-tsrc": true
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/.cache/**": true,
+    "**/.jest-cache/**": true,
+    "dist/": true,
+    "coverage/": true,
+    "test-results/": true,
+    ".cache/": true,
+    "node_modules/": true,
+    "tmp/": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/*.code-search": true
+  },
+  // Formatting
+  "files.encoding": "utf8",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "editor.insertSpaces": true,
+  "editor.formatOnSave": true,
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // JSON defaults
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // HTML
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // YAML defaults
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // Markdown defaults
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // File associations
+  "files.associations": {
+    "Dockerfile.*": "dockerfile",
+    ".npmrc": "ini"
+  },
+  // Linting
+  "eslint.validate": ["typescript"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": false
+  },
+  "codingTracker.localServerMode": false
+}
