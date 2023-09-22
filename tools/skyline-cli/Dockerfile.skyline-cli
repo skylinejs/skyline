@@ -1,0 +1,43 @@
+FROM node:18.17.0-buster
+
+# Make sure we are root
+USER root
+
+# Make sure apt meets all requirements for installation
+RUN apt update && apt install -y apt-transport-https
+
+# Install dependencies via apt
+RUN apt --allow-releaseinfo-change update && apt install -y \
+  openssh-server \
+  vim \
+  less
+
+
+# Install docker binary
+RUN curl https://download.docker.com/linux/static/stable/x86_64/docker-20.10.2.tgz | tar xz && mv docker/docker /usr/bin/docker && rm -r docker/
+
+# Install docker-compose binary
+RUN curl -L "https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose && chmod +x /usr/bin/docker-compose
+
+# Set repository mount point to /repo
+WORKDIR /repo
+
+# Set node environment to "development"
+ENV NODE_ENV=development
+
+# Deactivate git pager
+ENV GIT_PAGER=cat
+
+# npm completion
+RUN npm completion >> ~/.bashrc
+
+# Extend PATH environment variable
+RUN echo "export PATH=$PATH:/repo/node_modules/.bin:/repo/tools/bin" >> ~/.bashrc
+
+# Aliases
+RUN echo "alias d='dev' de='dev' " >> ~/.bashrc
+
+# Configure that the bash_history will be written immediately
+RUN echo "HISTSIZE=10000\nHISTFILESIZE=20000\nshopt -s histappend\nPROMPT_COMMAND=\"history -a;$PROMPT_COMMAND\"" >> ~/.bashrc
+
+ENTRYPOINT tail -f /dev/null

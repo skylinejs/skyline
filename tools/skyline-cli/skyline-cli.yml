@@ -1,0 +1,15 @@
+services:
+  cli:
+    container_name: skyline_cli
+    hostname: skyline|cli
+    build:
+      context: ./
+      dockerfile: Dockerfile.skyline-cli
+    volumes:
+      # Bind-mount repository
+      - type: bind
+        source: ../../
+        target: /repo
+
+    environment:
+      - TZ=UTC

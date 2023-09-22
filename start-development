@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Get path of this script so that we can use paths relative to this script's path
+SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
+
+# Check if we are inside the dev container
+if [ "$HOSTNAME" == "skyline|cli" ]; then
+    echo "[ERROR] Please execute this command on your HOST machine (NOT inside the container)"
+    exit 1
+fi
+
+# Supress orphan message from docker-compose
+export COMPOSE_IGNORE_ORPHANS="True"
+
+# Make sure bash_history file exists
+mkdir -p $SCRIPTPATH/tmp && touch $SCRIPTPATH/tmp/.bash_history
+mkdir -p $SCRIPTPATH/.cache
+
+
+# If inside DEV, build docker image ourselves
+echo -e "[INFO] Starting skyline-cli container in DEV mode\n"
+
+# Check if container is already running
+if [ -n "$(docker ps -q -f name=skyline_cli)" ]
+  then
+    echo -e "[INFO] Container is already running\n"
+  else
+    docker-compose -p skyline -f $SCRIPTPATH/tools/skyline-cli/skyline-cli.yml --compatibility up --build -d
+fi
+
+
+# Check if docker build succeeded - exit otherwise
+RESULT=$?
+if [ $RESULT -eq 0 ]; then
+    echo -e "\n\n[OK] Started skyline-cli container successfully\n\n"
+else
+    echo -e "\n\n[ERROR] Building the skyline-cli container failed - please check any changes you made to the base image!\n\n"
+    exit 1
+fi
+
+# Attach to dev container
+# Check for command to be executed inside the container
+if [ -z "$1" ]
+then
+    docker exec -it skyline_cli bash -c "source ~/.bashrc ; clear ; bash"
+else
+    docker exec -it skyline_cli bash -c "source ~/.bashrc ; clear ; $1 ; bash"
+fi
