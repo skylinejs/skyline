@@ -1,4 +1,4 @@
-# Skyline
+# @skyline-js
 
 ## Publishable library
 

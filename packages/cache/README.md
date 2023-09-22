@@ -1,6 +1,4 @@
-# cache
-
-This library was generated with [Nx](https://nx.dev).
+# @skyline-js/cache
 
 ## Building
 
