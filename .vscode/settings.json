@@ -15,7 +15,7 @@
     ".eslintignore": true,
     "**/jest.config.ts": true,
     "**/test-setup.ts": true,
-    "**/project.json": true,
+    "**/package-lock.json": true,
     "**/tsconfig.json": true,
     "**/tsconfig.*.json": true,
     ".svg-to-tsrc": true

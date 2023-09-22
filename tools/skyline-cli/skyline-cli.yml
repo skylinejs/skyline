@@ -13,3 +13,6 @@ services:
 
     environment:
       - TZ=UTC
+
+    ports:
+      - '127.0.0.1:33000:33000'
