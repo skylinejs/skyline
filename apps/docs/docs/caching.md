@@ -1,6 +1,9 @@
 ---
 sidebar_position: 3
+slug: /caching
 ---
+
+import CachingChart from '@site/src/components/CachingChart';
 
 # Caching
 
@@ -11,3 +14,6 @@ Good news, we are about to solve cache invalidation. Regarding your package-lock
 <!-- Prayers and thoughts to your package-lock.json merge conflicts though. -->
 
 @skyline-js/cache
+
+TODO: interactive analytics dashboard of caching statistics
+<CachingChart></CachingChart>
