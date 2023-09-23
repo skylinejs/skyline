@@ -1,24 +1,35 @@
 import { execSync } from 'child_process';
 import { join } from 'path';
 import { createClient, RedisClientType } from 'redis';
-import { SkylineCache } from '@skylinejs/cache';
+import { RedisCacheStorageEngine, SkylineCache } from '@skylinejs/cache';
 
 describe('RedisCache: redis package', () => {
-  const client = createClient({});
+  const redis = createClient({
+    url: 'redis://skyline_redis:6379',
+  });
 
   beforeAll(async () => {
     execSync(
-      `docker-compose -f ${join(__dirname, 'docker-compose.yml')} up -d`
+      `docker-compose -f ${join(
+        __dirname,
+        '..',
+        '..',
+        'docker-compose.yml'
+      )} up -d`
     );
-    await client.connect();
-    await client.set('foo', 'bar');
-    const value = await client.get('foo');
+    await redis.connect();
+    await redis.set('foo', 'bar');
+    const value = await redis.get('foo');
     expect(value).toBe('bar');
   });
 
   it('Connect to redis', async () => {
-    const cache = new SkylineCache({});
+    const cache = new SkylineCache({
+      storage: new RedisCacheStorageEngine({ redis }),
+    });
   });
 
-  afterAll(() => {});
+  afterAll(async () => {
+    await redis.disconnect();
+  });
 });

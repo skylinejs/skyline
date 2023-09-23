@@ -1,3 +1,7 @@
+networks:
+  e2e:
+    attachable: true
+
 services:
   cli:
     container_name: skyline_cli
@@ -11,8 +15,16 @@ services:
         source: ../../
         target: /repo
 
+      # Bind-mount docker daemon socket
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+
     environment:
       - TZ=UTC
+
+    networks:
+      - e2e
 
     ports:
       - '127.0.0.1:33000:33000'
