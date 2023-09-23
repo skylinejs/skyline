@@ -1,7 +1,12 @@
 import { InMemoryCacheStorageEngine } from './in-memory-cache-storage-engine';
 
 async function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms).unref());
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => {
+      clearTimeout(timer);
+      resolve(undefined);
+    }, ms).unref();
+  });
 }
 
 describe('InMemoryCacheStorageEngine', () => {

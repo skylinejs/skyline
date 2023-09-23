@@ -2,7 +2,9 @@ export function isNotNullish<T>(el: T | null | undefined): el is T {
   return el !== null && el !== undefined;
 }
 
-export function isNullish<T>(value?: T | null | undefined): value is null | undefined {
+export function isNullish<T>(
+  value?: T | null | undefined
+): value is null | undefined {
   return value == null || value === undefined;
 }
 
@@ -12,7 +14,11 @@ export function extractMessageFromError(error: unknown): string | undefined {
       return error.message;
     }
 
-    if (typeof error === 'string' || typeof error === 'number' || typeof error === 'boolean') {
+    if (
+      typeof error === 'string' ||
+      typeof error === 'number' ||
+      typeof error === 'boolean'
+    ) {
       return `${error}`;
     }
 
@@ -41,6 +47,15 @@ export function extractStackFromError(error: unknown): string | undefined {
     }
   } catch (err: any) {}
   return undefined;
+}
+
+/**
+ * Get a random number generator based on a seed string
+ * @param seed The seed string
+ * @returns A random number generator that produces a number between 0 and 1
+ */
+export function getRandomNumberGenerator(seed: string = ''): () => number {
+  return mulberry32(cyrb128(seed)[0]);
 }
 
 /* eslint-disable @typescript-eslint/no-unused-expressions */
@@ -84,13 +99,4 @@ function mulberry32(seed: number) {
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
-}
-
-/**
- * Get a random number generator based on a seed string
- * @param seed The seed string
- * @returns A random number generator that produces a number between 0 and 1
- */
-export function getRandomNumberGenerator(seed: string = ''): () => number {
-  return mulberry32(cyrb128(seed)[0]);
 }
