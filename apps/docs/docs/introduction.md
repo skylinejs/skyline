@@ -36,7 +36,7 @@ CTA: Get started or check out the architecture primer
 
 ## Framework versus library
 
-If you are one of those developers that uses the words "Framework" and "Library" interchangeably, stop now. A framework operates under the Hollywood principle: "Don't call us - we call you". The framework takes over the flow of the application and calls your code as needed. NestJS is an example for an excellent framework that does all the heavy lifting to create an environment you can easily develop a web server in.
+If you are one of those developers that uses the words "Framework" and "Library" interchangeably, stop now. A framework operates under the Hollywood principle: "Don't call us - we call you". The framework takes over the flow of the application and calls your code as needed. NestJS is an example of an excellent framework that does all the heavy lifting to create an environment you can easily develop a web server in.
 
 SkylineJS is intentionally designed as a collection of libraries, not a framework. An application can only run a single framework. However, once you have chosen your framework, you need several libraries to solve particular problems like hashing a password or handling file uploads. A library solves one problem without any assumptions about the rest of your application. A framework does the opposite, it takes all these building blocks and is responsible for composing them into an application that achieves a goal e.g., a web server that can authenticate users.
 
@@ -52,6 +52,8 @@ There are two ways SkylineJS reduces runtime errors to a minimum:
 
 1. Leverage the TypeScript compiler
 2. Validate runtime values and throw if they are not matching their interface
+
+TODO: Graphic of a system boundary where everything that enters gets validated, the core is always green because it always functions under its assumptions.
 
 ## Pure functions versus side effects
 
