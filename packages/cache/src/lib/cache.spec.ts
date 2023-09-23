@@ -1,5 +1,5 @@
 import { CacheConfiguration } from './cache.interface';
-import { Cache } from './cache';
+import { SkylineCache } from './cache';
 
 const USER_CACHE_NAMESPACE = 'user';
 
@@ -21,7 +21,7 @@ const config: Partial<CacheConfiguration> = {
 
 describe('Cache', () => {
   it('Set a (key, value) pair', async () => {
-    const cache = new Cache({ config });
+    const cache = new SkylineCache({ config });
     await cache.setIfNotExist(
       USER_CACHE_NAMESPACE,
       ({ id }) => id,
@@ -39,7 +39,7 @@ describe('Cache', () => {
   });
 
   it('Discard a (key, value) pair if the key already exists', async () => {
-    const cache = new Cache({ config });
+    const cache = new SkylineCache({ config });
 
     // Set the value for the first time
     await cache.setIfNotExist(
@@ -79,7 +79,7 @@ describe('Cache', () => {
   });
 
   it('cache.get: Force a cache skip', async () => {
-    const cache = new Cache({ config });
+    const cache = new SkylineCache({ config });
     await cache.setIfNotExist(
       USER_CACHE_NAMESPACE,
       ({ id }) => id,
@@ -100,7 +100,7 @@ describe('Cache', () => {
   });
 
   it('config.forceCacheSkips: Force a cache skip', async () => {
-    const cache = new Cache({
+    const cache = new SkylineCache({
       config: { ...config, forceCacheSkips: true },
     });
     await cache.setIfNotExist(
@@ -123,7 +123,7 @@ describe('Cache', () => {
   });
 
   it('cache.disableCacheSkipping: Takes precedence over config.forceCacheSkips', async () => {
-    const cache = new Cache({
+    const cache = new SkylineCache({
       config: { ...config, forceCacheSkips: true },
     });
     await cache.setIfNotExist(
@@ -147,7 +147,7 @@ describe('Cache', () => {
   });
 
   it('cache.get: skip=0.5 option results in 50% cache skips', async () => {
-    const cache = new Cache({ config });
+    const cache = new SkylineCache({ config });
     await cache.setIfNotExist(
       USER_CACHE_NAMESPACE,
       ({ id }) => id,

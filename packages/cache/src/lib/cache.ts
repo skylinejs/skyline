@@ -46,7 +46,7 @@ import { InMemoryCacheStorageEngine } from './storage-engine/in-memory-cache-sto
  *   - Transaction committing takes longer than the cache key blocking period (timing dependent inconsistency)
  *   - The staleness check passes but the writing to cache takes longer than blocking period (timing dependent inconsistency)
  */
-export class Cache {
+export class SkylineCache {
   private readonly config: CacheConfiguration;
   private readonly storage: CacheStorageEngine;
   private readonly logger: CacheLogger;
@@ -78,7 +78,7 @@ export class Cache {
     config?: Partial<CacheConfiguration>;
     storage?: CacheStorageEngine;
     logger?: CacheLogger | typeof CacheLogger;
-  }) {
+  } = {}) {
     // Assemble config with defaults
     this.config = {
       cacheVersion: config?.cacheVersion,
