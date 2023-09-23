@@ -18,7 +18,8 @@
     "**/package-lock.json": true,
     "**/tsconfig.json": true,
     "**/tsconfig.*.json": true,
-    ".svg-to-tsrc": true
+    ".svg-to-tsrc": true,
+    ".verdaccio": true
   },
   "files.watcherExclude": {
     "**/.git/objects/**": true,
