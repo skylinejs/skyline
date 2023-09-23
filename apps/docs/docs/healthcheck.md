@@ -1,0 +1,3 @@
+# Healthcheck
+
+@skyline-js/healthcheck
