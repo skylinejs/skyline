@@ -19,7 +19,7 @@ describe('RedisCache: redis package', () => {
 
   it('Connect to redis', async () => {
     const cache = new SkylineCache({
-      // storage: new RedisCacheStorageEngine({ redis }),
+      storage: new RedisCacheStorageEngine({ redis }),
     });
   });
 

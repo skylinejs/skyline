@@ -1,45 +1,19 @@
 import { CacheStorageEngine } from './cache-storage-engine';
-
-type Callback<T = any> = (err?: Error | null, result?: T) => void;
-interface RedisChainableCommander {
-  exec(
-    callback?: Callback<[error: Error | null, result: unknown][] | null>
-  ): Promise<[error: Error | null, result: unknown][] | null>;
-  set(key: string, value: string): RedisChainableCommander;
-  set(
-    key: string,
-    value: string,
-    secondsToken: 'EX',
-    seconds: number | string
-  ): RedisChainableCommander;
-  set(
-    key: string,
-    value: string,
-    secondsToken: 'EX',
-    seconds: number | string,
-    nx: 'NX'
-  ): RedisChainableCommander;
-}
-
-interface RedisClient {
-  multi(options: { pipeline: false }): Promise<'OK'>;
-  multi(): RedisChainableCommander;
-  multi(options: { pipeline: true }): RedisChainableCommander;
-  multi(commands?: unknown[][]): RedisChainableCommander;
-
-  get(key: string): Promise<string | null | undefined>;
-  mget(keys: string[]): Promise<Array<string | null | undefined>>;
-  keys(pattern: string): Promise<string[]>;
-}
+import {
+  IoRedisClient,
+  NodeRedisClient,
+  RedisClient,
+} from './redis-cache-storage-engine.interface';
+import { getRedisClientFromNodeOrIoRedisClient } from './redis-cache-storage-engine.utils';
 
 /**
  * A cache storage engine that stores the cache in Redis.
  */
 export class RedisCacheStorageEngine extends CacheStorageEngine {
   private readonly redis: RedisClient;
-  constructor({ redis }: { redis: RedisClient }) {
+  constructor({ redis }: { redis: IoRedisClient | NodeRedisClient }) {
     super();
-    this.redis = redis;
+    this.redis = getRedisClientFromNodeOrIoRedisClient(redis);
   }
 
   async get(key: string): Promise<string | undefined> {
