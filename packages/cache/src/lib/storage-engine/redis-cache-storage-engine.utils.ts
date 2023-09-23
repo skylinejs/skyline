@@ -63,8 +63,14 @@ export function getRedisClientFromIoRedisClient(
           value: string,
           options: { ex?: number; nx?: boolean }
         ) => {
-          if (options.ex) {
+          if (options.ex && options.nx) {
+            multi.set(key, value, 'EX', options.ex, 'NX');
+          } else if (options.ex) {
             multi.set(key, value, 'EX', options.ex);
+          } else if (options.nx) {
+            multi.set(key, value, 'NX');
+          } else {
+            multi.set(key, value);
           }
 
           return chainable;

@@ -24,6 +24,7 @@ interface IoRedisChainableCommander {
     secondsToken: 'EX',
     seconds: number | string
   ): IoRedisChainableCommander;
+  set(key: string, value: string, nx: 'NX'): IoRedisChainableCommander;
   set(
     key: string,
     value: string,
