@@ -12,6 +12,7 @@
     "@nx/jest": "16.8.1",
     "@nx/js": "16.8.1",
     "@nx/linter": "16.8.1",
+    "@nx/node": "^16.9.0",
     "@types/jest": "^29.4.0",
     "@types/node": "18.7.1",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
