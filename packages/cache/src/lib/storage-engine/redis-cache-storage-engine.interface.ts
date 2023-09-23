@@ -85,18 +85,9 @@ export interface RedisClient {
 
 interface RedisClientChainable {
   exec(): Promise<unknown>;
-  set(key: string, value: string): RedisClientChainable;
   set(
     key: string,
     value: string,
-    secondsToken: 'EX',
-    seconds: number | string
-  ): RedisClientChainable;
-  set(
-    key: string,
-    value: string,
-    secondsToken: 'EX',
-    seconds: number | string,
-    nx: 'NX'
+    options: { ex?: number; nx?: boolean }
   ): RedisClientChainable;
 }

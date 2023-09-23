@@ -36,7 +36,7 @@ export class RedisCacheStorageEngine extends CacheStorageEngine {
   ): Promise<unknown> {
     const multi = this.redis.multi();
     inputs.forEach((input) => {
-      multi.set(input.key, input.value, 'EX', input.expiresIn);
+      multi.set(input.key, input.value, { ex: input.expiresIn });
     });
     return multi.exec();
   }
@@ -47,7 +47,7 @@ export class RedisCacheStorageEngine extends CacheStorageEngine {
     opts: { expiresIn: number }
   ): Promise<unknown> {
     const multi = this.redis.multi();
-    multi.set(key, value, 'EX', opts.expiresIn);
+    multi.set(key, value, { ex: opts.expiresIn });
     return multi.exec();
   }
 
@@ -57,7 +57,7 @@ export class RedisCacheStorageEngine extends CacheStorageEngine {
     opts: { expiresIn: number }
   ): Promise<unknown> {
     const multi = this.redis.multi();
-    multi.set(key, value, 'EX', opts.expiresIn, 'NX');
+    multi.set(key, value, { ex: opts.expiresIn, nx: true });
     return multi.exec();
   }
 
@@ -66,7 +66,7 @@ export class RedisCacheStorageEngine extends CacheStorageEngine {
   ): Promise<unknown> {
     const multi = this.redis.multi();
     inputs.forEach((input) => {
-      multi.set(input.key, input.value, 'EX', input.expiresIn, 'NX');
+      multi.set(input.key, input.value, { ex: input.expiresIn, nx: true });
     });
     return multi.exec();
   }

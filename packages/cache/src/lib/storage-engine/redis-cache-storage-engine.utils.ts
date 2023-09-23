@@ -16,8 +16,62 @@ export function getRedisClientFromNodeOrIoRedisClient(
 
 export function getRedisClientFromNodeRedisClient(
   client: NodeRedisClient
-): RedisClient {}
+): RedisClient {
+  return {
+    get: (key: string) => client.get(key),
+    mget: (keys: string[]) => client.mGet(keys),
+    keys: (pattern: string) => client.keys(pattern),
+    multi: () => {
+      const multi = client.multi();
+      const chainable = {
+        set: (
+          key: string,
+          value: string,
+          options: { ex?: number; nx?: boolean }
+        ) => {
+          if (options?.nx) {
+            multi.set(key, value, {
+              EX: options.ex,
+              NX: true,
+            });
+          } else {
+            multi.set(key, value, {
+              EX: options.ex,
+            });
+          }
+          return chainable;
+        },
+        exec: () => multi.exec(),
+      };
+      return chainable;
+    },
+  };
+}
 
 export function getRedisClientFromIoRedisClient(
   client: IoRedisClient
-): RedisClient {}
+): RedisClient {
+  return {
+    get: (key: string) => client.get(key),
+    mget: (keys: string[]) => client.mget(keys),
+    keys: (pattern: string) => client.keys(pattern),
+    multi: () => {
+      const multi = client.multi();
+      const chainable = {
+        set: (
+          key: string,
+          value: string,
+          options: { ex?: number; nx?: boolean }
+        ) => {
+          if (options.ex) {
+            multi.set(key, value, 'EX', options.ex);
+          }
+
+          return chainable;
+        },
+        exec: () => multi.exec(),
+      };
+      return chainable;
+    },
+  };
+}
