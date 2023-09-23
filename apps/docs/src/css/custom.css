@@ -27,6 +27,9 @@
   --ifm-menu-color-background-hover: rgba(0, 0, 0, 0.04);
   --ifm-transition-fast: 20ms;
 
+  --ifm-menu-link-padding-vertical: 4px;
+  --ifm-menu-link-padding-horizontal: 10px;
+
   --ifm-breadcrumb-color-active: rgb(55, 53, 47);
   --ifm-breadcrumb-item-background-active: rgba(0, 0, 0, 0.04);
 
@@ -35,6 +38,19 @@
   --ifm-navbar-link-color: #fff;
   --ifm-navbar-background-color: rgb(0, 0, 0); /** 186, 44, 115 */
   --ifm-navbar-link-hover-color: rgb(186, 44, 115);
+
+  /** Footer */
+}
+
+/** Overbounce background color */
+html,
+body {
+  background: black;
+}
+
+section,
+.main-wrapper {
+  background: white;
 }
 
 .navbar__logo {
@@ -86,4 +102,21 @@
 
 .navbar-sidebar .header-github-link:hover {
   opacity: 1;
+}
+
+.menu__list-item {
+  font-size: 14px;
+}
+
+.menu__list-item .menu__link--sublist:after,
+.menu__list-item .menu__caret:before {
+  transform: scale(0.5) rotate(180deg);
+  transition-duration: 0.12s;
+  transition-property: transform;
+  transition-timing-function: ease-in-out;
+}
+
+.menu__list-item--collapsed .menu__link--sublist:after,
+.menu__list-item--collapsed .menu__caret:before {
+  transform: scale(0.5) rotate(90deg);
 }

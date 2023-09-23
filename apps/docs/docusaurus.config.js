@@ -7,8 +7,8 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
 const config = {
   title: 'SkylineJS',
   tagline:
-    'Your one-stop toolkit for building efficient, reliable and scalable server-side applications.',
-  favicon: 'img/logo-skyline-2.png',
+    'Toolkit for building efficient, reliable and scalable server-side applications.',
+  favicon: 'img/logo-skyline.png',
 
   // Set the production url of your site here
   url: 'https://your-docusaurus-test-site.com',
@@ -63,24 +63,28 @@ const config = {
     ({
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
+      colorMode: {
+        defaultMode: 'light',
+        disableSwitch: true,
+      },
       navbar: {
         title: 'SkylineJS',
         logo: {
-          alt: 'SkylineJS logo',
-          src: 'img/logo-skyline-2.png',
+          alt: '',
+          src: 'img/logo-skyline.png',
         },
         items: [
           {
             type: 'docSidebar',
             sidebarId: 'tutorialSidebar',
             position: 'left',
-            label: 'Tutorial',
+            label: 'Docs',
           },
-          { to: '/blog', label: 'Blog', position: 'left' },
+          // { to: '/blog', label: 'Blog', position: 'left' },
           {
             href: 'https://github.com/skylinejs/skyline',
-            label: 'GitHub',
             position: 'right',
+            className: 'header-github-link',
           },
         ],
       },
@@ -119,7 +123,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} SkylineJS`,
+        // copyright: `Copyright © ${new Date().getFullYear()} SkylineJS`,
       },
       prism: {
         theme: lightCodeTheme,

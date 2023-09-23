@@ -9,6 +9,8 @@ import styles from './index.module.css';
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
+
+  const backgroundId = Math.floor(Math.random() * 3) + 1;
   return (
     <header
       style={{
@@ -16,6 +18,7 @@ function HomepageHeader() {
         padding: '0',
         height: '75vh',
         background: '#080d12',
+        color: '#fff',
       }}
       className={clsx('hero hero--primary', styles.heroBanner)}
     >
@@ -29,26 +32,38 @@ function HomepageHeader() {
           zIndex: 0,
           overflow: 'hidden',
         }}
-        src="img/background-skyline-4.png"
+        src={'img/background-skyline-' + backgroundId + '.png'}
       />
 
       <div
         className="container"
         style={{
           position: 'relative',
-          padding: '5vw 24px 24px 24px ',
+          padding: '3vw 24px 24px 24px ',
           zIndex: 1,
           alignSelf: 'flex-start',
+          color: '#fff',
         }}
       >
-        <h1 className="hero__title">{siteConfig.title}</h1>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
+        <h1 className="hero__title" style={{ color: '#fff' }}>
+          {siteConfig.title}
+        </h1>
+        <p
+          className="hero__subtitle"
+          style={{ fontWeight: 500, color: 'white' }}
+        >
+          {siteConfig.tagline}
+        </p>
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/intro"
+            to="/docs/introduction"
+            style={{
+              marginTop: '24px',
+              borderRadius: '12px',
+            }}
           >
-            Tutorial
+            Documentation
           </Link>
         </div>
       </div>
