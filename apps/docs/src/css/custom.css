@@ -4,16 +4,44 @@
  * work well for content-centric websites.
  */
 
+@font-face {
+  font-family: inter;
+  font-style: normal;
+  font-weight: 400;
+  src: url('/static/font/inter-regular.ttf');
+}
+
+@font-face {
+  font-family: inter;
+  font-style: normal;
+  font-weight: 500;
+  src: url('/static/font/inter-medium.ttf');
+}
+
+@font-face {
+  font-family: inter;
+  font-style: normal;
+  font-weight: 700;
+  src: url('/static/font/inter-bold.ttf');
+}
+
+@font-face {
+  font-family: inter;
+  font-style: normal;
+  font-weight: 800;
+  src: url('/static/font/inter-black.ttf');
+}
+
 /* You can override the default Infima variables here. */
 :root {
   /** Font */
-  --ifm-font-family-base: ui-sans-serif, -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Helvetica, 'Apple Color Emoji', Arial, sans-serif,
-    'Segoe UI Emoji', 'Segoe UI Symbol';
+  --ifm-font-family-base: inter, ui-sans-serif, -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Helvetica, 'Apple Color Emoji', Arial,
+    sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
 
-  --ifm-heading-font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Helvetica, 'Apple Color Emoji', Arial, sans-serif,
-    'Segoe UI Emoji', 'Segoe UI Symbol';
+  --ifm-heading-font-family: inter, ui-sans-serif, -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Helvetica, 'Apple Color Emoji', Arial,
+    sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
 
   /** Base colors */
   --ifm-color-primary: rgb(186, 44, 115);

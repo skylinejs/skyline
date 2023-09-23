@@ -10,7 +10,7 @@ import styles from './index.module.css';
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
 
-  const backgroundId = Math.floor(Math.random() * 3) + 1;
+  const backgroundId = Math.floor(Math.random() * 4) + 1;
   return (
     <header
       style={{
