@@ -18,5 +18,3 @@ Good news, we are about to solve cache invalidation. Regarding your package-lock
 
 TODO: interactive analytics dashboard of caching statistics
 <CachingChart></CachingChart>
-
-<CoverImage src="/img/docs/headline-cache.png"></CoverImage>
