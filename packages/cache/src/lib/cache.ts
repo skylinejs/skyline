@@ -232,7 +232,10 @@ export class SkylineCache {
       this.statistics.numCacheHits++;
       return { value, skipped: false };
     } catch (error: unknown) {
-      this.handleError(error, { location: 'cache.get', namespace, key });
+      this.handleError(error, {
+        location: 'cache.get',
+        identifier: `${namespace}:${key}`,
+      });
     }
 
     // If the result is invalid, return undefined (= cache miss)
@@ -334,8 +337,7 @@ export class SkylineCache {
           const key = keys[index];
           this.handleError(error, {
             location: 'cache.getMany',
-            namespace,
-            key,
+            identifier: `${namespace}:${key}`,
           });
         }
 
@@ -349,8 +351,7 @@ export class SkylineCache {
     } catch (error: unknown) {
       this.handleError(error, {
         location: 'cache.getMany',
-        namespace,
-        key: keys,
+        identifier: keys.map((key) => `${namespace}:${key}`),
       });
     }
 
@@ -437,8 +438,7 @@ export class SkylineCache {
     } catch (error: unknown) {
       this.handleError(error, {
         location: 'cache.setIfNotExist',
-        namespace,
-        key,
+        identifier: `${namespace}:${key}`,
       });
     }
   }
@@ -527,8 +527,7 @@ export class SkylineCache {
     } catch (error: unknown) {
       this.handleError(error, {
         location: 'cache.setManyIfNotExist',
-        namespace,
-        key: keys,
+        identifier: keys.map((key) => `${namespace}:${key}`),
       });
     }
   }
@@ -558,20 +557,10 @@ export class SkylineCache {
       });
       this.statistics.numCacheInvalidations++;
     } catch (error: unknown) {
-      this.statistics.numCacheErrors++;
-      this.logger.error(
-        `Unknown error while parsing cached value for key "${namespace}:${key}":\n${extractMessageFromError(
-          error
-        )}`,
-        {
-          type: CacheMessageInfoType.UNKNOWN_ERROR,
-          error,
-        }
-      );
-
-      if (this.config.throwOnUnknownError) {
-        throw error;
-      }
+      this.handleError(error, {
+        location: 'cache.invalidate',
+        identifier: `${namespace}:${key}`,
+      });
     }
   }
 
@@ -604,20 +593,10 @@ export class SkylineCache {
 
       this.statistics.numCacheInvalidations += keys.length;
     } catch (error: unknown) {
-      this.statistics.numCacheErrors++;
-      this.logger.error(
-        `Unknown error while parsing cached value for key:\n${extractMessageFromError(
-          error
-        )}`,
-        {
-          type: CacheMessageInfoType.UNKNOWN_ERROR,
-          error,
-        }
-      );
-
-      if (this.config.throwOnUnknownError) {
-        throw error;
-      }
+      this.handleError(error, {
+        location: 'cache.invalidateMany',
+        identifier: keys.map(({ namespace, key }) => `${namespace}:${key}`),
+      });
     }
   }
 
@@ -670,8 +649,7 @@ export class SkylineCache {
     error: unknown,
     context: {
       location: string;
-      namespace?: string;
-      key?: CacheKey | ReadonlyArray<CacheKey>;
+      identifier: string | ReadonlyArray<string>;
     }
   ): void {
     // Re-throw the error (only gets thrown in the first place if configured to do so)
@@ -681,18 +659,16 @@ export class SkylineCache {
 
     this.statistics.numCacheErrors++;
 
-    // Assembe error message
+    // Assemble error message
     const errorMessage = extractMessageFromError(error);
     const errorStack = extractStackFromError(error);
     let message = `[${context.location}] An error occurred`;
-    if (context.namespace && context.key) {
-      if (Array.isArray(context.key)) {
-        message += ` while handling cache for ${context.key
-          .map((key) => `"${context.namespace}:${key}"`)
-          .join(', ')}`;
-      } else {
-        message += ` while handling cache for key "${context.namespace}:${context.key}"`;
-      }
+    if (Array.isArray(context.identifier)) {
+      message += ` while handling cache for ${context.identifier
+        .map((identifier) => `"${identifier}"`)
+        .join(', ')}`;
+    } else {
+      message += ` while handling cache for "${context.identifier}"`;
     }
     message += `:\n${errorMessage}\n${errorStack}`;
 
