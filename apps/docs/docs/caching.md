@@ -18,3 +18,7 @@ Good news, we are about to solve cache invalidation. Regarding your package-lock
 
 TODO: interactive analytics dashboard of caching statistics
 <CachingChart></CachingChart>
+
+## Error handling
+
+Caching is fully optional, so the cache should never cause a failure in production. At least we should be able to configure it to do so.

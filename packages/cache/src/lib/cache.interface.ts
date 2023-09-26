@@ -35,10 +35,8 @@ export interface CacheConfiguration {
   blockedKeyExpirationMs: number;
 
   // Error handling
-  /** Whether to throw an error if an unknown error occurs */
-  throwOnUnknownError: boolean;
-  /** Whether to throw an error if a cache inconsistency is detected */
-  throwOnCacheInconsistency: boolean;
+  /** Whether to throw if an error occurrs */
+  throwOnError: boolean;
 
   // Logging
   /** Whether logging is enabled */

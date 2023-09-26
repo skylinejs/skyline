@@ -81,9 +81,14 @@ export class SkylineCache {
   } = {}) {
     // Assemble config with defaults
     this.config = {
-      cacheVersion: config?.cacheVersion,
       cachePrefix: config?.cachePrefix ?? 'cache',
+      cacheVersion: config?.cacheVersion,
       forceCacheSkips: config?.forceCacheSkips ?? false,
+      staleThresholdMs: config?.staleThresholdMs ?? 2_000,
+      defaultCacheExpirationMs:
+        config?.defaultCacheExpirationMs ?? 1_000 * 60 * 60 * 24,
+
+      // Disabling namespaces
       disableNamespaces: config?.disableNamespaces ?? false,
       disabledNamespacesSyncIntervalMs:
         config?.disabledNamespacesSyncIntervalMs ?? 30_000,
@@ -91,19 +96,19 @@ export class SkylineCache {
         config?.disabledNamespacesKeyPrefix ?? 'disabled-namespaces',
       disabledNamespaceExpirationMs:
         config?.disabledNamespaceExpirationMs ?? 1_000 * 60 * 60 * 24,
+
+      // Blocking keys
       blockedKeyExpirationMs: config?.blockedKeyExpirationMs ?? 10_000,
       cacheKeyBlockedValue: config?.cacheKeyBlockedValue ?? 'blocked',
 
-      throwOnUnknownError: config?.throwOnUnknownError ?? false,
-      throwOnCacheInconsistency: config?.throwOnCacheInconsistency ?? true,
+      // Error handling
+      throwOnError: config?.throwOnError ?? false,
 
-      staleThresholdMs: config?.staleThresholdMs ?? 2_000,
-      defaultCacheExpirationMs:
-        config?.defaultCacheExpirationMs ?? 1_000 * 60 * 60 * 24,
-
+      // Logging
       loggingEnabled: config?.loggingEnabled ?? true,
       logLevels: config?.logLevels ?? Object.values(CacheLogLevel),
 
+      // Random
       randomGeneratorSeed: config?.randomGeneratorSeed ?? 'cache-rnd-seed',
     };
 
@@ -402,7 +407,6 @@ export class SkylineCache {
         const cachedValueStr = await this.storage.get(storageKey);
         const valueStr = JSON.stringify(value);
         this.checkCacheConsistency(valueStr, cachedValueStr, {
-          location: 'cache.setIfNotExist',
           namespace,
           key,
         });
@@ -507,7 +511,6 @@ export class SkylineCache {
           const value = values[index];
           const valueStr = JSON.stringify(value);
           this.checkCacheConsistency(valueStr, cachedValueStr, {
-            location: 'cache.setManyIfNotExist',
             namespace,
             key: keys[index],
           });
@@ -600,47 +603,41 @@ export class SkylineCache {
     }
   }
 
+  /**
+   * Private/ internal function to check the cache consistency.
+   * @param valueStr The value to check.
+   * @param cachedValueStr The cached value to check.
+   * @param context The context in which the check is performed.
+   */
   private async checkCacheConsistency(
     valueStr: string,
     cachedValueStr: string | undefined,
     context: {
-      location: string;
       namespace: string;
       key: CacheKey;
     }
   ): Promise<void> {
-    const { location, namespace, key } = context;
+    const { namespace, key } = context;
     if (
       cachedValueStr !== undefined &&
       cachedValueStr !== this.config.cacheKeyBlockedValue &&
       cachedValueStr !== valueStr
     ) {
       this.statistics.numCacheInconsistencies++;
-      this.logger.error(
-        `[${location}] Cache inconsistency detected for key "${namespace}:${key}".\nCached value: "${cachedValueStr}"\nCorrect value: "${valueStr}"`,
-        {
-          type: CacheMessageInfoType.CACHE_INCONSISTENCY,
-          key,
-          namespace,
-          value: valueStr,
-          cachedValue: cachedValueStr,
-        }
-      );
 
       // Disable the namespace if a cache inconsistency is detected
       await this.disableNamespace(namespace);
 
-      if (this.config.throwOnCacheInconsistency) {
-        throw new CacheInconsistencyError({
-          key,
-          namespace,
-          message: `Cache inconsistency detected for key "${namespace}:${key}".\nCached value: "${cachedValueStr}"\nCorrect value: "${valueStr}"`,
-        });
-      }
+      throw new CacheInconsistencyError({
+        key,
+        namespace,
+        message: `Cache inconsistency detected for key "${namespace}:${key}".\nCached value: "${cachedValueStr}"\nCorrect value: "${valueStr}"`,
+      });
     }
   }
 
   /**
+   * Private/ internal function to handle errors that occurred while handling the cache.
    * Handle an error that occurred while handling the cache.
    * @param error The error that occurred.
    * @param context The context in which the error occurred.
@@ -679,7 +676,7 @@ export class SkylineCache {
     });
 
     // Re-throw the error if configured to do so
-    if (this.config.throwOnUnknownError) {
+    if (this.config.throwOnError) {
       throw error;
     }
   }
