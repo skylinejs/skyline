@@ -492,7 +492,7 @@ describe('SyklineCache', () => {
     }
   });
 
-  it('cache.get: Expect throwing and error logging of validator function', async () => {
+  it('cache.get: Expect throwing and error logging on validator function throwing an error', async () => {
     const logger = new MockCacheLogger();
     const cache = new SkylineCache({
       logger,
@@ -530,6 +530,64 @@ describe('SyklineCache', () => {
       await expect(
         cache.get(USER_CACHE_NAMESPACE, 2, isUserCacheOrThrow, { skip: 0 })
       ).rejects.toThrow('No additional properties allowed');
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.UNKNOWN_ERROR);
+    }
+  });
+
+  it('cache.get: Expect error logging on validator function throwing an error', async () => {
+    const logger = new MockCacheLogger();
+    const cache = new SkylineCache({
+      logger,
+      config: { ...config, throwOnError: false },
+    });
+
+    // Expect throwing and error logging on validator throwing an error
+    {
+      await cache.setIfNotExist(
+        USER_CACHE_NAMESPACE,
+        ({ id }) => id,
+        { id: 1, name: null },
+        { fetchedAt: Date.now() }
+      );
+      // Expect not to throw, value should be undefined and skipped should be false (equal to a cache miss)
+      const { value, skipped } = await cache.get(
+        USER_CACHE_NAMESPACE,
+        1,
+        isUserCacheOrThrow,
+        { skip: 0 }
+      );
+      expect(value).toBeUndefined();
+      expect(skipped).toBe(false);
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.UNKNOWN_ERROR);
+    }
+
+    // Expect throwing and error logging on validator throwing an error
+    {
+      await cache.setIfNotExist(
+        USER_CACHE_NAMESPACE,
+        ({ id }) => id,
+        { id: 2, name: 'user-1', isAdmin: true },
+        { fetchedAt: Date.now() }
+      );
+      // Expect not to throw, value should be undefined and skipped should be false (equal to a cache miss)
+      const { value, skipped } = await cache.get(
+        USER_CACHE_NAMESPACE,
+        2,
+        isUserCacheOrThrow,
+        { skip: 0 }
+      );
+      expect(value).toBeUndefined();
+      expect(skipped).toBe(false);
       expect(logger.logs).toHaveLength(0);
       expect(logger.warns).toHaveLength(0);
       expect(logger.errors).toHaveLength(1);
