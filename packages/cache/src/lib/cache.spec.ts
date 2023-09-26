@@ -11,6 +11,7 @@ import {
   CacheMessageInfoType,
   CacheMessageInfoUnion,
 } from './logger/cache-logger.interface';
+import { InMemoryCacheStorageEngine } from './storage-engine/in-memory-cache-storage-engine';
 
 const USER_CACHE_NAMESPACE = 'user';
 
@@ -696,5 +697,54 @@ describe('SyklineCache', () => {
       expect(value).toEqual({ id: 1, name: 'user-1' });
       expect(skipped).toBe(false);
     }
+  });
+
+  it('cache.setIfNotExist: Use config.cachePrefix, namespace and key for storage key', async () => {
+    const logger = new MockCacheLogger();
+    const storage = new InMemoryCacheStorageEngine({ periodicCleanup: false });
+    const cache = new SkylineCache({
+      logger,
+      storage,
+      config: {
+        ...config,
+        cachePrefix: 'cache-prefix',
+      },
+    });
+
+    await cache.setIfNotExist(
+      USER_CACHE_NAMESPACE,
+      ({ id }) => id,
+      { id: 1, name: 'user-1' },
+      { fetchedAt: Date.now() }
+    );
+
+    const expectedStorageKey = `cache-prefix:${USER_CACHE_NAMESPACE}:${1}`;
+    const value = await storage.get(expectedStorageKey);
+    expect(value).toEqual(JSON.stringify({ id: 1, name: 'user-1' }));
+  });
+
+  it('cache.setIfNotExist: Use config.cachePrefix, config.cacheVersion, namespace and key for storage key', async () => {
+    const logger = new MockCacheLogger();
+    const storage = new InMemoryCacheStorageEngine({ periodicCleanup: false });
+    const cache = new SkylineCache({
+      logger,
+      storage,
+      config: {
+        ...config,
+        cachePrefix: 'cache-prefix',
+        cacheVersion: 'cache-version',
+      },
+    });
+
+    await cache.setIfNotExist(
+      USER_CACHE_NAMESPACE,
+      ({ id }) => id,
+      { id: 1, name: 'user-1' },
+      { fetchedAt: Date.now() }
+    );
+
+    const expectedStorageKey = `cache-prefix:cache-version:${USER_CACHE_NAMESPACE}:${1}`;
+    const value = await storage.get(expectedStorageKey);
+    expect(value).toEqual(JSON.stringify({ id: 1, name: 'user-1' }));
   });
 });

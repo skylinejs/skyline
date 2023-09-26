@@ -5,7 +5,7 @@ async function delay(ms: number) {
     const timer = setTimeout(() => {
       clearTimeout(timer);
       resolve(undefined);
-    }, ms);
+    }, ms).unref();
   });
 }
 
