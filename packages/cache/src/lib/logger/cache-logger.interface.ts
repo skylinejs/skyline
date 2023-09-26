@@ -47,21 +47,21 @@ export interface CacheInconsistencyMessageInfo extends CacheMessageInfo {
   cachedValue: string;
 }
 
-export interface CacheValidationErrorInfo extends CacheMessageInfo {
+export interface CacheValidationErrorMessageInfo extends CacheMessageInfo {
   type: CacheMessageInfoType.VALIDATION_ERROR;
 }
 
-export interface CacheInputValidationErrorInfo extends CacheMessageInfo {
+export interface CacheInputValidationErrorMessageInfo extends CacheMessageInfo {
   type: CacheMessageInfoType.INPUT_VALIDATION_ERROR;
   parameter: string;
   value: unknown;
 }
 
-export interface CacheSerializationErrorInfo extends CacheMessageInfo {
+export interface CacheSerializationErrorMessageInfo extends CacheMessageInfo {
   type: CacheMessageInfoType.SERIALIZATION_ERROR;
 }
 
-export interface CacheDeserializationErrorInfo extends CacheMessageInfo {
+export interface CacheDeserializationErrorMessageInfo extends CacheMessageInfo {
   type: CacheMessageInfoType.DESERIALIZATION_ERROR;
 }
 
@@ -69,7 +69,7 @@ export type CacheMessageInfoUnion =
   | CacheStaleMessageInfo
   | CacheUnknownErrorMessageInfo
   | CacheInconsistencyMessageInfo
-  | CacheValidationErrorInfo
-  | CacheInputValidationErrorInfo
-  | CacheSerializationErrorInfo
-  | CacheDeserializationErrorInfo;
+  | CacheValidationErrorMessageInfo
+  | CacheInputValidationErrorMessageInfo
+  | CacheSerializationErrorMessageInfo
+  | CacheDeserializationErrorMessageInfo;

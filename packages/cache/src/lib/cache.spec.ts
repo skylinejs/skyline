@@ -1,7 +1,8 @@
-import { CacheConfiguration } from './cache.interface';
 import { SkylineCache } from './cache';
+import { CacheConfiguration } from './cache.interface';
 import { CacheLogger } from './logger/cache-logger';
 import {
+  CacheInputValidationErrorMessageInfo,
   CacheMessageInfoType,
   CacheMessageInfoUnion,
 } from './logger/cache-logger.interface';
@@ -25,9 +26,9 @@ const config: Partial<CacheConfiguration> = {
 };
 
 class MockCacheLogger extends CacheLogger {
-  readonly logs: { message: string; info: CacheMessageInfoUnion }[] = [];
-  readonly warns: { message: string; info: CacheMessageInfoUnion }[] = [];
-  readonly errors: { message: string; info: CacheMessageInfoUnion }[] = [];
+  logs: { message: string; info: CacheMessageInfoUnion }[] = [];
+  warns: { message: string; info: CacheMessageInfoUnion }[] = [];
+  errors: { message: string; info: CacheMessageInfoUnion }[] = [];
 
   override log(message: string, info: CacheMessageInfoUnion): void {
     this.logs.push({ message, info });
@@ -39,6 +40,33 @@ class MockCacheLogger extends CacheLogger {
 
   override error(message: string, info: CacheMessageInfoUnion): void {
     this.errors.push({ message, info });
+  }
+
+  popLogOrFail<T extends CacheMessageInfoUnion>(): {
+    message: string;
+    info: T;
+  } {
+    const log = this.logs.pop();
+    if (!log) throw new Error(`Expected a log to exist`);
+    return log as { message: string; info: T };
+  }
+
+  popWarnOrFail<T extends CacheMessageInfoUnion>(): {
+    message: string;
+    info: T;
+  } {
+    const warn = this.warns.pop();
+    if (!warn) throw new Error(`Expected a warn to exist`);
+    return warn as { message: string; info: T };
+  }
+
+  popErrorOrFail<T extends CacheMessageInfoUnion>(): {
+    message: string;
+    info: T;
+  } {
+    const error = this.errors.pop();
+    if (!error) throw new Error(`Expected a error to exist`);
+    return error as { message: string; info: T };
   }
 }
 
@@ -254,43 +282,106 @@ describe('SyklineCache', () => {
       expect(logger.logs).toHaveLength(0);
       expect(logger.warns).toHaveLength(0);
       expect(logger.errors).toHaveLength(1);
-      const { info } = logger.errors[0];
-      expect(info.type).toBe(CacheMessageInfoType.CACHE_INCONSISTENCY);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.INPUT_VALIDATION_ERROR);
+      expect(info.parameter).toBe('namespace');
+      expect(info.value).toBe(null);
     }
 
-    await expect(
-      cache.get(undefined as unknown as string, 1, isUserCacheOrThrow)
-    ).rejects.toThrow();
+    {
+      await expect(
+        cache.get(undefined as unknown as string, 1, isUserCacheOrThrow)
+      ).rejects.toThrow();
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.INPUT_VALIDATION_ERROR);
+      expect(info.parameter).toBe('namespace');
+      expect(info.value).toBe(undefined);
+    }
 
-    await expect(
-      cache.get(1 as unknown as string, 1, isUserCacheOrThrow)
-    ).rejects.toThrow();
+    {
+      await expect(
+        cache.get(1 as unknown as string, 1, isUserCacheOrThrow)
+      ).rejects.toThrow();
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.INPUT_VALIDATION_ERROR);
+      expect(info.parameter).toBe('namespace');
+      expect(info.value).toBe(1);
+    }
 
     // Throw on invalid key
-    await expect(
-      cache.get(
-        USER_CACHE_NAMESPACE,
-        null as unknown as number,
-        isUserCacheOrThrow
-      )
-    ).rejects.toThrow();
+    {
+      await expect(
+        cache.get(
+          USER_CACHE_NAMESPACE,
+          null as unknown as number,
+          isUserCacheOrThrow
+        )
+      ).rejects.toThrow();
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.INPUT_VALIDATION_ERROR);
+      expect(info.parameter).toBe('key');
+      expect(info.value).toBe(null);
+    }
 
-    await expect(
-      cache.get(
-        USER_CACHE_NAMESPACE,
-        undefined as unknown as number,
-        isUserCacheOrThrow
-      )
-    ).rejects.toThrow();
+    {
+      await expect(
+        cache.get(
+          USER_CACHE_NAMESPACE,
+          undefined as unknown as number,
+          isUserCacheOrThrow
+        )
+      ).rejects.toThrow();
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.INPUT_VALIDATION_ERROR);
+      expect(info.parameter).toBe('key');
+      expect(info.value).toBe(undefined);
+    }
 
     // Throw on invalid skip
-    await expect(
-      cache.get(USER_CACHE_NAMESPACE, 1, isUserCacheOrThrow, { skip: -1 })
-    ).rejects.toThrow();
+    {
+      await expect(
+        cache.get(USER_CACHE_NAMESPACE, 1, isUserCacheOrThrow, { skip: -1 })
+      ).rejects.toThrow();
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.INPUT_VALIDATION_ERROR);
+      expect(info.parameter).toBe('skip');
+      expect(info.value).toBe(-1);
+    }
 
-    await expect(
-      cache.get(USER_CACHE_NAMESPACE, 1, isUserCacheOrThrow, { skip: 1.1 })
-    ).rejects.toThrow();
+    {
+      await expect(
+        cache.get(USER_CACHE_NAMESPACE, 1, isUserCacheOrThrow, { skip: 1.1 })
+      ).rejects.toThrow();
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.INPUT_VALIDATION_ERROR);
+      expect(info.parameter).toBe('skip');
+      expect(info.value).toBe(1.1);
+    }
   });
 
   it('cache.get: Handle throwing of validatior function', async () => {

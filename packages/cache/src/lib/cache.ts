@@ -202,7 +202,7 @@ export class SkylineCache {
         throw new CacheInputValidationError(
           `Skip must be between 0 and 1, but was "${opts.skip}"`,
           {
-            parameter: 'opts.skip',
+            parameter: 'skip',
             value: opts.skip,
           }
         );
