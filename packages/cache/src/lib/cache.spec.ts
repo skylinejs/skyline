@@ -15,9 +15,14 @@ interface UserCache {
 }
 
 function isUserCacheOrThrow(value: unknown): asserts value is UserCache {
-  if (typeof value !== 'object') throw new Error();
-  if (typeof (value as any).id !== 'number') throw new Error();
-  if (typeof (value as any).name !== 'string') throw new Error();
+  if (typeof value !== 'object') throw new Error(`Expected an object`);
+  if (typeof (value as any).id !== 'number') throw new Error(`Expected an id`);
+  if (typeof (value as any).name !== 'string')
+    throw new Error(`Expected a name`);
+
+  // No additional properties allowed
+  if (Object.keys(value as object).length !== 2)
+    throw new Error(`No additional properties allowed`);
 }
 
 const config: Partial<CacheConfiguration> = {
@@ -267,14 +272,14 @@ describe('SyklineCache', () => {
     }
   });
 
-  it('cache.get: Throw on incorrect input', async () => {
+  it('cache.get: Expect throwing and error logging on incorrect input', async () => {
     const logger = new MockCacheLogger();
     const cache = new SkylineCache({
       logger,
       config: { ...config, throwOnError: true },
     });
 
-    // Throw on invalid namespace
+    // Throw and log error on invalid namespace
     {
       await expect(
         cache.get(null as unknown as string, 1, isUserCacheOrThrow)
@@ -317,7 +322,7 @@ describe('SyklineCache', () => {
       expect(info.value).toBe(1);
     }
 
-    // Throw on invalid key
+    // Throw and log error on invalid key
     {
       await expect(
         cache.get(
@@ -354,7 +359,7 @@ describe('SyklineCache', () => {
       expect(info.value).toBe(undefined);
     }
 
-    // Throw on invalid skip
+    // Throw and log error on invalid skip
     {
       await expect(
         cache.get(USER_CACHE_NAMESPACE, 1, isUserCacheOrThrow, { skip: -1 })
@@ -384,9 +389,153 @@ describe('SyklineCache', () => {
     }
   });
 
-  it('cache.get: Handle throwing of validatior function', async () => {
+  it('cache.get: Expect error logging on incorrect input', async () => {
+    const logger = new MockCacheLogger();
     const cache = new SkylineCache({
+      logger,
+      config: { ...config, throwOnError: false },
+    });
+
+    // Log an error on invalid namespace
+    {
+      await cache.get(null as unknown as string, 1, isUserCacheOrThrow);
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.INPUT_VALIDATION_ERROR);
+      expect(info.parameter).toBe('namespace');
+      expect(info.value).toBe(null);
+    }
+
+    {
+      await cache.get(undefined as unknown as string, 1, isUserCacheOrThrow);
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.INPUT_VALIDATION_ERROR);
+      expect(info.parameter).toBe('namespace');
+      expect(info.value).toBe(undefined);
+    }
+
+    {
+      cache.get(1 as unknown as string, 1, isUserCacheOrThrow);
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.INPUT_VALIDATION_ERROR);
+      expect(info.parameter).toBe('namespace');
+      expect(info.value).toBe(1);
+    }
+
+    // Log an error on invalid key
+    {
+      cache.get(
+        USER_CACHE_NAMESPACE,
+        null as unknown as number,
+        isUserCacheOrThrow
+      );
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.INPUT_VALIDATION_ERROR);
+      expect(info.parameter).toBe('key');
+      expect(info.value).toBe(null);
+    }
+
+    {
+      cache.get(
+        USER_CACHE_NAMESPACE,
+        undefined as unknown as number,
+        isUserCacheOrThrow
+      );
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.INPUT_VALIDATION_ERROR);
+      expect(info.parameter).toBe('key');
+      expect(info.value).toBe(undefined);
+    }
+
+    // Log an error on invalid skip
+    {
+      cache.get(USER_CACHE_NAMESPACE, 1, isUserCacheOrThrow, { skip: -1 });
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.INPUT_VALIDATION_ERROR);
+      expect(info.parameter).toBe('skip');
+      expect(info.value).toBe(-1);
+    }
+
+    {
+      cache.get(USER_CACHE_NAMESPACE, 1, isUserCacheOrThrow, { skip: 1.1 });
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.INPUT_VALIDATION_ERROR);
+      expect(info.parameter).toBe('skip');
+      expect(info.value).toBe(1.1);
+    }
+  });
+
+  it('cache.get: Expect throwing and error logging of validator function', async () => {
+    const logger = new MockCacheLogger();
+    const cache = new SkylineCache({
+      logger,
       config: { ...config, throwOnError: true },
     });
+
+    // Expect throwing and error logging on validator throwing an error
+    {
+      await cache.setIfNotExist(
+        USER_CACHE_NAMESPACE,
+        ({ id }) => id,
+        { id: 1, name: null },
+        { fetchedAt: Date.now() }
+      );
+      // Expect to throw
+      await expect(
+        cache.get(USER_CACHE_NAMESPACE, 1, isUserCacheOrThrow, { skip: 0 })
+      ).rejects.toThrow('Expected a name');
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.UNKNOWN_ERROR);
+    }
+
+    // Expect throwing and error logging on validator throwing an error
+    {
+      await cache.setIfNotExist(
+        USER_CACHE_NAMESPACE,
+        ({ id }) => id,
+        { id: 2, name: 'user-1', isAdmin: true },
+        { fetchedAt: Date.now() }
+      );
+      await expect(
+        cache.get(USER_CACHE_NAMESPACE, 2, isUserCacheOrThrow, { skip: 0 })
+      ).rejects.toThrow('No additional properties allowed');
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.UNKNOWN_ERROR);
+    }
   });
 });
