@@ -15,7 +15,7 @@ import { CacheLogger } from './logger/cache-logger';
 import {
   CacheLogLevel,
   CacheLoggerConfiguration,
-  CacheMessageType,
+  CacheMessageInfoType,
 } from './logger/cache-logger.interface';
 import { CacheStorageEngine } from './storage-engine/cache-storage-engine';
 import { InMemoryCacheStorageEngine } from './storage-engine/in-memory-cache-storage-engine';
@@ -102,7 +102,7 @@ export class SkylineCache {
         config?.defaultCacheExpirationMs ?? 1_000 * 60 * 60 * 24,
 
       loggingEnabled: config?.loggingEnabled ?? true,
-      logLevel: config?.logLevel ?? CacheLogLevel.INFO,
+      logLevels: config?.logLevels ?? Object.values(CacheLogLevel),
 
       randomGeneratorSeed: config?.randomGeneratorSeed ?? 'cache-rnd-seed',
     };
@@ -113,7 +113,7 @@ export class SkylineCache {
     // Assembe logger config
     const loggerConfig: CacheLoggerConfiguration = {
       enabled: this.config.loggingEnabled,
-      logLevel: this.config.logLevel,
+      logLevels: this.config.logLevels,
     };
 
     // Initialize the logger (defaults to console logger)
@@ -169,82 +169,70 @@ export class SkylineCache {
     validator: (input: unknown) => asserts input is T,
     opts: { skip?: number } = {}
   ): Promise<{ value: T | undefined; skipped: boolean }> {
-    // Validate inputs
-    if (!namespace) {
-      throw new CacheValidationError(
-        `cache.get: Namespace must be provided, but was ${namespace}`
-      );
-    }
-    if (!key) {
-      throw new CacheValidationError(
-        `cache.get: Key must be provided, but was ${key}`
-      );
-    }
-    if (opts.skip && (opts.skip < 0 || opts.skip > 1)) {
-      throw new CacheValidationError(
-        `cache.get: Skip must be between 0 and 1, but was ${opts.skip}`
-      );
-    }
-
-    // Check if namespace is disabled
-    if (this.isNamespaceDisabled(namespace)) {
-      this.statistics.numCacheDisabledNamespaceSkips++;
-      return { value: undefined, skipped: false };
-    }
-
-    // Check if cache read should be skipped (default: 0)
-    let skip = 0;
-
-    // Disable cache skipping has highest precedence
-    if (this.cacheSkippingDisabled) {
-      skip = 0;
-    }
-    // Force cache skips has second highest precedence
-    else if (this.config.forceCacheSkips) {
-      skip = 1;
-    }
-    // If provided, use the skip probability from the options
-    else if (opts.skip !== undefined) {
-      skip = opts.skip;
-    }
-
-    if (skip >= 1 || (skip > 0 && this.random() < skip)) {
-      this.statistics.numCacheSkips++;
-      return { value: undefined, skipped: true };
-    }
-
-    // Calculate the storage cache key
-    const storageKey = this.getStorageKey(namespace, key);
-
-    // Check storage if a cached value exists for the given key
-    const result = await this.storage.get(storageKey);
-
-    // If no result exists or the result is blocked, return undefined (=cache miss)
-    if (!result || result === this.config.cacheKeyBlockedValue) {
-      this.statistics.numCacheMisses++;
-      return { value: undefined, skipped: false };
-    }
-
-    // Parse and validate the result
     try {
+      // Validate inputs
+      if (!namespace || typeof namespace !== 'string') {
+        throw new CacheValidationError(
+          `cache.get: Valid namespace must be provided, but was "${namespace}"`
+        );
+      }
+      if (!key) {
+        throw new CacheValidationError(
+          `cache.get: Valid key must be provided, but was "${key}"`
+        );
+      }
+      if (opts.skip && (opts.skip < 0 || opts.skip > 1)) {
+        throw new CacheValidationError(
+          `cache.get: Skip must be between 0 and 1, but was "${opts.skip}"`
+        );
+      }
+
+      // Check if namespace is disabled
+      if (this.isNamespaceDisabled(namespace)) {
+        this.statistics.numCacheDisabledNamespaceSkips++;
+        return { value: undefined, skipped: false };
+      }
+
+      // Check if cache read should be skipped (default: 0)
+      let skip = 0;
+
+      // Disable cache skipping has highest precedence
+      if (this.cacheSkippingDisabled) {
+        skip = 0;
+      }
+      // Force cache skips has second highest precedence
+      else if (this.config.forceCacheSkips) {
+        skip = 1;
+      }
+      // If provided, use the skip probability from the options
+      else if (opts.skip !== undefined) {
+        skip = opts.skip;
+      }
+
+      if (skip >= 1 || (skip > 0 && this.random() < skip)) {
+        this.statistics.numCacheSkips++;
+        return { value: undefined, skipped: true };
+      }
+
+      // Calculate the storage cache key
+      const storageKey = this.getStorageKey(namespace, key);
+
+      // Check storage if a cached value exists for the given key
+      const result = await this.storage.get(storageKey);
+
+      // If no result exists or the result is blocked, return undefined (=cache miss)
+      if (!result || result === this.config.cacheKeyBlockedValue) {
+        this.statistics.numCacheMisses++;
+        return { value: undefined, skipped: false };
+      }
+
+      // Parse and validate the result
       const value: unknown = JSON.parse(result);
       validator(value);
       this.statistics.numCacheHits++;
       return { value, skipped: false };
     } catch (error: unknown) {
-      this.statistics.numCacheErrors++;
-      this.logger.log({
-        type: CacheMessageType.UNKNOWN_ERROR,
-        level: CacheLogLevel.ERROR,
-        error,
-        message: `Unknown error while parsing cached value for key "${namespace}:${key}":\n${extractMessageFromError(
-          error
-        )}`,
-      });
-
-      if (this.config.throwOnUnknownError) {
-        throw error;
-      }
+      this.handleError(error, { location: 'cache.get', namespace, key });
     }
 
     // If the result is invalid, return undefined (= cache miss)
@@ -270,101 +258,104 @@ export class SkylineCache {
     validator: (input: unknown) => asserts input is T,
     opts: { skip?: number } = {}
   ): Promise<{ values: Array<T | undefined>; skipped: boolean }> {
-    // Validate inputs
-    if (!namespace) {
-      throw new CacheValidationError(
-        `cache.getMany: Namespace must be provided, but was ${namespace}`
-      );
-    }
-    if (!keys.every((key) => !!key)) {
-      throw new CacheValidationError(
-        `cache.getMany: Keys must be provided, but was ${keys}`
-      );
-    }
-    if (typeof validator !== 'function') {
-      throw new CacheValidationError(
-        `cache.getMany: Validator must be a function, but was ${typeof validator}`
-      );
-    }
-    if (opts.skip && (opts.skip < 0 || opts.skip > 1)) {
-      throw new CacheValidationError(
-        `cache.getMany: Skip must be between 0 and 1, but was ${opts.skip}`
-      );
-    }
-
-    // Do not proceed if no keys are provided
-    if (keys.length === 0) {
-      return { values: keys.map(() => undefined), skipped: false };
-    }
-
-    // Do not proceed if the namespace is disabled
-    if (this.isNamespaceDisabled(namespace)) {
-      this.statistics.numCacheSkips += keys.length;
-      return { values: keys.map(() => undefined), skipped: true };
-    }
-
-    // Check if cache read should be skipped (default: 0)
-    let skip = 0;
-
-    // Disable cache skipping has highest precedence
-    if (this.cacheSkippingDisabled) {
-      skip = 0;
-    }
-    // Force cache skips has second highest precedence
-    else if (this.config.forceCacheSkips) {
-      skip = 1;
-    }
-    // If provided, use the skip probability from the options
-    else if (opts.skip !== undefined) {
-      skip = opts.skip;
-    }
-
-    if (skip >= 1 || (skip > 0 && this.random() < skip)) {
-      this.statistics.numCacheSkips += keys.length;
-      return { values: keys.map(() => undefined), skipped: true };
-    }
-
-    // Calculate the storage cache keys
-    const storageKeys = keys.map((key) => this.getStorageKey(namespace, key));
-
-    // Get the values from storage
-    const results = await this.storage.getMany(storageKeys);
-
-    const values = results.map((result, index) => {
-      // If the result is null or undefined, return undefined
-      if (!result || result === this.config.cacheKeyBlockedValue)
-        return undefined;
-
-      // Parse and validate the result
-      try {
-        const parsed: unknown = JSON.parse(result);
-        validator(parsed);
-        return parsed;
-      } catch (error: unknown) {
-        this.statistics.numCacheErrors++;
-        const key = keys[index];
-        const message = extractMessageFromError(error);
-        const stack = extractStackFromError(error);
-        this.logger.log({
-          type: CacheMessageType.UNKNOWN_ERROR,
-          level: CacheLogLevel.ERROR,
-          error,
-          message: `Unknown error while parsing cached value for key "${namespace}:${key}":\n${message}\n${stack}`,
-        });
-
-        // Re-throw the error if configured to do so
-        if (this.config.throwOnUnknownError) {
-          throw error;
-        }
+    try {
+      // Validate inputs
+      if (!namespace || typeof namespace !== 'string') {
+        throw new CacheValidationError(
+          `cache.getMany: Namespace must be provided, but was "${namespace}"`
+        );
+      }
+      if (!keys.every((key) => !!key)) {
+        throw new CacheValidationError(
+          `cache.getMany: Keys must be provided, but was "${keys}"`
+        );
+      }
+      if (typeof validator !== 'function') {
+        throw new CacheValidationError(
+          `cache.getMany: Validator must be a function, but was "${typeof validator}"`
+        );
+      }
+      if (opts.skip && (opts.skip < 0 || opts.skip > 1)) {
+        throw new CacheValidationError(
+          `cache.getMany: Skip must be between 0 and 1, but was "${opts.skip}"`
+        );
       }
 
-      return undefined;
-    });
+      // Do not proceed if no keys are provided
+      if (keys.length === 0) {
+        return { values: keys.map(() => undefined), skipped: false };
+      }
 
-    this.statistics.numCacheHits += values.filter(isNotNullish).length;
-    this.statistics.numCacheMisses += values.filter(isNullish).length;
+      // Do not proceed if the namespace is disabled
+      if (this.isNamespaceDisabled(namespace)) {
+        this.statistics.numCacheSkips += keys.length;
+        return { values: keys.map(() => undefined), skipped: true };
+      }
 
-    return { values, skipped: false };
+      // Check if cache read should be skipped (default: 0)
+      let skip = 0;
+
+      // Disable cache skipping has highest precedence
+      if (this.cacheSkippingDisabled) {
+        skip = 0;
+      }
+      // Force cache skips has second highest precedence
+      else if (this.config.forceCacheSkips) {
+        skip = 1;
+      }
+      // If provided, use the skip probability from the options
+      else if (opts.skip !== undefined) {
+        skip = opts.skip;
+      }
+
+      if (skip >= 1 || (skip > 0 && this.random() < skip)) {
+        this.statistics.numCacheSkips += keys.length;
+        return { values: keys.map(() => undefined), skipped: true };
+      }
+
+      // Calculate the storage cache keys
+      const storageKeys = keys.map((key) => this.getStorageKey(namespace, key));
+
+      // Get the values from storage
+      const results = await this.storage.getMany(storageKeys);
+
+      const values = results.map((result, index) => {
+        // If the result is null or undefined, return undefined
+        if (!result || result === this.config.cacheKeyBlockedValue)
+          return undefined;
+
+        // Parse and validate the result
+        try {
+          const parsed: unknown = JSON.parse(result);
+          validator(parsed);
+          return parsed;
+        } catch (error: unknown) {
+          this.statistics.numCacheErrors++;
+          const key = keys[index];
+          this.handleError(error, {
+            location: 'cache.getMany',
+            namespace,
+            key,
+          });
+        }
+
+        return undefined;
+      });
+
+      this.statistics.numCacheHits += values.filter(isNotNullish).length;
+      this.statistics.numCacheMisses += values.filter(isNullish).length;
+
+      return { values, skipped: false };
+    } catch (error: unknown) {
+      this.handleError(error, {
+        location: 'cache.getMany',
+        namespace,
+        key: keys,
+      });
+    }
+
+    // If an error occurred and did not get thrown, we handle this as a cache miss
+    return { values: keys.map(() => undefined), skipped: false };
   }
 
   /**
@@ -411,15 +402,16 @@ export class SkylineCache {
         const cachedValueStr = JSON.stringify(cachedValue);
         if (cachedValue !== undefined && cachedValueStr !== valueStr) {
           this.statistics.numCacheInconsistencies++;
-          this.logger.log({
-            type: CacheMessageType.CACHE_INCONSISTENCY,
-            level: CacheLogLevel.ERROR,
-            key,
-            namespace,
-            value: valueStr,
-            cachedValue: cachedValueStr,
-            message: `Cache inconsistency detected for key "${namespace}:${key}".\nCached value: "${cachedValueStr}"\nCorrect value: "${valueStr}"`,
-          });
+          this.logger.error(
+            `Cache inconsistency detected for key "${namespace}:${key}".\nCached value: "${cachedValueStr}"\nCorrect value: "${valueStr}"`,
+            {
+              type: CacheMessageInfoType.CACHE_INCONSISTENCY,
+              key,
+              namespace,
+              value: valueStr,
+              cachedValue: cachedValueStr,
+            }
+          );
 
           // Disable the namespace if a cache inconsistency is detected
           await this.disableNamespace(namespace);
@@ -436,12 +428,13 @@ export class SkylineCache {
         const key = keyFunc(value);
         const message = extractMessageFromError(error);
         const stack = extractStackFromError(error);
-        this.logger.log({
-          type: CacheMessageType.UNKNOWN_ERROR,
-          level: CacheLogLevel.ERROR,
-          error,
-          message: `Unknown error while parsing cached value for key "${namespace}:${key}":\n${message}\n${stack}`,
-        });
+        this.logger.error(
+          `Unknown error while parsing cached value for key "${namespace}:${key}":\n${message}\n${stack}`,
+          {
+            type: CacheMessageInfoType.UNKNOWN_ERROR,
+            error,
+          }
+        );
 
         // Re-throw the error if configured to do so
         if (
@@ -464,15 +457,16 @@ export class SkylineCache {
       const durationMs = Date.now() - fetchedAt;
       if (durationMs > this.config.staleThresholdMs) {
         const key = keyFunc(value);
-        this.logger.log({
-          type: CacheMessageType.CACHE_STALE,
-          level: CacheLogLevel.INFO,
-          key,
-          namespace,
-          durationMs,
-          staleThresholdMs: this.config.staleThresholdMs,
-          message: ` cache stale for key "${namespace}:${key}" as ${durationMs}ms passwd between fetching and writing to cache.`,
-        });
+        this.logger.log(
+          `Cache stale for key "${namespace}:${key}" as ${durationMs}ms passwd between fetching and writing to cache.`,
+          {
+            type: CacheMessageInfoType.CACHE_STALE,
+            key,
+            namespace,
+            durationMs,
+            staleThresholdMs: this.config.staleThresholdMs,
+          }
+        );
         return;
       }
 
@@ -492,12 +486,13 @@ export class SkylineCache {
       const key = keyFunc(value);
       const message = extractMessageFromError(error);
       const stack = extractStackFromError(error);
-      this.logger.log({
-        type: CacheMessageType.UNKNOWN_ERROR,
-        level: CacheLogLevel.ERROR,
-        error,
-        message: `Unknown error while parsing cached value for key "${namespace}:${key}":\n${message}\n${stack}`,
-      });
+      this.logger.error(
+        `Unknown error while parsing cached value for key "${namespace}:${key}":\n${message}\n${stack}`,
+        {
+          type: CacheMessageInfoType.UNKNOWN_ERROR,
+          error,
+        }
+      );
 
       if (this.config.throwOnUnknownError) {
         throw error;
@@ -536,15 +531,16 @@ export class SkylineCache {
     // Discard if values are stale (fetchedAt is older than stale threshold)
     const durationMs = Date.now() - fetchedAt;
     if (durationMs > this.config.staleThresholdMs) {
-      this.logger.log({
-        type: CacheMessageType.CACHE_STALE,
-        level: CacheLogLevel.INFO,
-        namespace,
-        durationMs,
-        key: keyFunc(values[0]),
-        staleThresholdMs: this.config.staleThresholdMs,
-        message: `Cache stale for namespace "${namespace}" as ${durationMs}ms passwd between fetching and writing to cache.`,
-      });
+      this.logger.log(
+        `Cache stale for namespace "${namespace}" as ${durationMs}ms passwd between fetching and writing to cache.`,
+        {
+          type: CacheMessageInfoType.CACHE_STALE,
+          namespace,
+          durationMs,
+          key: keyFunc(values[0]),
+          staleThresholdMs: this.config.staleThresholdMs,
+        }
+      );
       return;
     }
 
@@ -567,17 +563,18 @@ export class SkylineCache {
           const cachedValueStr = JSON.stringify(cachedValue);
           if (cachedValue !== undefined && cachedValueStr !== valueStr) {
             this.statistics.numCacheInconsistencies++;
-            this.logger.log({
-              type: CacheMessageType.CACHE_INCONSISTENCY,
-              level: CacheLogLevel.ERROR,
-              key: keyFunc(value),
-              namespace,
-              value: valueStr,
-              cachedValue: cachedValueStr,
-              message: `Cache inconsistency detected for key "${namespace}:${keyFunc(
+            this.logger.error(
+              `Cache inconsistency detected for key "${namespace}:${keyFunc(
                 value
               )}".\nCached value: "${cachedValueStr}"\nCorrect value: "${valueStr}"`,
-            });
+              {
+                type: CacheMessageInfoType.CACHE_INCONSISTENCY,
+                key: keyFunc(value),
+                namespace,
+                value: valueStr,
+                cachedValue: cachedValueStr,
+              }
+            );
 
             // Disable the namespace if a cache inconsistency is detected
             void this.disableNamespace(namespace);
@@ -596,12 +593,13 @@ export class SkylineCache {
       } catch (error: unknown) {
         const message = extractMessageFromError(error);
         const stack = extractStackFromError(error);
-        this.logger.log({
-          type: CacheMessageType.UNKNOWN_ERROR,
-          level: CacheLogLevel.ERROR,
-          error,
-          message: `Unknown error while parsing cached value for namespace "${namespace}":\n${message}\n${stack}`,
-        });
+        this.logger.error(
+          `Unknown error while parsing cached value for namespace "${namespace}":\n${message}\n${stack}`,
+          {
+            type: CacheMessageInfoType.UNKNOWN_ERROR,
+            error,
+          }
+        );
 
         // Re-throw the error if configured to do so
         if (
@@ -634,12 +632,13 @@ export class SkylineCache {
       this.statistics.numCacheErrors++;
       const message = extractMessageFromError(error);
       const stack = extractStackFromError(error);
-      this.logger.log({
-        type: CacheMessageType.UNKNOWN_ERROR,
-        level: CacheLogLevel.ERROR,
-        error,
-        message: `Unknown error while parsing cached value for namespace "${namespace}":\n${message}\n${stack}`,
-      });
+      this.logger.error(
+        `Unknown error while parsing cached value for namespace "${namespace}":\n${message}\n${stack}`,
+        {
+          type: CacheMessageInfoType.UNKNOWN_ERROR,
+          error,
+        }
+      );
 
       if (this.config.throwOnUnknownError) {
         throw error;
@@ -673,14 +672,15 @@ export class SkylineCache {
       this.statistics.numCacheInvalidations++;
     } catch (error: unknown) {
       this.statistics.numCacheErrors++;
-      this.logger.log({
-        type: CacheMessageType.UNKNOWN_ERROR,
-        level: CacheLogLevel.ERROR,
-        error,
-        message: `Unknown error while parsing cached value for key "${namespace}:${key}":\n${extractMessageFromError(
+      this.logger.error(
+        `Unknown error while parsing cached value for key "${namespace}:${key}":\n${extractMessageFromError(
           error
         )}`,
-      });
+        {
+          type: CacheMessageInfoType.UNKNOWN_ERROR,
+          error,
+        }
+      );
 
       if (this.config.throwOnUnknownError) {
         throw error;
@@ -718,18 +718,50 @@ export class SkylineCache {
       this.statistics.numCacheInvalidations += keys.length;
     } catch (error: unknown) {
       this.statistics.numCacheErrors++;
-      this.logger.log({
-        type: CacheMessageType.UNKNOWN_ERROR,
-        level: CacheLogLevel.ERROR,
-        error,
-        message: `Unknown error while parsing cached value for key:\n${extractMessageFromError(
+      this.logger.error(
+        `Unknown error while parsing cached value for key:\n${extractMessageFromError(
           error
         )}`,
-      });
+        {
+          type: CacheMessageInfoType.UNKNOWN_ERROR,
+          error,
+        }
+      );
 
       if (this.config.throwOnUnknownError) {
         throw error;
       }
+    }
+  }
+
+  handleError(
+    error: unknown,
+    context?: {
+      location?: string;
+      namespace?: string;
+      key?: CacheKey | ReadonlyArray<CacheKey>;
+    }
+  ): void {
+    // Re-throw the error
+    if (error instanceof CacheInconsistencyError) {
+      throw error;
+    }
+
+    // Re-throw the error
+    if (error instanceof CacheValidationError) {
+      throw error;
+    }
+
+    this.statistics.numCacheErrors++;
+    const message = extractMessageFromError(error);
+    const stack = extractStackFromError(error);
+    this.logger.error(`Unknown error:\n${message}\n${stack}`, {
+      type: CacheMessageInfoType.UNKNOWN_ERROR,
+      error,
+    });
+
+    if (this.config.throwOnUnknownError) {
+      throw error;
     }
   }
 

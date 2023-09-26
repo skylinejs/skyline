@@ -1,35 +1,39 @@
-import { CacheLoggerConfiguration, CacheLogLevel, CacheMessageUnion } from './cache-logger.interface';
+import {
+  CacheLoggerConfiguration,
+  CacheLogLevel,
+  CacheMessageInfoUnion,
+} from './cache-logger.interface';
 
 export class CacheLogger {
   private readonly config: CacheLoggerConfiguration;
   constructor(config?: Partial<CacheLoggerConfiguration>) {
     this.config = {
       enabled: config?.enabled ?? true,
-      logLevel: config?.logLevel ?? CacheLogLevel.INFO,
+      logLevels: config?.logLevels ?? Object.values(CacheLogLevel),
     };
   }
 
-  log(input: CacheMessageUnion): void {
+  log(message: string, info: CacheMessageInfoUnion) {
     if (!this.config.enabled) return;
+    if (!this.config.logLevels.includes(CacheLogLevel.LOG)) return;
 
-    switch (input.level) {
-      case CacheLogLevel.INFO: {
-        // eslint-disable-next-line no-console
-        console.log(input.message);
-        break;
-      }
+    // eslint-disable-next-line no-console
+    console.log(message);
+  }
 
-      case CacheLogLevel.WARN: {
-        // eslint-disable-next-line no-console
-        console.warn(input.message);
-        break;
-      }
+  warn(message: string, info: CacheMessageInfoUnion) {
+    if (!this.config.enabled) return;
+    if (!this.config.logLevels.includes(CacheLogLevel.WARN)) return;
 
-      case CacheLogLevel.ERROR: {
-        // eslint-disable-next-line no-console
-        console.error(input.message);
-        break;
-      }
-    }
+    // eslint-disable-next-line no-console
+    console.warn(message);
+  }
+
+  error(message: string, info: CacheMessageInfoUnion) {
+    if (!this.config.enabled) return;
+    if (!this.config.logLevels.includes(CacheLogLevel.ERROR)) return;
+
+    // eslint-disable-next-line no-console
+    console.error(message);
   }
 }

@@ -43,8 +43,8 @@ export interface CacheConfiguration {
   // Logging
   /** Whether logging is enabled */
   loggingEnabled: boolean;
-  /** The minimum log level to log */
-  logLevel: CacheLogLevel;
+  /** The log levels to log */
+  logLevels: CacheLogLevel[];
 
   // Random
   /** The seed for the random number generator */

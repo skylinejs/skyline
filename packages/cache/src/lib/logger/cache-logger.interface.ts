@@ -2,46 +2,47 @@ import type { CacheKey } from '../cache.interface';
 
 export interface CacheLoggerConfiguration {
   enabled: boolean;
-  logLevel: CacheLogLevel;
+  logLevels: CacheLogLevel[];
 }
 
 export enum CacheLogLevel {
-  INFO = 'info',
+  LOG = 'log',
   WARN = 'warn',
   ERROR = 'error',
 }
 
-export enum CacheMessageType {
+export enum CacheMessageInfoType {
   CACHE_STALE = 'cache_stale',
   UNKNOWN_ERROR = 'unknown_error',
   CACHE_INCONSISTENCY = 'cache_inconsistency',
 }
 
-export interface CacheMessage {
-  type: CacheMessageType;
-  level: CacheLogLevel;
-  message: string;
+interface CacheMessageInfo {
+  type: CacheMessageInfoType;
 }
 
-export interface CacheStaleMessage extends CacheMessage {
-  type: CacheMessageType.CACHE_STALE;
+export interface CacheStaleMessageInfo extends CacheMessageInfo {
+  type: CacheMessageInfoType.CACHE_STALE;
   key: CacheKey;
   namespace: string;
   durationMs: number;
   staleThresholdMs: number;
 }
 
-export interface CacheUnknownErrorMessage extends CacheMessage {
-  type: CacheMessageType.UNKNOWN_ERROR;
+export interface CacheUnknownErrorMessageInfo extends CacheMessageInfo {
+  type: CacheMessageInfoType.UNKNOWN_ERROR;
   error: unknown;
 }
 
-export interface CacheInconsistencyMessage extends CacheMessage {
-  type: CacheMessageType.CACHE_INCONSISTENCY;
+export interface CacheInconsistencyMessageInfo extends CacheMessageInfo {
+  type: CacheMessageInfoType.CACHE_INCONSISTENCY;
   namespace: string;
   key: CacheKey;
   value: string;
   cachedValue: string;
 }
 
-export type CacheMessageUnion = CacheStaleMessage | CacheUnknownErrorMessage | CacheInconsistencyMessage;
+export type CacheMessageInfoUnion =
+  | CacheStaleMessageInfo
+  | CacheUnknownErrorMessageInfo
+  | CacheInconsistencyMessageInfo;
