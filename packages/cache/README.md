@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://skylinejs.com/" target="blank"><img src="https://raw.githubusercontent.com/skylinejs/skylinejs.github.io/main/img/logo-skyline.png" width="120" alt="Skyline" /></a>
+  <a href="https://skylinejs.com/" target="blank"><img src="https://raw.githubusercontent.com/skylinejs/skylinejs.github.io/main/img/logo-skyline-wide.png" width="100%" alt="Skyline" /></a>
 </p>
 
 <p align="center">
@@ -47,16 +47,7 @@ await cache.setIfNotExist(
 const { value: user } = await cache.get(
   'user',
   1,
-  (user): asserts user is { id: number; name: string } => {
-    if (
-      !user ||
-      typeof user !== 'object' ||
-      typeof user?.id !== 'number' ||
-      typeof user?.name !== 'string'
-    ) {
-      throw new Error(`Invalid cached user value!`);
-    }
-  }
+  (user): asserts user is { id: number; name: string } => {}
 );
 
 console.log(user);
@@ -112,5 +103,3 @@ async function getUserById(userId: number): User | undefined {
 This example shows a simple yet powerful control flow.
 
 <!-- As you can see, Skyline is not your usual cache with simple `cache.set` and `cache.get` functions. This is intentional - let's get the ball rolling. -->
-
-## C
