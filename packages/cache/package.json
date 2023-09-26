@@ -1,8 +1,43 @@
 {
   "name": "@skyline-js/cache",
   "version": "0.0.1",
+  "description": "Fast, reliable and zero dependency cache with built-in cache inconsistency observability and reporting. Supports any storage engine, in-memory and Redis come out of the box.",
+  "homepage": "https://skylinejs.com",
+  "license": "MIT",
+  "keywords": [
+    "cache",
+    "caching",
+    "node cache",
+    "nest cache",
+    "ttl cache",
+    "redis cache",
+    "cache invalidation",
+    "memory cache",
+    "node-cache",
+    "node.js cache",
+    "nestjs cache",
+    "express cache",
+    "database cache",
+    "api cache",
+    "memory",
+    "multi",
+    "local"
+  ],
+  "bugs": {
+    "url": "https://github.com/skylinejs/skyline/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skylinejs/skyline/tree/main/packages/cache"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "tslib": "^2.3.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   },
   "type": "commonjs",
   "main": "./src/index.js",
