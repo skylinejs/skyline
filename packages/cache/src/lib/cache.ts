@@ -369,7 +369,6 @@ export class SkylineCache {
           validator(parsed);
           return parsed;
         } catch (error: unknown) {
-          this.statistics.numCacheErrors++;
           const key = keys[index];
           this.handleError(error, {
             location: 'cache.getMany',

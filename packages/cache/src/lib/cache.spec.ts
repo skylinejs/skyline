@@ -1,4 +1,5 @@
 import { SkylineCache } from './cache';
+import { CacheInputValidationError } from './cache-error';
 import { CacheConfiguration } from './cache.interface';
 import { CacheLogger } from './logger/cache-logger';
 import {
@@ -283,7 +284,7 @@ describe('SyklineCache', () => {
     {
       await expect(
         cache.get(null as unknown as string, 1, isUserCacheOrThrow)
-      ).rejects.toThrow();
+      ).rejects.toThrow(CacheInputValidationError);
       expect(logger.logs).toHaveLength(0);
       expect(logger.warns).toHaveLength(0);
       expect(logger.errors).toHaveLength(1);
@@ -297,7 +298,7 @@ describe('SyklineCache', () => {
     {
       await expect(
         cache.get(undefined as unknown as string, 1, isUserCacheOrThrow)
-      ).rejects.toThrow();
+      ).rejects.toThrow(CacheInputValidationError);
       expect(logger.logs).toHaveLength(0);
       expect(logger.warns).toHaveLength(0);
       expect(logger.errors).toHaveLength(1);
@@ -311,7 +312,7 @@ describe('SyklineCache', () => {
     {
       await expect(
         cache.get(1 as unknown as string, 1, isUserCacheOrThrow)
-      ).rejects.toThrow();
+      ).rejects.toThrow(CacheInputValidationError);
       expect(logger.logs).toHaveLength(0);
       expect(logger.warns).toHaveLength(0);
       expect(logger.errors).toHaveLength(1);
@@ -330,7 +331,7 @@ describe('SyklineCache', () => {
           null as unknown as number,
           isUserCacheOrThrow
         )
-      ).rejects.toThrow();
+      ).rejects.toThrow(CacheInputValidationError);
       expect(logger.logs).toHaveLength(0);
       expect(logger.warns).toHaveLength(0);
       expect(logger.errors).toHaveLength(1);
@@ -348,7 +349,7 @@ describe('SyklineCache', () => {
           undefined as unknown as number,
           isUserCacheOrThrow
         )
-      ).rejects.toThrow();
+      ).rejects.toThrow(CacheInputValidationError);
       expect(logger.logs).toHaveLength(0);
       expect(logger.warns).toHaveLength(0);
       expect(logger.errors).toHaveLength(1);
@@ -363,7 +364,7 @@ describe('SyklineCache', () => {
     {
       await expect(
         cache.get(USER_CACHE_NAMESPACE, 1, isUserCacheOrThrow, { skip: -1 })
-      ).rejects.toThrow();
+      ).rejects.toThrow(CacheInputValidationError);
       expect(logger.logs).toHaveLength(0);
       expect(logger.warns).toHaveLength(0);
       expect(logger.errors).toHaveLength(1);
@@ -377,7 +378,7 @@ describe('SyklineCache', () => {
     {
       await expect(
         cache.get(USER_CACHE_NAMESPACE, 1, isUserCacheOrThrow, { skip: 1.1 })
-      ).rejects.toThrow();
+      ).rejects.toThrow(CacheInputValidationError);
       expect(logger.logs).toHaveLength(0);
       expect(logger.warns).toHaveLength(0);
       expect(logger.errors).toHaveLength(1);
@@ -422,7 +423,7 @@ describe('SyklineCache', () => {
     }
 
     {
-      cache.get(1 as unknown as string, 1, isUserCacheOrThrow);
+      await cache.get(1 as unknown as string, 1, isUserCacheOrThrow);
       expect(logger.logs).toHaveLength(0);
       expect(logger.warns).toHaveLength(0);
       expect(logger.errors).toHaveLength(1);
@@ -435,7 +436,7 @@ describe('SyklineCache', () => {
 
     // Log an error on invalid key
     {
-      cache.get(
+      await cache.get(
         USER_CACHE_NAMESPACE,
         null as unknown as number,
         isUserCacheOrThrow
@@ -451,7 +452,7 @@ describe('SyklineCache', () => {
     }
 
     {
-      cache.get(
+      await cache.get(
         USER_CACHE_NAMESPACE,
         undefined as unknown as number,
         isUserCacheOrThrow
@@ -468,7 +469,9 @@ describe('SyklineCache', () => {
 
     // Log an error on invalid skip
     {
-      cache.get(USER_CACHE_NAMESPACE, 1, isUserCacheOrThrow, { skip: -1 });
+      await cache.get(USER_CACHE_NAMESPACE, 1, isUserCacheOrThrow, {
+        skip: -1,
+      });
       expect(logger.logs).toHaveLength(0);
       expect(logger.warns).toHaveLength(0);
       expect(logger.errors).toHaveLength(1);
@@ -480,7 +483,9 @@ describe('SyklineCache', () => {
     }
 
     {
-      cache.get(USER_CACHE_NAMESPACE, 1, isUserCacheOrThrow, { skip: 1.1 });
+      await cache.get(USER_CACHE_NAMESPACE, 1, isUserCacheOrThrow, {
+        skip: 1.1,
+      });
       expect(logger.logs).toHaveLength(0);
       expect(logger.warns).toHaveLength(0);
       expect(logger.errors).toHaveLength(1);
