@@ -10,6 +10,7 @@ import {
   CacheInputValidationErrorMessageInfo,
   CacheMessageInfoType,
   CacheMessageInfoUnion,
+  CacheStaleMessageInfo,
 } from './logger/cache-logger.interface';
 import { InMemoryCacheStorageEngine } from './storage-engine/in-memory-cache-storage-engine';
 
@@ -58,7 +59,7 @@ class MockCacheLogger extends CacheLogger {
     info: T;
   } {
     const log = this.logs.pop();
-    if (!log) throw new Error(`Expected a log to exist`);
+    if (!log) throw new Error(`Expected a log message to exist`);
     return log as { message: string; info: T };
   }
 
@@ -67,7 +68,7 @@ class MockCacheLogger extends CacheLogger {
     info: T;
   } {
     const warn = this.warns.pop();
-    if (!warn) throw new Error(`Expected a warn to exist`);
+    if (!warn) throw new Error(`Expected a warn message to exist`);
     return warn as { message: string; info: T };
   }
 
@@ -76,7 +77,7 @@ class MockCacheLogger extends CacheLogger {
     info: T;
   } {
     const error = this.errors.pop();
-    if (!error) throw new Error(`Expected a error to exist`);
+    if (!error) throw new Error(`Expected a error message to exist`);
     return error as { message: string; info: T };
   }
 }
@@ -746,5 +747,39 @@ describe('SyklineCache', () => {
     const expectedStorageKey = `cache-prefix:cache-version:${USER_CACHE_NAMESPACE}:${1}`;
     const value = await storage.get(expectedStorageKey);
     expect(value).toEqual(JSON.stringify({ id: 1, name: 'user-1' }));
+  });
+
+  it('cache.setIfNotExist: Discard stale value', async () => {
+    const logger = new MockCacheLogger();
+    const cache = new SkylineCache({
+      logger,
+      config: { ...config, staleThresholdMs: 0 },
+    });
+
+    await cache.setIfNotExist(
+      USER_CACHE_NAMESPACE,
+      ({ id }) => id,
+      { id: 1, name: 'user-1' },
+      { fetchedAt: Date.now() - 1 }
+    );
+
+    const { value, skipped } = await cache.get(
+      USER_CACHE_NAMESPACE,
+      1,
+      isUserCacheOrThrow
+    );
+
+    expect(value).toBeUndefined();
+    expect(skipped).toBe(false);
+
+    expect(logger.logs).toHaveLength(1);
+    expect(logger.warns).toHaveLength(0);
+    expect(logger.errors).toHaveLength(0);
+    const { info } = logger.popLogOrFail<CacheStaleMessageInfo>();
+    expect(info.type).toBe(CacheMessageInfoType.CACHE_STALE);
+    expect(info.namespace).toBe(USER_CACHE_NAMESPACE);
+    expect(info.key).toBe(1);
+    expect(info.staleThresholdMs).toBe(0);
+    expect(info.durationMs).toBeGreaterThanOrEqual(0);
   });
 });
