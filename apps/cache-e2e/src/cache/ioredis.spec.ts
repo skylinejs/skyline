@@ -1,11 +1,14 @@
 import {
   CacheConfiguration,
+  CacheInputValidationErrorMessageInfo,
+  CacheMessageInfoType,
   RedisCacheStorageEngine,
   SkylineCache,
 } from '@skylinejs/cache';
 import { execSync } from 'child_process';
 import Redis from 'ioredis';
 import { join } from 'path';
+import { MockCacheLogger } from '../util/mock-cache-logger';
 
 const USER_CACHE_NAMESPACE = 'user';
 
@@ -250,6 +253,101 @@ describe('RedisCache: ioredis package', () => {
       expect(value).toEqual({ id: 1, name: 'user-1' });
       expect(skipped).toBe(false);
     }
+  });
+
+  it('cache.get: Expect throwing and error logging for connection failure', async () => {
+    const redisFail = new Redis({
+      host: 'skyline_redis',
+      port: 6378,
+      lazyConnect: true,
+      connectTimeout: 20,
+      commandTimeout: 20,
+    });
+
+    const logger = new MockCacheLogger();
+    const cache = new SkylineCache({
+      logger,
+      config: { ...config, throwOnError: true },
+      storage: new RedisCacheStorageEngine({ redis: redisFail }),
+    });
+
+    {
+      await expect(
+        cache.setIfNotExist(
+          USER_CACHE_NAMESPACE,
+          ({ id }) => id,
+          { id: 1, name: 'user-1' },
+          { fetchedAt: Date.now() }
+        )
+      ).rejects.toThrow('Command timed out');
+
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.UNKNOWN_ERROR);
+    }
+
+    await expect(
+      cache.get(USER_CACHE_NAMESPACE, 2, isUserCacheOrThrow, { skip: 0 })
+    ).rejects.toThrow('Command timed out');
+
+    expect(logger.logs).toHaveLength(0);
+    expect(logger.warns).toHaveLength(0);
+    expect(logger.errors).toHaveLength(1);
+    const { info } =
+      logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+    expect(info.type).toBe(CacheMessageInfoType.UNKNOWN_ERROR);
+  });
+
+  it('cache.get: Expect error logging for connection failure', async () => {
+    const redisFail = new Redis({
+      host: 'skyline_redis',
+      port: 6378,
+      lazyConnect: true,
+      connectTimeout: 20,
+      commandTimeout: 20,
+    });
+
+    const logger = new MockCacheLogger();
+    const cache = new SkylineCache({
+      logger,
+      config: { ...config, throwOnError: false },
+      storage: new RedisCacheStorageEngine({ redis: redisFail }),
+    });
+
+    {
+      await cache.setIfNotExist(
+        USER_CACHE_NAMESPACE,
+        ({ id }) => id,
+        { id: 1, name: 'user-1' },
+        { fetchedAt: Date.now() }
+      );
+
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } =
+        logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+      expect(info.type).toBe(CacheMessageInfoType.UNKNOWN_ERROR);
+    }
+
+    const { skipped, value } = await cache.get(
+      USER_CACHE_NAMESPACE,
+      2,
+      isUserCacheOrThrow,
+      { skip: 0 }
+    );
+    expect(skipped).toBe(false);
+    expect(value).toBeUndefined();
+
+    expect(logger.logs).toHaveLength(0);
+    expect(logger.warns).toHaveLength(0);
+    expect(logger.errors).toHaveLength(1);
+    const { info } =
+      logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
+    expect(info.type).toBe(CacheMessageInfoType.UNKNOWN_ERROR);
   });
 
   afterAll(async () => {

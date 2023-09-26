@@ -56,9 +56,10 @@ export class RedisCacheStorageEngine extends CacheStorageEngine {
     value: string,
     opts: { expiresIn: number }
   ): Promise<unknown> {
-    const multi = this.redis.multi();
-    multi.set(key, value, { ex: opts.expiresIn, nx: true });
-    return multi.exec();
+    return this.redis
+      .multi()
+      .set(key, value, { ex: opts.expiresIn, nx: true })
+      .exec();
   }
 
   setManyIfNotExist(
