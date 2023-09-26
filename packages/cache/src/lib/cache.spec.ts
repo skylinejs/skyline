@@ -1,8 +1,12 @@
 import { SkylineCache } from './cache';
-import { CacheInputValidationError } from './cache-error';
+import {
+  CacheInconsistencyError,
+  CacheInputValidationError,
+} from './cache-error';
 import { CacheConfiguration } from './cache.interface';
 import { CacheLogger } from './logger/cache-logger';
 import {
+  CacheInconsistencyMessageInfo,
   CacheInputValidationErrorMessageInfo,
   CacheMessageInfoType,
   CacheMessageInfoUnion,
@@ -600,5 +604,51 @@ describe('SyklineCache', () => {
         logger.popErrorOrFail<CacheInputValidationErrorMessageInfo>();
       expect(info.type).toBe(CacheMessageInfoType.UNKNOWN_ERROR);
     }
+  });
+
+  it('cache.get: Forced cache skipping does not affect cache.setIfNotExist validation', async () => {
+    const logger = new MockCacheLogger();
+    const cache = new SkylineCache({
+      logger,
+      config: { ...config, throwOnError: true, forceCacheSkips: true },
+    });
+
+    await cache.setIfNotExist(
+      USER_CACHE_NAMESPACE,
+      ({ id }) => id,
+      { id: 1, name: 'user-1' },
+      { fetchedAt: Date.now() }
+    );
+
+    const { value, skipped } = await cache.get(
+      USER_CACHE_NAMESPACE,
+      1,
+      isUserCacheOrThrow,
+      {
+        skip: 1,
+      }
+    );
+
+    expect(value).toBeUndefined();
+    expect(skipped).toBe(true);
+
+    await expect(
+      cache.setIfNotExist(
+        USER_CACHE_NAMESPACE,
+        ({ id }) => id,
+        { id: 1, name: 'user-2' },
+        { fetchedAt: Date.now(), validate: skipped }
+      )
+    ).rejects.toThrow(CacheInconsistencyError);
+
+    expect(logger.logs).toHaveLength(0);
+    expect(logger.warns).toHaveLength(0);
+    expect(logger.errors).toHaveLength(1);
+    const { info } = logger.popErrorOrFail<CacheInconsistencyMessageInfo>();
+    expect(info.type).toBe(CacheMessageInfoType.CACHE_INCONSISTENCY);
+    expect(info.namespace).toBe(USER_CACHE_NAMESPACE);
+    expect(info.key).toBe(1);
+    expect(info.value).toEqual(JSON.stringify({ id: 1, name: 'user-2' }));
+    expect(info.cachedValue).toEqual(JSON.stringify({ id: 1, name: 'user-1' }));
   });
 });
