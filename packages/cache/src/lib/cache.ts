@@ -1,4 +1,8 @@
-import { CacheInconsistencyError, CacheValidationError } from './cache-error';
+import {
+  CacheInconsistencyError,
+  CacheInputValidationError,
+  CacheValidationError,
+} from './cache-error';
 import {
   CacheConfiguration,
   CacheKey,
@@ -177,18 +181,30 @@ export class SkylineCache {
     try {
       // Validate inputs
       if (!namespace || typeof namespace !== 'string') {
-        throw new CacheValidationError(
-          `cache.get: Valid namespace must be provided, but was "${namespace}"`
+        throw new CacheInputValidationError(
+          `Valid namespace must be provided, but was "${namespace}"`,
+          {
+            parameter: 'namespace',
+            value: namespace,
+          }
         );
       }
       if (!key) {
-        throw new CacheValidationError(
-          `cache.get: Valid key must be provided, but was "${key}"`
+        throw new CacheInputValidationError(
+          `Valid key must be provided, but was "${key}"`,
+          {
+            parameter: 'key',
+            value: key,
+          }
         );
       }
       if (opts.skip && (opts.skip < 0 || opts.skip > 1)) {
-        throw new CacheValidationError(
-          `cache.get: Skip must be between 0 and 1, but was "${opts.skip}"`
+        throw new CacheInputValidationError(
+          `Skip must be between 0 and 1, but was "${opts.skip}"`,
+          {
+            parameter: 'opts.skip',
+            value: opts.skip,
+          }
         );
       }
 
@@ -665,8 +681,14 @@ export class SkylineCache {
         value: error.value,
       });
     }
-    // Handle CacheValidationError
-    else if (error instanceof CacheValidationError) {
+    // Handle CacheInputValidationError
+    else if (error instanceof CacheInputValidationError) {
+      const message = `[${context.location}] ${error.message}`;
+      this.logger.error(message, {
+        type: CacheMessageInfoType.INPUT_VALIDATION_ERROR,
+        parameter: error.parameter,
+        value: error.value,
+      });
     }
     // Handle generic error
     else {

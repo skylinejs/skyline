@@ -24,3 +24,41 @@ export class CacheInconsistencyError extends Error {
 }
 
 export class CacheValidationError extends Error {}
+
+export class CacheInputValidationError extends Error {
+  readonly parameter: string;
+  readonly value: unknown;
+
+  constructor(
+    message: string,
+    context: {
+      parameter: string;
+      value: unknown;
+    }
+  ) {
+    super(message);
+    this.parameter = context.parameter;
+    this.value = context.value;
+  }
+}
+
+export class CacheSerializationError extends Error {}
+
+export class CacheDeserializationError extends Error {}
+
+export class CacheStorageEngineError extends Error {
+  readonly operation: string;
+  readonly storageEninge: string;
+
+  constructor(
+    message: string,
+    context: {
+      operation: string;
+      storageEninge: string;
+    }
+  ) {
+    super(message);
+    this.operation = context.operation;
+    this.storageEninge = context.storageEninge;
+  }
+}
