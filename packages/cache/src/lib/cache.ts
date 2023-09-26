@@ -142,7 +142,7 @@ export class SkylineCache {
       setInterval(
         () => void this.synchronizeDisabledNamespaces(),
         this.config.disabledNamespacesSyncIntervalMs
-      ).unref();
+      );
     }
   }
 

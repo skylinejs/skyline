@@ -35,7 +35,7 @@ export class InMemoryCacheStorageEngine extends CacheStorageEngine {
             this.cache.delete(key);
           }
         });
-      }, this.config.cleanupIntervalMs)?.unref();
+      }, this.config.cleanupIntervalMs);
     }
   }
 
