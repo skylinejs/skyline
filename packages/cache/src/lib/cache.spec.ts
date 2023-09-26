@@ -651,4 +651,50 @@ describe('SyklineCache', () => {
     expect(info.value).toEqual(JSON.stringify({ id: 1, name: 'user-2' }));
     expect(info.cachedValue).toEqual(JSON.stringify({ id: 1, name: 'user-1' }));
   });
+
+  it('cache.get: Forced cache skipping can be overriden via cache.disableCacheSkipping', async () => {
+    const logger = new MockCacheLogger();
+    const cache = new SkylineCache({
+      logger,
+      config: { ...config, throwOnError: true, forceCacheSkips: true },
+    });
+
+    await cache.setIfNotExist(
+      USER_CACHE_NAMESPACE,
+      ({ id }) => id,
+      { id: 1, name: 'user-1' },
+      { fetchedAt: Date.now() }
+    );
+
+    // Get the value with forced cache skipping
+    {
+      const { value, skipped } = await cache.get(
+        USER_CACHE_NAMESPACE,
+        1,
+        isUserCacheOrThrow,
+        {
+          skip: 1,
+        }
+      );
+      expect(value).toBeUndefined();
+      expect(skipped).toBe(true);
+    }
+
+    // Disable cache skipping
+    cache.disableCacheSkipping();
+
+    // Get the value with disabled cache skipping
+    {
+      const { value, skipped } = await cache.get(
+        USER_CACHE_NAMESPACE,
+        1,
+        isUserCacheOrThrow,
+        {
+          skip: 1,
+        }
+      );
+      expect(value).toEqual({ id: 1, name: 'user-1' });
+      expect(skipped).toBe(false);
+    }
+  });
 });

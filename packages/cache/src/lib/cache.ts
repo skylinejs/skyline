@@ -781,9 +781,9 @@ export class SkylineCache {
   }
 
   /**
-   * Disable the cache skipping feature. This is equi
-   * This is useful for local development to see how the application behaves with full cache hits.
-   * This is equivalent to setting skip: 0 for all cache read operations.
+   * Disable the cache skipping feature. \
+   * This is useful for local development to see how the application behaves with full cache hits. \
+   * This is equivalent to setting skip: 0 for all cache read operations. \
    * This option takes precedence over forceCacheSkips.
    */
   disableCacheSkipping(): void {
