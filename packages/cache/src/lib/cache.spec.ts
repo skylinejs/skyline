@@ -782,4 +782,84 @@ describe('SyklineCache', () => {
     expect(info.staleThresholdMs).toBe(0);
     expect(info.durationMs).toBeGreaterThanOrEqual(0);
   });
+
+  it('cache.invalidate: Use config.cacheKeyBlockedValue and config.blockedKeyExpirationMs for blocking a value', async () => {
+    const logger = new MockCacheLogger();
+    const storage = new InMemoryCacheStorageEngine({ periodicCleanup: false });
+    const cache = new SkylineCache({
+      logger,
+      storage,
+      config: {
+        ...config,
+        cachePrefix: 'cache-prefix',
+        cacheVersion: 'cache-version',
+        cacheKeyBlockedValue: 'blocked-value',
+        blockedKeyExpirationMs: 80_000,
+      },
+    });
+
+    await cache.setIfNotExist(
+      USER_CACHE_NAMESPACE,
+      ({ id }) => id,
+      { id: 1, name: 'user-1' },
+      { fetchedAt: Date.now() }
+    );
+
+    await cache.invalidate(USER_CACHE_NAMESPACE, 1);
+
+    const expectedStorageKey = `cache-prefix:cache-version:${USER_CACHE_NAMESPACE}:${1}`;
+    const value = await storage.get(expectedStorageKey);
+    expect(value).toEqual('blocked-value');
+    const ttl = await storage.ttl(expectedStorageKey);
+    expect(ttl).toBeGreaterThanOrEqual(75);
+    expect(ttl).toBeLessThanOrEqual(85);
+  });
+
+  it('cache.invalidateMany: Use config.cacheKeyBlockedValue and config.blockedKeyExpirationMs for blocking values', async () => {
+    const logger = new MockCacheLogger();
+    const storage = new InMemoryCacheStorageEngine({ periodicCleanup: false });
+    const cache = new SkylineCache({
+      logger,
+      storage,
+      config: {
+        ...config,
+        cachePrefix: 'cache-prefix',
+        cacheVersion: 'cache-version',
+        cacheKeyBlockedValue: 'blocked-value',
+        blockedKeyExpirationMs: 80_000,
+      },
+    });
+
+    await cache.setIfNotExist(
+      USER_CACHE_NAMESPACE,
+      ({ id }) => id,
+      { id: 1, name: 'user-1' },
+      { fetchedAt: Date.now() }
+    );
+
+    await cache.invalidateMany([
+      { namespace: USER_CACHE_NAMESPACE, key: 1 },
+      { namespace: USER_CACHE_NAMESPACE, key: 2 },
+    ]);
+
+    // Check first key
+    {
+      const expectedStorageKey = `cache-prefix:cache-version:${USER_CACHE_NAMESPACE}:${1}`;
+      const value = await storage.get(expectedStorageKey);
+      expect(value).toEqual('blocked-value');
+      const ttl = await storage.ttl(expectedStorageKey);
+      expect(ttl).toBeGreaterThanOrEqual(75);
+      expect(ttl).toBeLessThanOrEqual(85);
+    }
+
+    // Check second key
+    {
+      const expectedStorageKey = `cache-prefix:cache-version:${USER_CACHE_NAMESPACE}:${2}`;
+      const value = await storage.get(expectedStorageKey);
+      expect(value).toEqual('blocked-value');
+      const ttl = await storage.ttl(expectedStorageKey);
+      expect(ttl).toBeGreaterThanOrEqual(75);
+      expect(ttl).toBeLessThanOrEqual(85);
+    }
+  });
 });

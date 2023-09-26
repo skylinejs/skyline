@@ -76,6 +76,21 @@ export class InMemoryCacheStorageEngine extends CacheStorageEngine {
     });
   }
 
+  async ttl(key: string): Promise<number | undefined> {
+    const entry = this.cache.get(key);
+
+    if (!entry) {
+      return undefined;
+    }
+
+    if (entry?.expiresAt && entry.expiresAt < Date.now()) {
+      this.cache.delete(key);
+      return undefined;
+    }
+
+    return entry.expiresAt ? entry.expiresAt - Date.now() : undefined;
+  }
+
   /**
    * Get all keys matching a pattern. The pattern can contain "*" as a wildcard, which matches any number of characters (including zero)
    * @param pattern The pattern to match
