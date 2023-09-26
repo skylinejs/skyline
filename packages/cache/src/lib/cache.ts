@@ -640,14 +640,14 @@ export class SkylineCache {
    * @param cachedValueStr The cached value to check.
    * @param context The context in which the check is performed.
    */
-  private async checkCacheConsistency(
+  private checkCacheConsistency(
     valueStr: string,
     cachedValueStr: string | undefined,
     context: {
       namespace: string;
       key: CacheKey;
     }
-  ): Promise<void> {
+  ): void {
     const { namespace, key } = context;
     if (
       cachedValueStr !== undefined &&
@@ -657,7 +657,7 @@ export class SkylineCache {
       this.statistics.numCacheInconsistencies++;
 
       // Disable the namespace if a cache inconsistency is detected
-      await this.disableNamespace(namespace);
+      void this.disableNamespace(namespace);
 
       throw new CacheInconsistencyError(
         `Cache inconsistency detected for key "${namespace}:${key}".\nCached value: "${cachedValueStr}"\nCorrect value: "${valueStr}"`,
