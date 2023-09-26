@@ -24,9 +24,9 @@ import { CacheStorageEngine } from './storage-engine/cache-storage-engine';
 import { InMemoryCacheStorageEngine } from './storage-engine/in-memory-cache-storage-engine';
 
 /**
- * Caching service: Use this service to cache key-value pairs.
+ * ### SkylineCache
  *
- * # Caching
+ * TODO: Good documentation
  * Results of source queries can be cached by their primary key. A typical caching operation consists of the "namespace" (e.g. "user") and the primary key (e.g. the user ID: "123").
  * Aggregate results can also be cached. For example, all user IDs for the organization. In this case, the namespace would be "organization-user-ids" and the primary key would be "organizationId".
  * To avoid timing bugs, the cache invalidation blocks the key for a short period of time. Writing to a cache key is only possible if the key does not exist.
@@ -407,7 +407,6 @@ export class SkylineCache {
    * @param opts.validate  Whether the cache value should be validated.
    *                       This is used to detect cache inconsistencies.
    *                       Defaults to false (no cache values are validated).
-   * @returns Nothing.
    */
   async setIfNotExist<T>(
     namespace: string,
@@ -570,7 +569,6 @@ export class SkylineCache {
    * @param namespace The namespace of the cached value (e.g. "user").
    * @param key The key of the cached value (e.g. the user ID: "123").
    * @param opts.expiresIn The expiration of the blocked state in milliseconds.
-   * @returns Nothing.
    */
   async invalidate(
     namespace: string,
@@ -601,7 +599,6 @@ export class SkylineCache {
    * Invalidate multiple cache values in the cache. Blocks each key for a short period of time to avoid timing bugs.
    * @param keys Array of namespace and key pairs to invalidate.
    * @param opts.expiresIn The expiration of the blocked state in milliseconds.
-   * @returns Nothing.
    */
   async invalidateMany(
     keys: ReadonlyArray<{ namespace: string; key: CacheKey }>,
