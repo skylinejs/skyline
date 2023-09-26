@@ -1,6 +1,6 @@
 import type { CacheLogLevel } from './logger/cache-logger.interface';
 
-export type CacheKey = string | number | boolean;
+export type CacheKey = string | number | BigInt | boolean;
 
 export interface CacheConfiguration {
   /** The prefix for all keys of this cache instance */
