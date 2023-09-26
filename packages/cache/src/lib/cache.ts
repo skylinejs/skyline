@@ -736,30 +736,41 @@ export class SkylineCache {
 
   handleError(
     error: unknown,
-    context?: {
-      location?: string;
+    context: {
+      location: string;
       namespace?: string;
       key?: CacheKey | ReadonlyArray<CacheKey>;
     }
   ): void {
-    // Re-throw the error
+    // Re-throw the error (only gets thrown in the first place if configured to do so)
     if (error instanceof CacheInconsistencyError) {
       throw error;
     }
 
-    // Re-throw the error
-    if (error instanceof CacheValidationError) {
-      throw error;
-    }
-
     this.statistics.numCacheErrors++;
-    const message = extractMessageFromError(error);
-    const stack = extractStackFromError(error);
-    this.logger.error(`Unknown error:\n${message}\n${stack}`, {
+
+    // Assembe error message
+    const errorMessage = extractMessageFromError(error);
+    const errorStack = extractStackFromError(error);
+    let message = `[${context.location}] An error occurred`;
+    if (context.namespace && context.key) {
+      if (Array.isArray(context.key)) {
+        message += ` while handling cache for ${context.key
+          .map((key) => `"${context.namespace}:${key}"`)
+          .join(', ')}`;
+      } else {
+        message += ` while handling cache for key "${context.namespace}:${context.key}"`;
+      }
+    }
+    message += `:\n${errorMessage}\n${errorStack}`;
+
+    // Log the error
+    this.logger.error(message, {
       type: CacheMessageInfoType.UNKNOWN_ERROR,
       error,
     });
 
+    // Re-throw the error if configured to do so
     if (this.config.throwOnUnknownError) {
       throw error;
     }
