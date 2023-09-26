@@ -36,8 +36,8 @@ export interface CacheUnknownErrorMessageInfo extends CacheMessageInfo {
 
 export interface CacheInconsistencyMessageInfo extends CacheMessageInfo {
   type: CacheMessageInfoType.CACHE_INCONSISTENCY;
-  namespace: string;
   key: CacheKey;
+  namespace: string;
   value: string;
   cachedValue: string;
 }

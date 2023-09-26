@@ -628,11 +628,15 @@ export class SkylineCache {
       // Disable the namespace if a cache inconsistency is detected
       await this.disableNamespace(namespace);
 
-      throw new CacheInconsistencyError({
-        key,
-        namespace,
-        message: `Cache inconsistency detected for key "${namespace}:${key}".\nCached value: "${cachedValueStr}"\nCorrect value: "${valueStr}"`,
-      });
+      throw new CacheInconsistencyError(
+        `Cache inconsistency detected for key "${namespace}:${key}".\nCached value: "${cachedValueStr}"\nCorrect value: "${valueStr}"`,
+        {
+          key,
+          namespace,
+          value: valueStr,
+          cachedValue: cachedValueStr,
+        }
+      );
     }
   }
 
@@ -649,31 +653,44 @@ export class SkylineCache {
       identifier: string | ReadonlyArray<string>;
     }
   ): void {
-    // Re-throw the error (only gets thrown in the first place if configured to do so)
+    // Handle CacheInconsistencyError
     if (error instanceof CacheInconsistencyError) {
-      throw error;
+      this.statistics.numCacheInconsistencies++;
+      const message = `[${context.location}] ${error.message}`;
+      this.logger.error(message, {
+        type: CacheMessageInfoType.CACHE_INCONSISTENCY,
+        key: error.key,
+        cachedValue: error.cachedValue,
+        namespace: error.namespace,
+        value: error.value,
+      });
     }
-
-    this.statistics.numCacheErrors++;
-
-    // Assemble error message
-    const errorMessage = extractMessageFromError(error);
-    const errorStack = extractStackFromError(error);
-    let message = `[${context.location}] An error occurred`;
-    if (Array.isArray(context.identifier)) {
-      message += ` while handling cache for ${context.identifier
-        .map((identifier) => `"${identifier}"`)
-        .join(', ')}`;
-    } else {
-      message += ` while handling cache for "${context.identifier}"`;
+    // Handle CacheValidationError
+    else if (error instanceof CacheValidationError) {
     }
-    message += `:\n${errorMessage}\n${errorStack}`;
+    // Handle generic error
+    else {
+      this.statistics.numCacheErrors++;
 
-    // Log the error
-    this.logger.error(message, {
-      type: CacheMessageInfoType.UNKNOWN_ERROR,
-      error,
-    });
+      // Assemble error message
+      const errorMessage = extractMessageFromError(error);
+      const errorStack = extractStackFromError(error);
+      let message = `[${context.location}] An error occurred`;
+      if (Array.isArray(context.identifier)) {
+        message += ` while handling cache for ${context.identifier
+          .map((identifier) => `"${identifier}"`)
+          .join(', ')}`;
+      } else {
+        message += ` while handling cache for "${context.identifier}"`;
+      }
+      message += `:\n${errorMessage}\n${errorStack}`;
+
+      // Log the error
+      this.logger.error(message, {
+        type: CacheMessageInfoType.UNKNOWN_ERROR,
+        error,
+      });
+    }
 
     // Re-throw the error if configured to do so
     if (this.config.throwOnError) {

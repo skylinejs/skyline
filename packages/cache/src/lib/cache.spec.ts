@@ -1,5 +1,10 @@
 import { CacheConfiguration } from './cache.interface';
 import { SkylineCache } from './cache';
+import { CacheLogger } from './logger/cache-logger';
+import {
+  CacheMessageInfoType,
+  CacheMessageInfoUnion,
+} from './logger/cache-logger.interface';
 
 const USER_CACHE_NAMESPACE = 'user';
 
@@ -18,6 +23,24 @@ const config: Partial<CacheConfiguration> = {
   defaultCacheExpirationMs: 20_000,
   randomGeneratorSeed: 'cache-seed-1',
 };
+
+class MockCacheLogger extends CacheLogger {
+  readonly logs: { message: string; info: CacheMessageInfoUnion }[] = [];
+  readonly warns: { message: string; info: CacheMessageInfoUnion }[] = [];
+  readonly errors: { message: string; info: CacheMessageInfoUnion }[] = [];
+
+  override log(message: string, info: CacheMessageInfoUnion): void {
+    this.logs.push({ message, info });
+  }
+
+  override warn(message: string, info: CacheMessageInfoUnion): void {
+    this.warns.push({ message, info });
+  }
+
+  override error(message: string, info: CacheMessageInfoUnion): void {
+    this.errors.push({ message, info });
+  }
+}
 
 describe('SyklineCache', () => {
   it('Set a (key, value) pair', async () => {
@@ -217,14 +240,23 @@ describe('SyklineCache', () => {
   });
 
   it('cache.get: Throw on incorrect input', async () => {
+    const logger = new MockCacheLogger();
     const cache = new SkylineCache({
+      logger,
       config: { ...config, throwOnError: true },
     });
 
     // Throw on invalid namespace
-    await expect(
-      cache.get(null as unknown as string, 1, isUserCacheOrThrow)
-    ).rejects.toThrow();
+    {
+      await expect(
+        cache.get(null as unknown as string, 1, isUserCacheOrThrow)
+      ).rejects.toThrow();
+      expect(logger.logs).toHaveLength(0);
+      expect(logger.warns).toHaveLength(0);
+      expect(logger.errors).toHaveLength(1);
+      const { info } = logger.errors[0];
+      expect(info.type).toBe(CacheMessageInfoType.CACHE_INCONSISTENCY);
+    }
 
     await expect(
       cache.get(undefined as unknown as string, 1, isUserCacheOrThrow)
@@ -259,5 +291,11 @@ describe('SyklineCache', () => {
     await expect(
       cache.get(USER_CACHE_NAMESPACE, 1, isUserCacheOrThrow, { skip: 1.1 })
     ).rejects.toThrow();
+  });
+
+  it('cache.get: Handle throwing of validatior function', async () => {
+    const cache = new SkylineCache({
+      config: { ...config, throwOnError: true },
+    });
   });
 });
