@@ -14,12 +14,9 @@ export enum CacheLogLevel {
 export enum CacheMessageInfoType {
   CACHE_STALE = 'cache_stale',
   UNKNOWN_ERROR = 'unknown_error',
-  VALIDATION_ERROR = 'validation_error',
   CACHE_INCONSISTENCY = 'cache_inconsistency',
   STORAGE_ENGINE_ERROR = 'storage_engine_error',
   INPUT_VALIDATION_ERROR = 'input_validation_error',
-  SERIALIZATION_ERROR = 'serialization_error',
-  DESERIALIZATION_ERROR = 'deserialization_error',
 }
 
 interface CacheMessageInfo {
@@ -47,29 +44,14 @@ export interface CacheInconsistencyMessageInfo extends CacheMessageInfo {
   cachedValue: string;
 }
 
-export interface CacheValidationErrorMessageInfo extends CacheMessageInfo {
-  type: CacheMessageInfoType.VALIDATION_ERROR;
-}
-
 export interface CacheInputValidationErrorMessageInfo extends CacheMessageInfo {
   type: CacheMessageInfoType.INPUT_VALIDATION_ERROR;
   parameter: string;
   value: unknown;
 }
 
-export interface CacheSerializationErrorMessageInfo extends CacheMessageInfo {
-  type: CacheMessageInfoType.SERIALIZATION_ERROR;
-}
-
-export interface CacheDeserializationErrorMessageInfo extends CacheMessageInfo {
-  type: CacheMessageInfoType.DESERIALIZATION_ERROR;
-}
-
 export type CacheMessageInfoUnion =
   | CacheStaleMessageInfo
   | CacheUnknownErrorMessageInfo
   | CacheInconsistencyMessageInfo
-  | CacheValidationErrorMessageInfo
-  | CacheInputValidationErrorMessageInfo
-  | CacheSerializationErrorMessageInfo
-  | CacheDeserializationErrorMessageInfo;
+  | CacheInputValidationErrorMessageInfo;

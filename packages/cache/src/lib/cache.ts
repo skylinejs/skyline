@@ -1,7 +1,6 @@
 import {
   CacheInconsistencyError,
   CacheInputValidationError,
-  CacheValidationError,
 } from './cache-error';
 import {
   CacheConfiguration,
@@ -285,23 +284,39 @@ export class SkylineCache {
     try {
       // Validate inputs
       if (!namespace || typeof namespace !== 'string') {
-        throw new CacheValidationError(
-          `cache.getMany: Namespace must be provided, but was "${namespace}"`
+        throw new CacheInputValidationError(
+          `cache.getMany: Namespace must be provided, but was "${namespace}"`,
+          {
+            parameter: 'namespace',
+            value: namespace,
+          }
         );
       }
       if (!keys.every((key) => !!key)) {
-        throw new CacheValidationError(
-          `cache.getMany: Keys must be provided, but was "${keys}"`
+        throw new CacheInputValidationError(
+          `cache.getMany: Keys must be provided, but was "${keys}"`,
+          {
+            parameter: 'keys',
+            value: keys,
+          }
         );
       }
       if (typeof validator !== 'function') {
-        throw new CacheValidationError(
-          `cache.getMany: Validator must be a function, but was "${typeof validator}"`
+        throw new CacheInputValidationError(
+          `cache.getMany: Validator must be a function, but was "${typeof validator}"`,
+          {
+            parameter: 'validator',
+            value: validator,
+          }
         );
       }
       if (opts.skip && (opts.skip < 0 || opts.skip > 1)) {
-        throw new CacheValidationError(
-          `cache.getMany: Skip must be between 0 and 1, but was "${opts.skip}"`
+        throw new CacheInputValidationError(
+          `cache.getMany: Skip must be between 0 and 1, but was "${opts.skip}"`,
+          {
+            parameter: 'skip',
+            value: opts.skip,
+          }
         );
       }
 

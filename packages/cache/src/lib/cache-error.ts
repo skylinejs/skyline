@@ -23,8 +23,6 @@ export class CacheInconsistencyError extends Error {
   }
 }
 
-export class CacheValidationError extends Error {}
-
 export class CacheInputValidationError extends Error {
   readonly parameter: string;
   readonly value: unknown;
@@ -41,10 +39,6 @@ export class CacheInputValidationError extends Error {
     this.value = context.value;
   }
 }
-
-export class CacheSerializationError extends Error {}
-
-export class CacheDeserializationError extends Error {}
 
 export class CacheStorageEngineError extends Error {
   readonly operation: string;
