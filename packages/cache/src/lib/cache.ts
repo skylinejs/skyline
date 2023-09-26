@@ -383,80 +383,33 @@ export class SkylineCache {
       ...opts
     }: { fetchedAt: number; expiresIn?: number; validate?: boolean }
   ): Promise<void> {
-    // Do not proceed if the namespace is disabled
-    if (this.isNamespaceDisabled(namespace)) return;
-
-    // Check if cache value should be validated
-    if (opts.validate) {
-      this.statistics.numCacheConsistencyChecks++;
-      try {
-        // Get the cached value
-        const key = keyFunc(value);
-        const { value: cachedValue } = await this.get(
-          namespace,
-          key,
-          () => {},
-          { skip: 0 }
-        );
-        const valueStr = JSON.stringify(value);
-        const cachedValueStr = JSON.stringify(cachedValue);
-        if (cachedValue !== undefined && cachedValueStr !== valueStr) {
-          this.statistics.numCacheInconsistencies++;
-          this.logger.error(
-            `Cache inconsistency detected for key "${namespace}:${key}".\nCached value: "${cachedValueStr}"\nCorrect value: "${valueStr}"`,
-            {
-              type: CacheMessageInfoType.CACHE_INCONSISTENCY,
-              key,
-              namespace,
-              value: valueStr,
-              cachedValue: cachedValueStr,
-            }
-          );
-
-          // Disable the namespace if a cache inconsistency is detected
-          await this.disableNamespace(namespace);
-
-          if (this.config.throwOnCacheInconsistency) {
-            throw new CacheInconsistencyError({
-              key,
-              namespace,
-              message: `Cache inconsistency detected for key "${namespace}:${key}".\nCached value: "${cachedValueStr}"\nCorrect value: "${valueStr}"`,
-            });
-          }
-        }
-      } catch (error: unknown) {
-        const key = keyFunc(value);
-        const message = extractMessageFromError(error);
-        const stack = extractStackFromError(error);
-        this.logger.error(
-          `Unknown error while parsing cached value for key "${namespace}:${key}":\n${message}\n${stack}`,
-          {
-            type: CacheMessageInfoType.UNKNOWN_ERROR,
-            error,
-          }
-        );
-
-        // Re-throw the error if configured to do so
-        if (
-          this.config.throwOnCacheInconsistency &&
-          error instanceof CacheInconsistencyError
-        ) {
-          throw error;
-        }
-
-        // Re-throw the error if configured to do so
-        this.statistics.numCacheErrors++;
-        if (this.config.throwOnUnknownError) {
-          throw error;
-        }
-      }
-    }
+    let key: CacheKey | undefined = undefined;
 
     try {
+      // Calculate the key
+      key = keyFunc(value);
+
+      // Do not proceed if the namespace is disabled
+      if (this.isNamespaceDisabled(namespace)) return;
+
+      // Check if cache value should be validated
+      if (opts.validate) {
+        this.statistics.numCacheConsistencyChecks++;
+
+        // Get the cached value
+        const storageKey = this.getStorageKey(namespace, key);
+        const cachedValueStr = await this.storage.get(storageKey);
+        const valueStr = JSON.stringify(value);
+        this.checkCacheConsistency(valueStr, cachedValueStr, {
+          location: 'cache.setIfNotExist',
+          namespace,
+          key,
+        });
+      }
+
       // Discard if value is stale (fetchedAt is older than stale threshold)
       const durationMs = Date.now() - fetchedAt;
       if (durationMs > this.config.staleThresholdMs) {
-        const key = keyFunc(value);
         this.logger.log(
           `Cache stale for key "${namespace}:${key}" as ${durationMs}ms passwd between fetching and writing to cache.`,
           {
@@ -475,28 +428,18 @@ export class SkylineCache {
 
       // Execute the set command
       await this.storage.setIfNotExist(
-        this.getStorageKey(namespace, keyFunc(value)),
+        this.getStorageKey(namespace, key),
         JSON.stringify(value),
         {
           expiresIn,
         }
       );
     } catch (error: unknown) {
-      this.statistics.numCacheErrors++;
-      const key = keyFunc(value);
-      const message = extractMessageFromError(error);
-      const stack = extractStackFromError(error);
-      this.logger.error(
-        `Unknown error while parsing cached value for key "${namespace}:${key}":\n${message}\n${stack}`,
-        {
-          type: CacheMessageInfoType.UNKNOWN_ERROR,
-          error,
-        }
-      );
-
-      if (this.config.throwOnUnknownError) {
-        throw error;
-      }
+      this.handleError(error, {
+        location: 'cache.setIfNotExist',
+        namespace,
+        key,
+      });
     }
   }
 
@@ -522,102 +465,55 @@ export class SkylineCache {
       ...opts
     }: { fetchedAt: number; expiresIn?: number; validate?: boolean }
   ): Promise<void> {
-    // Do not proceed if writes are disabled or no values are provided
-    if (values.length === 0) return;
-
-    // Do not proceed if the namespace is disabled
-    if (this.isNamespaceDisabled(namespace)) return;
-
-    // Discard if values are stale (fetchedAt is older than stale threshold)
-    const durationMs = Date.now() - fetchedAt;
-    if (durationMs > this.config.staleThresholdMs) {
-      this.logger.log(
-        `Cache stale for namespace "${namespace}" as ${durationMs}ms passwd between fetching and writing to cache.`,
-        {
-          type: CacheMessageInfoType.CACHE_STALE,
-          namespace,
-          durationMs,
-          key: keyFunc(values[0]),
-          staleThresholdMs: this.config.staleThresholdMs,
-        }
-      );
-      return;
-    }
-
-    // Check if cache value should be validated
-    if (opts.validate) {
-      this.statistics.numCacheConsistencyChecks += values.length;
-      try {
-        // Get the cached values
-        const { values: cachedValues } = await this.getMany(
-          namespace,
-          values.map((value) => keyFunc(value)),
-          () => {},
-          { skip: 0 }
-        );
-
-        // Compare the cached values with the new values
-        cachedValues.forEach((cachedValue, index) => {
-          const value = values[index];
-          const valueStr = JSON.stringify(value);
-          const cachedValueStr = JSON.stringify(cachedValue);
-          if (cachedValue !== undefined && cachedValueStr !== valueStr) {
-            this.statistics.numCacheInconsistencies++;
-            this.logger.error(
-              `Cache inconsistency detected for key "${namespace}:${keyFunc(
-                value
-              )}".\nCached value: "${cachedValueStr}"\nCorrect value: "${valueStr}"`,
-              {
-                type: CacheMessageInfoType.CACHE_INCONSISTENCY,
-                key: keyFunc(value),
-                namespace,
-                value: valueStr,
-                cachedValue: cachedValueStr,
-              }
-            );
-
-            // Disable the namespace if a cache inconsistency is detected
-            void this.disableNamespace(namespace);
-
-            if (this.config.throwOnCacheInconsistency) {
-              throw new CacheInconsistencyError({
-                key: keyFunc(value),
-                namespace,
-                message: ` cache inconsistency detected for key "${namespace}:${keyFunc(
-                  value
-                )}".\nCached value: "${cachedValueStr}"\nCorrect value: "${valueStr}"`,
-              });
-            }
-          }
-        });
-      } catch (error: unknown) {
-        const message = extractMessageFromError(error);
-        const stack = extractStackFromError(error);
-        this.logger.error(
-          `Unknown error while parsing cached value for namespace "${namespace}":\n${message}\n${stack}`,
-          {
-            type: CacheMessageInfoType.UNKNOWN_ERROR,
-            error,
-          }
-        );
-
-        // Re-throw the error if configured to do so
-        if (
-          this.config.throwOnCacheInconsistency &&
-          error instanceof CacheInconsistencyError
-        ) {
-          throw error;
-        }
-
-        // Re-throw the error if configured to do so
-        this.statistics.numCacheErrors++;
-        if (this.config.throwOnUnknownError) {
-          throw error;
-        }
-      }
-    }
+    let keys: CacheKey[] = [];
 
     try {
+      keys = values.map((value) => keyFunc(value));
+
+      // Do not proceed if writes are disabled or no values are provided
+      if (values.length === 0) return;
+
+      // Do not proceed if the namespace is disabled
+      if (this.isNamespaceDisabled(namespace)) return;
+
+      // Discard if values are stale (fetchedAt is older than stale threshold)
+      const durationMs = Date.now() - fetchedAt;
+      if (durationMs > this.config.staleThresholdMs) {
+        this.logger.log(
+          `Cache stale for namespace "${namespace}" as ${durationMs}ms passwd between fetching and writing to cache.`,
+          {
+            type: CacheMessageInfoType.CACHE_STALE,
+            namespace,
+            durationMs,
+            key: keyFunc(values[0]),
+            staleThresholdMs: this.config.staleThresholdMs,
+          }
+        );
+        return;
+      }
+
+      // Check if cache value should be validated
+      if (opts.validate) {
+        this.statistics.numCacheConsistencyChecks += values.length;
+        // Get the cached values
+        // TODO
+        const storageKeys = keys.map((key) =>
+          this.getStorageKey(namespace, key)
+        );
+        const cachedValueStrs = await this.storage.getMany(storageKeys);
+
+        // Compare the cached values with the new values
+        cachedValueStrs.forEach((cachedValueStr, index) => {
+          const value = values[index];
+          const valueStr = JSON.stringify(value);
+          this.checkCacheConsistency(valueStr, cachedValueStr, {
+            location: 'cache.setManyIfNotExist',
+            namespace,
+            key: keys[index],
+          });
+        });
+      }
+
       // Set the default expiration to 1 hour
       expiresIn = (expiresIn ?? this.config.defaultCacheExpirationMs) / 1000;
 
@@ -629,20 +525,11 @@ export class SkylineCache {
         }))
       );
     } catch (error: unknown) {
-      this.statistics.numCacheErrors++;
-      const message = extractMessageFromError(error);
-      const stack = extractStackFromError(error);
-      this.logger.error(
-        `Unknown error while parsing cached value for namespace "${namespace}":\n${message}\n${stack}`,
-        {
-          type: CacheMessageInfoType.UNKNOWN_ERROR,
-          error,
-        }
-      );
-
-      if (this.config.throwOnUnknownError) {
-        throw error;
-      }
+      this.handleError(error, {
+        location: 'cache.setManyIfNotExist',
+        namespace,
+        key: keys,
+      });
     }
   }
 
@@ -734,7 +621,52 @@ export class SkylineCache {
     }
   }
 
-  handleError(
+  private async checkCacheConsistency(
+    valueStr: string,
+    cachedValueStr: string | undefined,
+    context: {
+      location: string;
+      namespace: string;
+      key: CacheKey;
+    }
+  ): Promise<void> {
+    const { location, namespace, key } = context;
+    if (
+      cachedValueStr !== undefined &&
+      cachedValueStr !== this.config.cacheKeyBlockedValue &&
+      cachedValueStr !== valueStr
+    ) {
+      this.statistics.numCacheInconsistencies++;
+      this.logger.error(
+        `[${location}] Cache inconsistency detected for key "${namespace}:${key}".\nCached value: "${cachedValueStr}"\nCorrect value: "${valueStr}"`,
+        {
+          type: CacheMessageInfoType.CACHE_INCONSISTENCY,
+          key,
+          namespace,
+          value: valueStr,
+          cachedValue: cachedValueStr,
+        }
+      );
+
+      // Disable the namespace if a cache inconsistency is detected
+      await this.disableNamespace(namespace);
+
+      if (this.config.throwOnCacheInconsistency) {
+        throw new CacheInconsistencyError({
+          key,
+          namespace,
+          message: `Cache inconsistency detected for key "${namespace}:${key}".\nCached value: "${cachedValueStr}"\nCorrect value: "${valueStr}"`,
+        });
+      }
+    }
+  }
+
+  /**
+   * Handle an error that occurred while handling the cache.
+   * @param error The error that occurred.
+   * @param context The context in which the error occurred.
+   */
+  private handleError(
     error: unknown,
     context: {
       location: string;
