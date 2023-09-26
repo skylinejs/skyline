@@ -22,3 +22,5 @@ TODO: interactive analytics dashboard of caching statistics
 ## Error handling
 
 Caching is fully optional, so the cache should never cause a failure in production. At least we should be able to configure it to do so.
+
+- Document BigInt what is necessary for stringify/ parse

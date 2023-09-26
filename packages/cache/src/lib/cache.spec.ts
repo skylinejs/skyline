@@ -19,7 +19,7 @@ const config: Partial<CacheConfiguration> = {
   randomGeneratorSeed: 'cache-seed-1',
 };
 
-describe('Cache', () => {
+describe('SyklineCache', () => {
   it('Set a (key, value) pair', async () => {
     const cache = new SkylineCache({ config });
     await cache.setIfNotExist(
@@ -214,5 +214,50 @@ describe('Cache', () => {
       expect(value).toEqual({ id: 1, name: 'user-1' });
       expect(skipped).toBe(false);
     }
+  });
+
+  it('cache.get: Throw on incorrect input', async () => {
+    const cache = new SkylineCache({
+      config: { ...config, throwOnError: true },
+    });
+
+    // Throw on invalid namespace
+    await expect(
+      cache.get(null as unknown as string, 1, isUserCacheOrThrow)
+    ).rejects.toThrow();
+
+    await expect(
+      cache.get(undefined as unknown as string, 1, isUserCacheOrThrow)
+    ).rejects.toThrow();
+
+    await expect(
+      cache.get(1 as unknown as string, 1, isUserCacheOrThrow)
+    ).rejects.toThrow();
+
+    // Throw on invalid key
+    await expect(
+      cache.get(
+        USER_CACHE_NAMESPACE,
+        null as unknown as number,
+        isUserCacheOrThrow
+      )
+    ).rejects.toThrow();
+
+    await expect(
+      cache.get(
+        USER_CACHE_NAMESPACE,
+        undefined as unknown as number,
+        isUserCacheOrThrow
+      )
+    ).rejects.toThrow();
+
+    // Throw on invalid skip
+    await expect(
+      cache.get(USER_CACHE_NAMESPACE, 1, isUserCacheOrThrow, { skip: -1 })
+    ).rejects.toThrow();
+
+    await expect(
+      cache.get(USER_CACHE_NAMESPACE, 1, isUserCacheOrThrow, { skip: 1.1 })
+    ).rejects.toThrow();
   });
 });
