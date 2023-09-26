@@ -1,6 +1,8 @@
 # @skyline-js
 
-![Skyline](https://raw.githubusercontent.com/skylinejs/skylinejs.github.io/main/img/logo-skyline.png)
+<p align="center">
+  <a href="https://skylinejs.com/" target="blank"><img src="https://raw.githubusercontent.com/skylinejs/skylinejs.github.io/main/img/logo-skyline.png" width="120" alt="Skyline" /></a>
+</p>
 
 ## Publishable library
 
