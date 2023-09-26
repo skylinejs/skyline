@@ -23,6 +23,7 @@ Note:
 - keep your .mjml file inside the module that it is being used. Otherwise if you delete the module the template will still be there, this is more coherent.
 
 - Register post-processing routines
+- html to text for better deliverability
 
 ## Testing
 
