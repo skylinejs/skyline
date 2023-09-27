@@ -5,7 +5,7 @@ slug: /introduction
 
 # Introduction
 
-SkylineJS is a collection of loosley coupled libraries for building efficient, secure and scalable Node.js server-side applications. It is a companion toolkit to your framework of choice (e.g., NestJS), solving common tasks every server-side application has to perform such as parsing environment variables, performance monitoring or caching.
+SkylineJS is a collection of libraries for building efficient, secure and scalable Node.js server-side applications. It is a companion toolkit to your framework of choice (e.g., NestJS), solving common tasks every server-side application has to perform such as parsing environment variables, performance monitoring or caching.
 
 Instead of building these on your own, SkylineJS provides you with libraries that are:
 
@@ -14,17 +14,25 @@ Instead of building these on your own, SkylineJS provides you with libraries tha
 - Exhaustive test coverage
 - Production tested
 
+<br />
+
 Your current situation might look like this:
 
-NestJS
+```mermaid
+journey
+title Your situation
+    section Random server problem that keeps you from building features
+      Read random blog posts: 7
+      Read random StackOverflow posts: 5
+      Decide to hack the solution together: 4
+      Find random npm library: 3
 
----
-
-Random blog articles and stackoverflow posts that tell you how to build your application
-
----
-
-Random NPM libraries you need to glue together to get things working
+    section Get random 10 year old npm library to work
+      Solve JS module ESM issue: 2
+      Install @types to get TypeScript support: 1
+      Try to promisify the callback API: 1
+      Refactor, fix bugs, write unit tests: 0
+```
 
 This is an undesirable state of existence. SkylineJS was created to guide you out of this chaos in two simple steps:
 
@@ -34,6 +42,8 @@ This is an undesirable state of existence. SkylineJS was created to guide you ou
 Ideally, your framework + SkylineJS should take care of all the basic scaffolding your application needs, everything else is domain-specific functionality that depends on the particular features you would like to build (e.g., remote controlling your toaster via a REST API).
 
 CTA: Get started or check out the architecture primer
+
+Each Skyline library can be used on its own. However, all libraries play nicely together because they adhere to the same guiding principles. This coherence makes it easy for a developer to pick up a new Skyline library and use the same patterns to integrate the library into their own codebase. Below is a short introduction into the guiding principles.
 
 ## Framework versus library
 
@@ -58,9 +68,13 @@ TODO: Graphic of a system boundary where everything that enters gets validated, 
 
 ## Pure functions versus side effects
 
+<!--
 Example: util functions that depend on env vars
+-->
 
 ## Theoretical optimum vs lived experience
 
+<!--
 "Everybody has a plan until they get hit in the face".
 Example: cache inconsistency observability strategy.
+-->

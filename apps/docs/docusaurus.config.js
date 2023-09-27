@@ -74,6 +74,9 @@ const config = {
       },
       mermaid: {
         theme: { light: 'neutral', dark: 'forest' },
+        options: {
+          mirrorActors: false,
+        },
       },
       navbar: {
         title: 'SkylineJS',

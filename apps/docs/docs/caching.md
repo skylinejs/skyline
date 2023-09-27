@@ -68,6 +68,8 @@ I hope that this short thought experiment clearly demonstrates the need for a ca
 
 Enter the Skyline caching framework, that solves all of these problems while still providing a simple interface to the developer - by borrowing a trick or two from theoretical computer science.
 
+## Caching strategy overview
+
 <!--
 TODO: interactive analytics dashboard of caching statistics
 <CachingChart></CachingChart>
