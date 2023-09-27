@@ -73,7 +73,7 @@ const config = {
         disableSwitch: true,
       },
       mermaid: {
-        theme: { light: 'neutral', dark: 'forest' },
+        theme: { light: 'light', dark: 'dark' },
         options: {
           mirrorActors: false,
         },

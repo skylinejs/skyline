@@ -73,7 +73,7 @@ flowchart TB
     env([Environment variable]) -- validate ---> bl
     env([Environment variable]) -- validate --> da
 
-    subgraph "`**Application**`"
+    subgraph "Application"
       api[API layer]
       bl[Business logic layer]
       da[Data access layer]

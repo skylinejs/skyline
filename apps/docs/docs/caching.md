@@ -1,22 +1,31 @@
 ---
 sidebar_position: 3
 slug: /caching
+label: Caching
 ---
 
 import CachingChart from '@site/src/components/CachingChart';
 
 # Caching
 
-> There are only two hard things in Computer Science: cache invalidation and managing your package.json.
+:::note
+
+This page describes the guiding principles of the Skyline caching approach. <br />
+The API documentation of the `@skyline-js/cache` package can be found here
+
+:::
 
 ## Introduction
+
+> There are only two hard things in Computer Science: cache invalidation and managing your package.json.
 
 Good news, we are about to solve cache invalidation. Regarding your package-lock.json merge conflicts, we send our prayers and thoughts. But why is caching so difficult? Consider this simple scenario of two servers, a database and a cache:
 
 <br />
 
 ```mermaid
-%%{init:{'themeCSS':'.note { fill: darkred; color: white };'}}%%
+%%{init:{'themeCSS':' .noteText { tspan { fill: white; } }; .note { fill: darkred };'}}%%
+
 sequenceDiagram
     autonumber
 
@@ -34,6 +43,8 @@ sequenceDiagram
     Server 1 ->> Cache: Write old user:1
 
     Note over Server 1,Server 2: Cache is inconsistent
+
+
 ```
 
 <br />
@@ -47,7 +58,7 @@ How can we protect ourselves against this scenario? A solution could be to only 
 To solve this problem, we could always write to the cache after we perform an update operation, regardless of whether a value exists in the cache or not. Sounds good, but this just produces more problems. Consider this diagram where two servers update the same user in parallel:
 
 ```mermaid
-%%{init:{'themeCSS':'.note { fill: darkred; color: white };'}}%%
+%%{init:{'themeCSS':'.note { fill: darkred }; .noteText { tspan { fill: white; } } '}}%%
 sequenceDiagram
     autonumber
 
@@ -94,7 +105,7 @@ Finally, we need a strategy for minimizing the impact that a caching error has o
 Let's revisit the initial diagram with these rules in mind:
 
 ```mermaid
-%%{init:{'themeCSS':'.note { fill: darkgreen; color: white };'}}%%
+%%{init:{'themeCSS':'.note { fill: darkgreen }; .noteText { tspan { fill: white; } } '}}%%
 
 
 sequenceDiagram
@@ -132,7 +143,7 @@ The cache inconsistencies are mitigated, let's see if the happy path of this dia
 Let's look at the second diagram:
 
 ```mermaid
-%%{init:{'themeCSS':'.note { fill: darkgreen; color: white };'}}%%
+%%{init:{'themeCSS':'.note { fill: darkgreen }; .noteText { tspan { fill: white; } } '}}%%
 sequenceDiagram
     autonumber
 
@@ -154,18 +165,16 @@ This one is easy. The cache just gets invalidated twice, so it is obviously not 
 
 To summarize, we leverage the asymmetry of a cache key being read (a lot) and a cache key being invalidated (not so often) by blocking a cache key for some time on invalidation. While we loose using the cache during this time, we gain the garantuee of a consistent cache for the rest of cache value's lifetime. Quite a bargain if you ask me! If a cache key gets invalidated frequently, we would not be able to use the cache. However, in this case caching might be the wrong approach anyways as caching is most useful for values that do not change too often.
 
-# Example walkthrough
+## Code example walkthrough
+
+...
 
 <!--
-Luckily, most of these rules are already implemented by the `@skyline-js/cache` library without having to
-TODO: interactive analytics dashboard of caching statistics
+## Monitoring
+
 <CachingChart></CachingChart>
 
-## Error handling
-
-Caching is fully optional, so the cache should never cause a failure in production. At least we should be able to configure it to do so.
-
+TODO:
 - Document BigInt what is necessary for stringify/ parse
 - Handle storage engine failures (e.g., Redis not reachable)
-
 -->
