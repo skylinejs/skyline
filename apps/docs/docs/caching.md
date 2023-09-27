@@ -70,7 +70,26 @@ Enter the Skyline caching framework, that solves all of these problems while sti
 
 ## Caching strategy overview
 
+The skyline caching strategy is based on the following rules:
+
+1. Writing a value to a cache key only happens if the cache key is not set yet.
+1. Writing a value to a cache key only happens if the value is not stale.
+1. Invalidating a cache key sets the value to "blocked" for a certain amount of time.
+1. A value retrieved for a cache key has to be validated regarding its structure.
+
+Following these rules, no cache inconsistencies can occurr due to timing issues. However, the cache invalidation itself still needs to be done by the developer whenever a value changes. As this is very easy to forget, we furthermore need a process in place to deal with cache inconsistencies due to missing invalidations:
+
+1. Every cache read has a probability of being skipped, which is resulting in a forced cache miss. This probability should be set to 100% for a newly introduced cache.
+1. A skipped cache read results in the fetching of the value from the source of truth, followed by writing the value to the cache. The write operation fetches the cached value and compares it to the value that was fetched from the source of truth to detect an inconsistency.
+1. The skip probability can be reduced with increasing confidence in the feature. However, in local development, CI and testing environments it should always be 100% to catch any inconsistencies that have been (re)introduced.
+
+Finally, we need a strategy for minimizing the impact that a caching error has on our production system:
+
+1. Caching has to be optional to the correct functioning of the application. If the cache throws an error, it will be identical to a cache miss for the application. Errors are always logged but catched in production - in local development, CI and testing environments always thrown.
+2. A cache key consists of a namespace (e.g., `user`) and a key (e.g., `1`). If a cache inconsistency is detected, the entire namespace is disabled as the inconsistency is likely due to a systematic problem with that namespace's invalidation instead of only the individual key being affected.
+
 <!--
+Luckily, most of these rules are already implemented by the `@skyline-js/cache` library without having to
 TODO: interactive analytics dashboard of caching statistics
 <CachingChart></CachingChart>
 
