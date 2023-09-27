@@ -4,7 +4,6 @@ slug: /caching
 ---
 
 import CachingChart from '@site/src/components/CachingChart';
-import CoverImage from '@site/src/components/CoverImage';
 
 # Caching
 
