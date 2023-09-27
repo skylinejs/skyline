@@ -9,6 +9,8 @@ import CachingChart from '@site/src/components/CachingChart';
 
 > There are only two hard things in Computer Science: cache invalidation and managing your package.json.
 
+## Introduction
+
 Good news, we are about to solve cache invalidation. Regarding your package-lock.json merge conflicts, we send our prayers and thoughts. But why is caching so difficult? Consider this simple scenario of two servers, a database and a cache:
 
 <br />
@@ -149,6 +151,10 @@ sequenceDiagram
 <br />
 
 This one is easy. The cache just gets invalidated twice, so it is obviously not inconsistent. However, an important detail here is that the second invalidation has to reset the TTL (time-to-live) of the `blocked` value for `user:1` to its configured value, otherwise the cache key's `blocked` value could expire to soon and a late write operation as depicted in the first diagram could mess up our cache afterall.
+
+To summarize, we leverage the asymmetry of a cache key being read (a lot) and a cache key being invalidated (not so often) by blocking a cache key for some time on invalidation. While we loose using the cache during this time, we gain the garantuee of a consistent cache for the rest of cache value's lifetime. Quite a bargain if you ask me! If a cache key gets invalidated frequently, we would not be able to use the cache. However, in this case caching might be the wrong approach anyways as caching is most useful for values that do not change too often.
+
+# Example walkthrough
 
 <!--
 Luckily, most of these rules are already implemented by the `@skyline-js/cache` library without having to
