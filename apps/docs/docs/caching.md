@@ -14,6 +14,7 @@ Good news, we are about to solve cache invalidation. Regarding your package-lock
 <br />
 
 ```mermaid
+%%{init:{'themeCSS':'.note { fill: darkred; color: white };'}}%%
 sequenceDiagram
     autonumber
 
@@ -22,7 +23,7 @@ sequenceDiagram
     participant Server 2
 
     Server 1->> Cache: Get user:1
-    Cache -->> Server 1: Cache miss
+    Cache ->> Server 1: Cache miss
     Server 1->> Server 1: Get user:1 from database
 
     Server 2->> Server 2: Update user:1 in database
@@ -31,8 +32,6 @@ sequenceDiagram
     Server 1 ->> Cache: Write old user:1
 
     Note over Server 1,Server 2: Cache is inconsistent
-
-
 ```
 
 <br />
@@ -46,6 +45,7 @@ How can we protect ourselves against this scenario? A solution could be to only 
 To solve this problem, we could always write to the cache after we perform an update operation, regardless of whether a value exists in the cache or not. Sounds good, but this just produces more problems. Consider this diagram where two servers update the same user in parallel:
 
 ```mermaid
+%%{init:{'themeCSS':'.note { fill: darkred; color: white };'}}%%
 sequenceDiagram
     autonumber
 
@@ -54,8 +54,8 @@ sequenceDiagram
     participant Server 2
 
     Server 1 ->> Server 1: Update user:1 in database
-    Server 2->> Server 2: Update user:1 in database
-    Server 2 ->>Cache: Write udpated user:1
+    Server 2 ->> Server 2: Update user:1 in database
+    Server 2 ->> Cache: Write udpated user:1
     Server 1 ->> Cache: Write udpated user:1
 
     Note over Server 1,Server 2: Cache is inconsistent
@@ -86,6 +86,69 @@ Finally, we need a strategy for minimizing the impact that a caching error has o
 
 1. Caching has to be optional to the correct functioning of the application. If the cache throws an error, it will be identical to a cache miss for the application. Errors are always logged but catched in production - in local development, CI and testing environments always thrown.
 2. A cache key consists of a namespace (e.g., `user`) and a key (e.g., `1`). If a cache inconsistency is detected, the entire namespace is disabled as the inconsistency is likely due to a systematic problem with that namespace's invalidation instead of only the individual key being affected.
+
+<br />
+
+Let's revisit the initial diagram with these rules in mind:
+
+```mermaid
+%%{init:{'themeCSS':'.note { fill: darkgreen; color: white };'}}%%
+
+
+sequenceDiagram
+    autonumber
+
+    participant Server 1
+    participant Cache
+    participant Server 2
+
+    Server 1->> Cache: Get user:1
+    Cache ->> Server 1: Cache miss
+    Server 1->> Server 1: Get user:1 from database
+
+    Server 2 ->> Server 2: Update user:1 in database
+    Server 2 ->> Cache: Invalidate user:1
+
+    Server 1 -->> Cache: Write old user:1
+
+    Note over Server 1,Server 2: Cache is consistent
+
+```
+
+<br />
+
+Why is the cache now consistent? Step 1 - 4 are identical, however Step 5 invalidates the cache `user:1`, which sets the value of the key to `blocked` for a certain amount of time (e.g., 1 second). This causes the cache write of the old value in Step 6 to be discarded.
+
+You could argue: _"What if the time between Step 5 and Step 6 is longer than 1 second? In this case, the old value would still be written to the cache!"_.
+
+This would be correct without the staleness check rule. A value is stale and will therefore be discarded when writing it to the cache if it has been fetched from the source of truth longer than a certain threshold amount of time (e.g., 1 second). In this scenario, the `fetchedAt` timestamp is recorded on Step 3, before the database is queried for the user. If the time between Step 5 and Step 6 is below 1 second, the write will be discarded because the cache key still exists (with the `blocked` value). If the time is above 1 second, the write will be discarded because the value has passed the stale threshold.
+
+The cache inconsistencies are mitigated, let's see if the happy path of this diagram is still fullfilled: If Step 4 and 5 do not happen, the cache key `user:1` never gets blocked and therefore the correct value for `user:1` is written to the cache in Step 6. Nice!
+
+<br />
+
+Let's look at the second diagram:
+
+```mermaid
+%%{init:{'themeCSS':'.note { fill: darkgreen; color: white };'}}%%
+sequenceDiagram
+    autonumber
+
+    participant Server 1
+    participant Cache
+    participant Server 2
+
+    Server 1 ->> Server 1: Update user:1 in database
+    Server 2 ->> Server 2: Update user:1 in database
+    Server 2 ->> Cache: Invalidate user:1
+    Server 1 ->> Cache: Invalidate user:1
+
+    Note over Server 1,Server 2: Cache is inconsistent
+```
+
+<br />
+
+This one is easy. The cache just gets invalidated twice, so it is obviously not inconsistent. However, an important detail here is that the second invalidation has to reset the TTL (time-to-live) of the `blocked` value for `user:1` to its configured value, otherwise the cache key's `blocked` value could expire to soon and a late write operation as depicted in the first diagram could mess up our cache afterall.
 
 <!--
 Luckily, most of these rules are already implemented by the `@skyline-js/cache` library without having to
