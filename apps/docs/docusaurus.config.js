@@ -72,6 +72,9 @@ const config = {
         defaultMode: 'light',
         disableSwitch: true,
       },
+      mermaid: {
+        theme: { light: 'neutral', dark: 'forest' },
+      },
       navbar: {
         title: 'SkylineJS',
         logo: {
