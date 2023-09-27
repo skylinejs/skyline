@@ -64,7 +64,34 @@ There are two ways SkylineJS reduces runtime errors to a minimum:
 1. Leverage the TypeScript compiler
 2. Validate runtime values and throw if they are not matching their interface
 
-TODO: Graphic of a system boundary where everything that enters gets validated, the core is always green because it always functions under its assumptions.
+Graphic of a system boundary where everything that enters gets validated, the core is always green because it always functions under its assumptions.
+
+```mermaid
+flowchart TB
+    req([HTTP request]) -- validate --> api
+    sql([SQL query]) -- validate ---> da
+    env([Environment variable]) -- validate ---> bl
+    env([Environment variable]) -- validate --> da
+
+    subgraph "`**Application**`"
+      api[API layer]
+      bl[Business logic layer]
+      da[Data access layer]
+      api === bl
+      bl === api
+      bl === da
+      da === bl
+    end
+
+    linkStyle 0 stroke:orange;
+    linkStyle 1 stroke:orange;
+    linkStyle 2 stroke:orange;
+    linkStyle 3 stroke:orange;
+    linkStyle 4 stroke:green;
+    linkStyle 5 stroke:green;
+    linkStyle 6 stroke:green;
+    linkStyle 7 stroke:green;
+```
 
 ## Pure functions versus side effects
 
