@@ -21,4 +21,34 @@ describe('GET /api', () => {
     );
     expect(getResult.user).toEqual(creationResult.user);
   });
+
+  it('Should delete a user', async () => {
+    // Create user
+    const { data: creationResult } = await axios.post(`/api/user`, {
+      name: 'To delete',
+    });
+    expect(creationResult).toMatchObject({ user: { name: 'To delete' } });
+
+    // Get user - this fills the cache
+    {
+      const { data: getResult } = await axios.get(
+        `/api/user/${creationResult.user.id}`
+      );
+      expect(getResult.user).toEqual(creationResult.user);
+    }
+
+    // Delete user
+    const { data: deleteResult } = await axios.delete(
+      `/api/user/${creationResult.user.id}`
+    );
+    expect(deleteResult.id).toEqual(creationResult.user.id);
+
+    {
+      // Retrieve user - expect cache to be invalidated
+      const { data: getResult } = await axios.get(
+        `/api/user/${creationResult.user.id}`
+      );
+      expect(getResult).toEqual({ user: undefined });
+    }
+  });
 });
