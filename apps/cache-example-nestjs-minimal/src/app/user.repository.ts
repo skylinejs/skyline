@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, EntityNotFoundError } from 'typeorm';
-import { UserEntity } from './user.entity';
 import { DatabaseCacheService } from './database-cache.service';
+import { UserEntity } from './user.entity';
+import {
+  CreateUserInputValobj,
+  UpdateUserInputValobj,
+  UserValobj,
+} from './user.interface';
 import { isUserRowOrThrow, isUserRowsOrThrow } from './user.utils';
-import { UserValobj } from './user.interface';
 
 @Injectable()
 export class UserRepository {
@@ -31,7 +35,7 @@ export class UserRepository {
     );
 
     // Query database for missing userIds
-    let missingRows = [];
+    let missingRows: UserValobj[] = [];
     if (missingUserIds.length > 0) {
       const fetchedAt = Date.now();
       missingRows = await this.dataSource
@@ -69,7 +73,40 @@ export class UserRepository {
     return user;
   }
 
-  async createUser() {}
+  async createUser(input: CreateUserInputValobj) {
+    const rows =
+      (
+        await this.dataSource
+          .createQueryBuilder()
+          .insert()
+          .into(UserEntity)
+          .values(input)
+          .returning('*')
+          .execute()
+      ).raw ?? [];
 
-  async updateUser() {}
+    isUserRowsOrThrow(rows);
+    const user = rows[0];
+    return user;
+  }
+
+  async updateUser(input: UpdateUserInputValobj) {
+    // Invalidate cache
+    await this.cache.invalidate('user', input.id);
+
+    const rows =
+      (
+        await this.dataSource
+          .createQueryBuilder()
+          .update(UserEntity)
+          .set(input)
+          .where('id = :id', { id: input.id })
+          .returning('*')
+          .execute()
+      ).raw ?? [];
+
+    isUserRowsOrThrow(rows);
+    const user = rows[0];
+    return user;
+  }
 }
