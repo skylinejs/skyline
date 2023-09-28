@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 
 @Controller()
@@ -23,5 +23,12 @@ export class UserController {
   async createUser() {
     const user = await this.userRepo.createUser({ name: 'John Doe' });
     return { user };
+  }
+
+  @Delete('user/:id')
+  async deleteUser(@Param() params: { id: number }) {
+    const id = Number(params.id);
+    await this.userRepo.deleteUser(id);
+    return { id };
   }
 }

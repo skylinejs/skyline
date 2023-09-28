@@ -109,4 +109,16 @@ export class UserRepository {
     const user = rows[0];
     return user;
   }
+
+  async deleteUser(userId: number) {
+    // Invalidate cache
+    await this.cache.invalidate('user', userId);
+
+    await this.dataSource
+      .createQueryBuilder()
+      .delete()
+      .from(UserEntity)
+      .where('id = :id', { id: userId })
+      .execute();
+  }
 }

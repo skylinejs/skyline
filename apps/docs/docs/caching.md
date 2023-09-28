@@ -173,19 +173,8 @@ I will demonstrate the Skyline caching strategy based on the following scenario:
 
 We start with such a repository for the `user` entity:
 
-<Tabs>
+<Tabs path="apps/cache-example-nestjs-minimal/src/app">
 <TabItem value="UserRepository" label="user-repository.ts">
-
-```ts
-@Injectable()
-export class UserRepository {
-  constructor(
-    private readonly cache: DatabaseCache,
-    @InjectDataSource() private readonly dataSource: DataSource
-  ) {}
-}
-```
-
 </TabItem>
 </Tabs>
 
