@@ -301,7 +301,6 @@ export class UserRepository {
       .execute();
   }
 }
-
 ```
 
 </TabItem>
@@ -318,7 +317,6 @@ export class UserEntity {
   @Column({ type: 'varchar', length: 255, nullable: false })
   name!: string;
 }
-
 ```
 
 </TabItem>
@@ -338,7 +336,6 @@ export interface UpdateUserInputValobj {
   id: number;
   name: string;
 }
-
 ```
 
 </TabItem>
@@ -378,7 +375,6 @@ export function isUserRowOrThrow(
 ): asserts candidate is UserValobj {
   isUserRowsOrThrow([candidate]);
 }
-
 ```
 
 </TabItem>
@@ -419,7 +415,6 @@ export class UserController {
     return { id };
   }
 }
-
 ```
 
 </TabItem>
@@ -444,7 +439,6 @@ export class DatabaseCacheService extends SkylineCache {
     });
   }
 }
-
 ```
 
 </TabItem>
@@ -473,7 +467,6 @@ import { DatabaseCacheService } from './database-cache.service';
   providers: [DatabaseCacheService, UserRepository],
 })
 export class AppModule {}
-
 ```
 
 </TabItem>

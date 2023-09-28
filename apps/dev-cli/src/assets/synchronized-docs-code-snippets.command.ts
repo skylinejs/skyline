@@ -114,7 +114,7 @@ export class SynchronizeDocsCodeSnippetsCommand {
 
     return contents
       .map(({ content, value, label }) => {
-        return `<TabItem value="${value}" label="${label}">\n\n\`\`\`ts\n${content}\n\`\`\`\n\n</TabItem>`;
+        return `<TabItem value="${value}" label="${label}">\n\n\`\`\`ts\n${content}\`\`\`\n\n</TabItem>`;
       })
       .join('\n');
   }
