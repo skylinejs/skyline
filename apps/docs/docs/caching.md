@@ -173,139 +173,7 @@ I will demonstrate the Skyline caching strategy based on the following scenario:
 
 We start with such a repository for the `user` entity:
 
-<Tabs path="apps/cache-example-nestjs-minimal/src/app/" order="user-repository.ts, user.controller.ts, user.utils.ts, user.interface.ts, user.entity.ts, database-cache.service.ts">
-<TabItem value="app.module" label="app.module.ts">
-
-```ts
-import { Module } from '@nestjs/common';
-import { UserController } from './user.controller';
-import { UserRepository } from './user.repository';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './user.entity';
-import { DatabaseCacheService } from './database-cache.service';
-
-@Module({
-  imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      url: 'postgres://postgres:postgres@skyline_postgres:5432/postgres',
-      schema: 'public',
-      dropSchema: true,
-      synchronize: true,
-      entities: [UserEntity],
-    }),
-  ],
-  controllers: [UserController],
-  providers: [DatabaseCacheService, UserRepository],
-})
-export class AppModule {}
-
-```
-
-</TabItem>
-<TabItem value="database-cache.service" label="database-cache.service.ts">
-
-```ts
-import { Injectable } from '@nestjs/common';
-import { RedisCacheStorageEngine, SkylineCache } from '@skylinejs/cache';
-import { createClient } from 'redis';
-
-@Injectable()
-export class DatabaseCacheService extends SkylineCache {
-  constructor() {
-    const redis = createClient({ url: 'redis://skyline_redis:6379' });
-    redis.connect();
-
-    super({
-      storage: new RedisCacheStorageEngine({
-        redis,
-      }),
-      config: {},
-    });
-  }
-}
-
-```
-
-</TabItem>
-<TabItem value="user.controller" label="user.controller.ts">
-
-```ts
-import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { UserRepository } from './user.repository';
-
-@Controller()
-export class UserController {
-  constructor(private readonly userRepo: UserRepository) {}
-
-  @Get('user/:id')
-  async getUserById(@Param() params: { id: number }) {
-    const id = Number(params.id);
-    const user = await this.userRepo.getUsersById(id);
-    return { user };
-  }
-
-  @Get('users/:ids')
-  async getUsersByIds(@Param() params: { ids: string }) {
-    const ids = params.ids.split(',').map(Number);
-    const users = await this.userRepo.getUsersByIds(ids);
-    return { users };
-  }
-
-  @Post('user')
-  async createUser() {
-    const user = await this.userRepo.createUser({ name: 'John Doe' });
-    return { user };
-  }
-
-  @Delete('user/:id')
-  async deleteUser(@Param() params: { id: number }) {
-    const id = Number(params.id);
-    await this.userRepo.deleteUser(id);
-    return { id };
-  }
-}
-
-```
-
-</TabItem>
-<TabItem value="user.entity" label="user.entity.ts">
-
-```ts
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
-@Entity()
-export class UserEntity {
-  @PrimaryGeneratedColumn({ type: 'integer' })
-  id!: number;
-
-  @Column({ type: 'varchar', length: 255, nullable: false })
-  name!: string;
-}
-
-```
-
-</TabItem>
-<TabItem value="user.interface" label="user.interface.ts">
-
-```ts
-export interface UserValobj {
-  id: number;
-  name: string;
-}
-
-export interface CreateUserInputValobj {
-  name: string;
-}
-
-export interface UpdateUserInputValobj {
-  id: number;
-  name: string;
-}
-
-```
-
-</TabItem>
+<Tabs path="apps/cache-example-nestjs-minimal/src/app/" order="user.repository.ts, user.controller.ts, user.utils.ts, user.interface.ts, user.entity.ts, database-cache.service.ts">
 <TabItem value="user.repository" label="user.repository.ts">
 
 ```ts
@@ -437,6 +305,47 @@ export class UserRepository {
 ```
 
 </TabItem>
+<TabItem value="user.controller" label="user.controller.ts">
+
+```ts
+import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { UserRepository } from './user.repository';
+
+@Controller()
+export class UserController {
+  constructor(private readonly userRepo: UserRepository) {}
+
+  @Get('user/:id')
+  async getUserById(@Param() params: { id: number }) {
+    const id = Number(params.id);
+    const user = await this.userRepo.getUsersById(id);
+    return { user };
+  }
+
+  @Get('users/:ids')
+  async getUsersByIds(@Param() params: { ids: string }) {
+    const ids = params.ids.split(',').map(Number);
+    const users = await this.userRepo.getUsersByIds(ids);
+    return { users };
+  }
+
+  @Post('user')
+  async createUser() {
+    const user = await this.userRepo.createUser({ name: 'John Doe' });
+    return { user };
+  }
+
+  @Delete('user/:id')
+  async deleteUser(@Param() params: { id: number }) {
+    const id = Number(params.id);
+    await this.userRepo.deleteUser(id);
+    return { id };
+  }
+}
+
+```
+
+</TabItem>
 <TabItem value="user.utils" label="user.utils.ts">
 
 ```ts
@@ -473,6 +382,97 @@ export function isUserRowOrThrow(
 ): asserts candidate is UserValobj {
   isUserRowsOrThrow([candidate]);
 }
+
+```
+
+</TabItem>
+<TabItem value="user.interface" label="user.interface.ts">
+
+```ts
+export interface UserValobj {
+  id: number;
+  name: string;
+}
+
+export interface CreateUserInputValobj {
+  name: string;
+}
+
+export interface UpdateUserInputValobj {
+  id: number;
+  name: string;
+}
+
+```
+
+</TabItem>
+<TabItem value="user.entity" label="user.entity.ts">
+
+```ts
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity()
+export class UserEntity {
+  @PrimaryGeneratedColumn({ type: 'integer' })
+  id!: number;
+
+  @Column({ type: 'varchar', length: 255, nullable: false })
+  name!: string;
+}
+
+```
+
+</TabItem>
+<TabItem value="database-cache.service" label="database-cache.service.ts">
+
+```ts
+import { Injectable } from '@nestjs/common';
+import { RedisCacheStorageEngine, SkylineCache } from '@skylinejs/cache';
+import { createClient } from 'redis';
+
+@Injectable()
+export class DatabaseCacheService extends SkylineCache {
+  constructor() {
+    const redis = createClient({ url: 'redis://skyline_redis:6379' });
+    redis.connect();
+
+    super({
+      storage: new RedisCacheStorageEngine({
+        redis,
+      }),
+      config: {},
+    });
+  }
+}
+
+```
+
+</TabItem>
+<TabItem value="app.module" label="app.module.ts">
+
+```ts
+import { Module } from '@nestjs/common';
+import { UserController } from './user.controller';
+import { UserRepository } from './user.repository';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from './user.entity';
+import { DatabaseCacheService } from './database-cache.service';
+
+@Module({
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      url: 'postgres://postgres:postgres@skyline_postgres:5432/postgres',
+      schema: 'public',
+      dropSchema: true,
+      synchronize: true,
+      entities: [UserEntity],
+    }),
+  ],
+  controllers: [UserController],
+  providers: [DatabaseCacheService, UserRepository],
+})
+export class AppModule {}
 
 ```
 

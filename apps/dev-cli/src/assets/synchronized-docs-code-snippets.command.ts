@@ -48,16 +48,17 @@ export class SynchronizeDocsCodeSnippetsCommand {
         let pathProperty = content
           .substring(start, end)
           .match(/path="([^"]+)"/)?.[1];
-
-        console.log({ pathProperty });
-        console.log(content.slice(start, end));
-
         if (!pathProperty.endsWith('/')) {
           pathProperty += '/';
         }
 
+        const orderProperty = content
+          .substring(start, end)
+          .match(/order="([^"]+)"/)?.[1];
+
         const codeSnippets = await this.getMarkdownCodeSnippetsForAllFiles(
-          pathProperty
+          pathProperty,
+          orderProperty
         );
 
         // Write new content
@@ -77,11 +78,30 @@ export class SynchronizeDocsCodeSnippetsCommand {
     }
   }
 
-  private async getMarkdownCodeSnippetsForAllFiles(dirpath: string) {
+  private async getMarkdownCodeSnippetsForAllFiles(
+    dirpath: string,
+    orderStr?: string
+  ) {
+    const order = (orderStr ?? '').split(',').map((s) => s.trim());
     const filepaths = await walk(dirpath);
-    const tsFilepaths = filepaths.filter(
-      (filepath) => filepath.endsWith('.ts') && !filepath.endsWith('.spec.ts')
-    );
+    const tsFilepaths = filepaths
+      .filter(
+        (filepath) => filepath.endsWith('.ts') && !filepath.endsWith('.spec.ts')
+      )
+      .sort((a, b) => {
+        const aIndex = order.findIndex((s) => a.endsWith(s));
+        const bIndex = order.findIndex((s) => b.endsWith(s));
+        if (aIndex === -1 && bIndex === -1) {
+          return a.localeCompare(b);
+        }
+        if (aIndex === -1) {
+          return 1;
+        }
+        if (bIndex === -1) {
+          return -1;
+        }
+        return aIndex - bIndex;
+      });
 
     const contents: { value: string; label: string; content: string }[] = [];
 
