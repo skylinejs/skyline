@@ -817,20 +817,16 @@ export class SkylineCache {
    * This function is periodically called to synchronize the disabled namespaces from storage.
    */
   async synchronizeDisabledNamespaces(): Promise<void> {
-    const keys = await this.storage.getKeysByPattern(
-      `${this.config.cachePrefix}:${this.config.disabledNamespacesKeyPrefix}:*`
-    );
-    const results = await this.storage.getMany(keys);
-    const disabledNamespaces = results.map((result, index) => {
-      if (!result) return undefined;
-      const key = keys[index];
-      const namespace = key.replace(
-        `${this.config.cachePrefix}:${this.config.disabledNamespacesKeyPrefix}:`,
-        ''
-      );
-      return namespace;
-    });
-    this.disabledNamespaces = disabledNamespaces.filter(isNotNullish);
+    try {
+      const prefix = `${this.config.cachePrefix}:${this.config.disabledNamespacesKeyPrefix}:`;
+      const keys = await this.storage.getKeysByPattern(`${prefix}*`);
+      this.disabledNamespaces = keys.map((key) => key.slice(prefix.length));
+    } catch (error: unknown) {
+      this.handleError(error, {
+        location: 'cache.synchronizeDisabledNamespaces',
+        identifier: 'disabled-namespaces',
+      });
+    }
   }
 
   /**
