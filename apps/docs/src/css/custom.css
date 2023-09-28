@@ -148,3 +148,8 @@ section,
 .menu__list-item--collapsed .menu__caret:before {
   transform: scale(0.5) rotate(90deg);
 }
+
+/** Needed for <TabItem> to not wrap */
+li.tabs__item {
+  white-space: nowrap;
+}

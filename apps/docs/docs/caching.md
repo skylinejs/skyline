@@ -173,8 +173,8 @@ I will demonstrate the Skyline caching strategy based on the following scenario:
 
 We start with such a repository for the `user` entity:
 
-<Tabs path="apps/cache-example-nestjs-minimal/src/app">
-<TabItem value="-app.module" label="/app.module.ts">
+<Tabs path="apps/cache-example-nestjs-minimal/src/app/" order="user-repository.ts, user.controller.ts, user.utils.ts, user.interface.ts, user.entity.ts, database-cache.service.ts">
+<TabItem value="app.module" label="app.module.ts">
 
 ```ts
 import { Module } from '@nestjs/common';
@@ -203,7 +203,7 @@ export class AppModule {}
 ```
 
 </TabItem>
-<TabItem value="-database-cache.service" label="/database-cache.service.ts">
+<TabItem value="database-cache.service" label="database-cache.service.ts">
 
 ```ts
 import { Injectable } from '@nestjs/common';
@@ -228,7 +228,7 @@ export class DatabaseCacheService extends SkylineCache {
 ```
 
 </TabItem>
-<TabItem value="-user.controller" label="/user.controller.ts">
+<TabItem value="user.controller" label="user.controller.ts">
 
 ```ts
 import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
@@ -269,7 +269,7 @@ export class UserController {
 ```
 
 </TabItem>
-<TabItem value="-user.entity" label="/user.entity.ts">
+<TabItem value="user.entity" label="user.entity.ts">
 
 ```ts
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
@@ -286,7 +286,7 @@ export class UserEntity {
 ```
 
 </TabItem>
-<TabItem value="-user.interface" label="/user.interface.ts">
+<TabItem value="user.interface" label="user.interface.ts">
 
 ```ts
 export interface UserValobj {
@@ -306,7 +306,7 @@ export interface UpdateUserInputValobj {
 ```
 
 </TabItem>
-<TabItem value="-user.repository" label="/user.repository.ts">
+<TabItem value="user.repository" label="user.repository.ts">
 
 ```ts
 import { Injectable } from '@nestjs/common';
@@ -437,7 +437,7 @@ export class UserRepository {
 ```
 
 </TabItem>
-<TabItem value="-user.utils" label="/user.utils.ts">
+<TabItem value="user.utils" label="user.utils.ts">
 
 ```ts
 import { UserValobj } from './user.interface';

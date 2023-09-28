@@ -45,21 +45,29 @@ export class SynchronizeDocsCodeSnippetsCommand {
 
         end += '</Tabs>'.length;
 
-        const pathProperty = content
+        let pathProperty = content
           .substring(start, end)
-          .match(/path="(.*)"/)?.[1];
+          .match(/path="([^"]+)"/)?.[1];
 
         console.log({ pathProperty });
         console.log(content.slice(start, end));
+
+        if (!pathProperty.endsWith('/')) {
+          pathProperty += '/';
+        }
 
         const codeSnippets = await this.getMarkdownCodeSnippetsForAllFiles(
           pathProperty
         );
 
         // Write new content
+        const firstLine = content.substring(
+          start,
+          start + content.substring(start).indexOf('\n')
+        );
         const newContent = content.replace(
           content.slice(start, end),
-          `<Tabs path="${pathProperty}">\n` + codeSnippets + '\n</Tabs>'
+          `${firstLine}\n` + codeSnippets + '\n</Tabs>'
         );
         writeFileSync(filepath, newContent);
 
