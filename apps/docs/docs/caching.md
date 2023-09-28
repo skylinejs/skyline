@@ -174,7 +174,308 @@ I will demonstrate the Skyline caching strategy based on the following scenario:
 We start with such a repository for the `user` entity:
 
 <Tabs path="apps/cache-example-nestjs-minimal/src/app">
-<TabItem value="UserRepository" label="user-repository.ts">
+<TabItem value="-app.module" label="/app.module.ts">
+
+```ts
+import { Module } from '@nestjs/common';
+import { UserController } from './user.controller';
+import { UserRepository } from './user.repository';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from './user.entity';
+import { DatabaseCacheService } from './database-cache.service';
+
+@Module({
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      url: 'postgres://postgres:postgres@skyline_postgres:5432/postgres',
+      schema: 'public',
+      dropSchema: true,
+      synchronize: true,
+      entities: [UserEntity],
+    }),
+  ],
+  controllers: [UserController],
+  providers: [DatabaseCacheService, UserRepository],
+})
+export class AppModule {}
+
+```
+
+</TabItem>
+<TabItem value="-database-cache.service" label="/database-cache.service.ts">
+
+```ts
+import { Injectable } from '@nestjs/common';
+import { RedisCacheStorageEngine, SkylineCache } from '@skylinejs/cache';
+import { createClient } from 'redis';
+
+@Injectable()
+export class DatabaseCacheService extends SkylineCache {
+  constructor() {
+    const redis = createClient({ url: 'redis://skyline_redis:6379' });
+    redis.connect();
+
+    super({
+      storage: new RedisCacheStorageEngine({
+        redis,
+      }),
+      config: {},
+    });
+  }
+}
+
+```
+
+</TabItem>
+<TabItem value="-user.controller" label="/user.controller.ts">
+
+```ts
+import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { UserRepository } from './user.repository';
+
+@Controller()
+export class UserController {
+  constructor(private readonly userRepo: UserRepository) {}
+
+  @Get('user/:id')
+  async getUserById(@Param() params: { id: number }) {
+    const id = Number(params.id);
+    const user = await this.userRepo.getUsersById(id);
+    return { user };
+  }
+
+  @Get('users/:ids')
+  async getUsersByIds(@Param() params: { ids: string }) {
+    const ids = params.ids.split(',').map(Number);
+    const users = await this.userRepo.getUsersByIds(ids);
+    return { users };
+  }
+
+  @Post('user')
+  async createUser() {
+    const user = await this.userRepo.createUser({ name: 'John Doe' });
+    return { user };
+  }
+
+  @Delete('user/:id')
+  async deleteUser(@Param() params: { id: number }) {
+    const id = Number(params.id);
+    await this.userRepo.deleteUser(id);
+    return { id };
+  }
+}
+
+```
+
+</TabItem>
+<TabItem value="-user.entity" label="/user.entity.ts">
+
+```ts
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity()
+export class UserEntity {
+  @PrimaryGeneratedColumn({ type: 'integer' })
+  id!: number;
+
+  @Column({ type: 'varchar', length: 255, nullable: false })
+  name!: string;
+}
+
+```
+
+</TabItem>
+<TabItem value="-user.interface" label="/user.interface.ts">
+
+```ts
+export interface UserValobj {
+  id: number;
+  name: string;
+}
+
+export interface CreateUserInputValobj {
+  name: string;
+}
+
+export interface UpdateUserInputValobj {
+  id: number;
+  name: string;
+}
+
+```
+
+</TabItem>
+<TabItem value="-user.repository" label="/user.repository.ts">
+
+```ts
+import { Injectable } from '@nestjs/common';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource, EntityNotFoundError } from 'typeorm';
+import { DatabaseCacheService } from './database-cache.service';
+import { UserEntity } from './user.entity';
+import {
+  CreateUserInputValobj,
+  UpdateUserInputValobj,
+  UserValobj,
+} from './user.interface';
+import { isUserRowOrThrow, isUserRowsOrThrow } from './user.utils';
+
+@Injectable()
+export class UserRepository {
+  constructor(
+    private readonly cache: DatabaseCacheService,
+    @InjectDataSource() private readonly dataSource: DataSource
+  ) {}
+
+  async getUsersByIds(
+    userIds: number[]
+  ): Promise<Array<UserValobj | undefined>> {
+    if (!userIds.length) return [];
+
+    // Check cache
+    const { values: cachedUserRows, skipped } = await this.cache.getMany(
+      'user',
+      userIds,
+      isUserRowOrThrow,
+      { skip: 0.5 }
+    );
+
+    const missingUserIds = userIds.filter(
+      (userId) => !cachedUserRows.some((row) => row?.id === userId)
+    );
+
+    // Query database for missing userIds
+    let missingRows: UserValobj[] = [];
+    if (missingUserIds.length > 0) {
+      const fetchedAt = Date.now();
+      missingRows = await this.dataSource
+        .createQueryBuilder(UserEntity, 'user')
+        .select('*')
+        .whereInIds(missingUserIds)
+        .execute();
+
+      isUserRowsOrThrow(missingRows);
+
+      // Cache missing rows
+      await this.cache.setManyIfNotExist('user', (row) => row.id, missingRows, {
+        fetchedAt,
+        validate: skipped,
+      });
+    }
+
+    const rows = [...cachedUserRows, ...missingRows];
+    return userIds.map((userId) => rows.find((user) => user?.id === userId));
+  }
+
+  async getUsersById(userId: number): Promise<UserValobj | undefined> {
+    const [user] = await this.getUsersByIds([userId]);
+    return user;
+  }
+
+  async getUsersByIdOrFail(userId: number): Promise<UserValobj> {
+    const user = await this.getUsersById(userId);
+    if (!user)
+      throw new EntityNotFoundError(
+        UserEntity,
+        `User with ID ${userId} not found`
+      );
+
+    return user;
+  }
+
+  async createUser(input: CreateUserInputValobj) {
+    const rows =
+      (
+        await this.dataSource
+          .createQueryBuilder()
+          .insert()
+          .into(UserEntity)
+          .values(input)
+          .returning('*')
+          .execute()
+      ).raw ?? [];
+
+    isUserRowsOrThrow(rows);
+    const user = rows[0];
+    return user;
+  }
+
+  async updateUser(input: UpdateUserInputValobj) {
+    // Invalidate cache
+    await this.cache.invalidate('user', input.id);
+
+    const rows =
+      (
+        await this.dataSource
+          .createQueryBuilder()
+          .update(UserEntity)
+          .set(input)
+          .where('id = :id', { id: input.id })
+          .returning('*')
+          .execute()
+      ).raw ?? [];
+
+    isUserRowsOrThrow(rows);
+    const user = rows[0];
+    return user;
+  }
+
+  async deleteUser(userId: number) {
+    // Invalidate cache
+    await this.cache.invalidate('user', userId);
+
+    await this.dataSource
+      .createQueryBuilder()
+      .delete()
+      .from(UserEntity)
+      .where('id = :id', { id: userId })
+      .execute();
+  }
+}
+
+```
+
+</TabItem>
+<TabItem value="-user.utils" label="/user.utils.ts">
+
+```ts
+import { UserValobj } from './user.interface';
+
+export function isUserRowsOrThrow(
+  candidates: unknown[]
+): asserts candidates is UserValobj[] {
+  if (!Array.isArray(candidates)) {
+    throw new Error(`Expected array, got ${typeof candidates}`);
+  }
+
+  for (const candidate of candidates) {
+    if (typeof candidate !== 'object' || candidate === null) {
+      throw new Error(`Expected object, got ${typeof candidate}`);
+    }
+
+    if (typeof (candidate as UserValobj).id !== 'number') {
+      throw new Error(
+        `Expected number, got ${typeof (candidate as UserValobj).id}`
+      );
+    }
+
+    if (typeof (candidate as UserValobj).name !== 'string') {
+      throw new Error(
+        `Expected string, got ${typeof (candidate as UserValobj).name}`
+      );
+    }
+  }
+}
+
+export function isUserRowOrThrow(
+  candidate: unknown
+): asserts candidate is UserValobj {
+  isUserRowsOrThrow([candidate]);
+}
+
+```
+
 </TabItem>
 </Tabs>
 
