@@ -16,4 +16,5 @@ nx generate @nx/js:library --publishable --directory packages/example --importPa
 
 ```
 nx generate @nx/workspace:move --project cache --destination packages/cache
+nx generate @nx/node:application cache-example-nestjs-minimal
 ```
