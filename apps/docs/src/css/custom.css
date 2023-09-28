@@ -153,3 +153,8 @@ section,
 li.tabs__item {
   white-space: nowrap;
 }
+
+.theme-code-block {
+  overflow-y: auto;
+  max-height: 500px;
+}
