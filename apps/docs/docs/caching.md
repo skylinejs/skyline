@@ -4,6 +4,8 @@ slug: /caching
 label: Caching
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import CachingChart from '@site/src/components/CachingChart';
 
 # Caching
@@ -167,12 +169,37 @@ To summarize, we leverage the asymmetry of a cache key being read (a lot) and a 
 
 ## Code example walkthrough
 
+I will demonstrate the Skyline caching strategy based on the following scenario: Yout want to build a NestJS web application server that stores its data in a relational database and uses Redis for caching. Your application has a dedicated data-access layer, which abstracts away the communication with the database. This is done via repositories, which offer functions to perform SQL operations on a specific database table (or multiple depending on the use-case). The database schema and therefore the SQL query structure is hidden from the consumer of the repository.
+
+We start with such a repository for the `user` entity:
+
+<Tabs>
+<TabItem value="UserRepository" label="user-repository.ts">
+
+```ts
+@Injectable()
+export class UserRepository {
+  constructor(
+    private readonly cache: DatabaseCache,
+    @InjectDataSource() private readonly dataSource: DataSource
+  ) {}
+}
+```
+
+</TabItem>
+</Tabs>
+
 ...
 
 <!--
 ## Monitoring
 
 <CachingChart></CachingChart>
+
+## Best practices
+ - keep caching inside the data-access layer
+ - ensure composability of repositories
+ - avoid aggregates as much as possible, one cache per entity should be the goal (demonstrate ID pattern)
 
 TODO:
 - Document BigInt what is necessary for stringify/ parse
