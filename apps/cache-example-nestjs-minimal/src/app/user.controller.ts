@@ -6,19 +6,22 @@ export class UserController {
   constructor(private readonly userRepo: UserRepository) {}
 
   @Get('user/:id')
-  getUserById(@Param() params: { id: number }) {
+  async getUserById(@Param() params: { id: number }) {
     const id = Number(params.id);
-    return this.userRepo.getUsersById(id);
+    const user = await this.userRepo.getUsersById(id);
+    return { user };
   }
 
   @Get('users/:ids')
-  getUsersByIds(@Param() params: { ids: string }) {
+  async getUsersByIds(@Param() params: { ids: string }) {
     const ids = params.ids.split(',').map(Number);
-    return this.userRepo.getUsersByIds(ids);
+    const users = await this.userRepo.getUsersByIds(ids);
+    return { users };
   }
 
   @Post('user')
-  createUser() {
-    return this.userRepo.createUser({ name: 'John Doe' });
+  async createUser() {
+    const user = await this.userRepo.createUser({ name: 'John Doe' });
+    return { user };
   }
 }

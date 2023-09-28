@@ -31,7 +31,7 @@ export class UserRepository {
     );
 
     const missingUserIds = userIds.filter(
-      (userId) => !cachedUserRows.some(({ id }) => id === userId)
+      (userId) => !cachedUserRows.some((row) => row?.id === userId)
     );
 
     // Query database for missing userIds
