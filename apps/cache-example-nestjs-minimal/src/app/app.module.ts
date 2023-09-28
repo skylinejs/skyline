@@ -3,6 +3,7 @@ import { UserController } from './user.controller';
 import { UserRepository } from './user.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
+import { DatabaseCacheService } from './database-cache.service';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { UserEntity } from './user.entity';
     }),
   ],
   controllers: [UserController],
-  providers: [UserRepository],
+  providers: [DatabaseCacheService, UserRepository],
 })
 export class AppModule {}
