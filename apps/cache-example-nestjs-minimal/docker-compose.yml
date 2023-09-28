@@ -1,0 +1,21 @@
+networks:
+  skyline_e2e:
+    external: true
+
+services:
+  postgres:
+    container_name: skyline_postgres
+    hostname: skyline|postgres
+    image: postgres:15.4
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    networks:
+      - skyline_e2e
+
+  redis:
+    container_name: skyline_redis
+    hostname: skyline|redis
+    image: redis:5.0.5-alpine
+    networks:
+      - skyline_e2e

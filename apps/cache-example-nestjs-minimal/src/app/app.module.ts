@@ -9,6 +9,7 @@ import { DatabaseCacheService } from './database-cache.service';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
+      url: 'postgres://postgres:postgres@skyline_postgres:5432/postgres',
       schema: 'public',
       dropSchema: true,
       synchronize: true,
