@@ -5,7 +5,6 @@ import {
   RedisCacheStorageEngine,
   SkylineCache,
 } from '@skylinejs/cache';
-import { execSync } from 'child_process';
 import Redis from 'ioredis';
 import { join } from 'path';
 import { MockCacheLogger } from '../util/mock-cache-logger';
@@ -36,9 +35,6 @@ describe('RedisCache: ioredis package', () => {
   });
 
   beforeAll(async () => {
-    const filepath = join(__dirname, '..', '..', 'docker-compose.yml');
-    execSync(`docker-compose -f ${filepath} up -d`);
-
     await redis.connect();
     await redis.set('foo', 'bar');
     const value = await redis.get('foo');

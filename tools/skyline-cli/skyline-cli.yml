@@ -1,5 +1,5 @@
 networks:
-  e2e:
+  net:
     attachable: true
 
 services:
@@ -24,7 +24,7 @@ services:
       - TZ=UTC
 
     networks:
-      - e2e
+      - net
 
     ports:
       - '127.0.0.1:33000:33000'
