@@ -173,7 +173,7 @@ I will demonstrate the Skyline caching strategy based on the following scenario:
 
 We start with such a repository for the `user` entity:
 
-<Tabs path="apps/cache-example-nestjs-minimal/src/app/" order="user.repository.ts, user.controller.ts, user.utils.ts, user.interface.ts, user.entity.ts, database-cache.service.ts">
+<Tabs path="apps/cache-example-nestjs-minimal/src/app/" order="user.repository.ts, user.entity.ts, user.interface.ts, user.utils.ts, user.controller.ts, database-cache.service.ts">
 <TabItem value="user.repository" label="user.repository.ts">
 
 ```ts
@@ -305,42 +305,38 @@ export class UserRepository {
 ```
 
 </TabItem>
-<TabItem value="user.controller" label="user.controller.ts">
+<TabItem value="user.entity" label="user.entity.ts">
 
 ```ts
-import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { UserRepository } from './user.repository';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Controller()
-export class UserController {
-  constructor(private readonly userRepo: UserRepository) {}
+@Entity()
+export class UserEntity {
+  @PrimaryGeneratedColumn({ type: 'integer' })
+  id!: number;
 
-  @Get('user/:id')
-  async getUserById(@Param() params: { id: number }) {
-    const id = Number(params.id);
-    const user = await this.userRepo.getUsersById(id);
-    return { user };
-  }
+  @Column({ type: 'varchar', length: 255, nullable: false })
+  name!: string;
+}
 
-  @Get('users/:ids')
-  async getUsersByIds(@Param() params: { ids: string }) {
-    const ids = params.ids.split(',').map(Number);
-    const users = await this.userRepo.getUsersByIds(ids);
-    return { users };
-  }
+```
 
-  @Post('user')
-  async createUser() {
-    const user = await this.userRepo.createUser({ name: 'John Doe' });
-    return { user };
-  }
+</TabItem>
+<TabItem value="user.interface" label="user.interface.ts">
 
-  @Delete('user/:id')
-  async deleteUser(@Param() params: { id: number }) {
-    const id = Number(params.id);
-    await this.userRepo.deleteUser(id);
-    return { id };
-  }
+```ts
+export interface UserValobj {
+  id: number;
+  name: string;
+}
+
+export interface CreateUserInputValobj {
+  name: string;
+}
+
+export interface UpdateUserInputValobj {
+  id: number;
+  name: string;
 }
 
 ```
@@ -386,38 +382,42 @@ export function isUserRowOrThrow(
 ```
 
 </TabItem>
-<TabItem value="user.interface" label="user.interface.ts">
+<TabItem value="user.controller" label="user.controller.ts">
 
 ```ts
-export interface UserValobj {
-  id: number;
-  name: string;
-}
+import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { UserRepository } from './user.repository';
 
-export interface CreateUserInputValobj {
-  name: string;
-}
+@Controller()
+export class UserController {
+  constructor(private readonly userRepo: UserRepository) {}
 
-export interface UpdateUserInputValobj {
-  id: number;
-  name: string;
-}
+  @Get('user/:id')
+  async getUserById(@Param() params: { id: number }) {
+    const id = Number(params.id);
+    const user = await this.userRepo.getUsersById(id);
+    return { user };
+  }
 
-```
+  @Get('users/:ids')
+  async getUsersByIds(@Param() params: { ids: string }) {
+    const ids = params.ids.split(',').map(Number);
+    const users = await this.userRepo.getUsersByIds(ids);
+    return { users };
+  }
 
-</TabItem>
-<TabItem value="user.entity" label="user.entity.ts">
+  @Post('user')
+  async createUser() {
+    const user = await this.userRepo.createUser({ name: 'John Doe' });
+    return { user };
+  }
 
-```ts
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
-@Entity()
-export class UserEntity {
-  @PrimaryGeneratedColumn({ type: 'integer' })
-  id!: number;
-
-  @Column({ type: 'varchar', length: 255, nullable: false })
-  name!: string;
+  @Delete('user/:id')
+  async deleteUser(@Param() params: { id: number }) {
+    const id = Number(params.id);
+    await this.userRepo.deleteUser(id);
+    return { id };
+  }
 }
 
 ```
