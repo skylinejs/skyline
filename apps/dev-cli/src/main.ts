@@ -1,5 +1,6 @@
 import * as inquirer from 'inquirer';
-import { SynchronizeDocsCodeSnippetsCommand } from './assets/synchronized-docs-code-snippets.command';
+import { SynchronizeDocsCodeSnippetsCommand } from './commands/synchronized-docs-code-snippets.command';
+import { PublishDocsToGithubPagesCommand } from './commands/publish-docs-to-github-pages.command';
 
 async function main() {
   // eslint-disable-next-line no-constant-condition
@@ -11,12 +12,12 @@ async function main() {
         name: 'command',
         choices: [
           {
-            name: 'synchronize-docs-code-snippets',
+            name: 'Synchronize docs code-snippets',
             value: 'synchronize-docs-code-snippets',
           },
           {
-            name: 'email-send',
-            value: 'email-send',
+            name: 'Publish docs to github-pages',
+            value: 'publish-docs-to-github-pages',
           },
         ],
       },
@@ -25,6 +26,11 @@ async function main() {
     switch (command) {
       case 'synchronize-docs-code-snippets': {
         await new SynchronizeDocsCodeSnippetsCommand().run();
+        break;
+      }
+
+      case 'publish-docs-to-github-pages': {
+        await new PublishDocsToGithubPagesCommand().run();
       }
     }
   }
