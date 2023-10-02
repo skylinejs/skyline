@@ -12,7 +12,7 @@
 
 ### CacheStatistics
 
-```ts
+```ts path="packages/cache/src/lib/interface/cache-statistics.interface.ts"
 
 ```
 
@@ -20,6 +20,7 @@
 
 The type a cache key can have. `undefined` and `null` are explicitly excluded.
 
-```ts
+```ts path="packages/cache/src/lib/interface/cache-key.type.ts"
+export type CacheKey = string | number | BigInt | boolean;
 
 ```

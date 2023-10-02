@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFile, readFileSync, writeFileSync } from 'node:fs';
 import { readdir } from 'node:fs/promises';
 import { join } from 'path';
 
@@ -17,6 +17,64 @@ async function walk(directoryPath: string): Promise<string[]> {
 
 export class SynchronizeDocsCodeSnippetsCommand {
   async run() {
+    await this.synchronizeAllMarkdownCodeBlocks();
+    await this.synchronizeAllDocusaurusCodeTabs();
+  }
+
+  private async synchronizeAllMarkdownCodeBlocks() {
+    // Get all markdown files
+    const dirpath = '/repo/apps/docs/docs/';
+    const filepaths = await walk(dirpath);
+    const markdownfilepaths = filepaths.filter((filepath) =>
+      filepath.endsWith('.md')
+    );
+
+    // Replace all code blocks with path property with the respective file's content
+    for (const filepath of markdownfilepaths) {
+      const content = readFileSync(filepath, 'utf-8');
+
+      let index = 0;
+      // Find all code blocks with path property
+      while (index < content.length) {
+        const nextIndex = content.indexOf('```ts path="', index);
+        if (nextIndex === -1) {
+          break;
+        }
+
+        const start = nextIndex;
+        let end = content.indexOf('```', start + 3);
+
+        if (!end) {
+          throw new Error(`Could not find end of code block in ${filepath}`);
+        }
+
+        end += '```'.length;
+        // console.log({ filepath, content: content.slice(start, end) });
+
+        let pathProperty = content
+          .substring(start, end)
+          .match(/path="([^"]+)"/)?.[1];
+
+        const codeSnippet = readFileSync(pathProperty, 'utf-8');
+
+        // Write new content
+        const firstLine = content.substring(
+          start,
+          start + content.substring(start).indexOf('\n')
+        );
+        const newContent = content.replace(
+          content.slice(start, end),
+          `${firstLine}\n` + codeSnippet + '\n```'
+        );
+        writeFileSync(filepath, newContent);
+
+        // Increment index
+        index = end;
+      }
+    }
+  }
+
+  async synchronizeAllDocusaurusCodeTabs() {
     // Get all markdown files
     const dirpath = '/repo/apps/docs/docs/';
     const filepaths = await walk(dirpath);
@@ -56,7 +114,7 @@ export class SynchronizeDocsCodeSnippetsCommand {
           .substring(start, end)
           .match(/order="([^"]+)"/)?.[1];
 
-        const codeSnippets = await this.getMarkdownCodeSnippetsForAllFiles(
+        const codeSnippets = await this.getMarkdownCodeTabItemsForAllFiles(
           pathProperty,
           orderProperty
         );
@@ -78,7 +136,7 @@ export class SynchronizeDocsCodeSnippetsCommand {
     }
   }
 
-  private async getMarkdownCodeSnippetsForAllFiles(
+  private async getMarkdownCodeTabItemsForAllFiles(
     dirpath: string,
     orderStr?: string
   ) {
