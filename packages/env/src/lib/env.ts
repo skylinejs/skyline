@@ -4,6 +4,11 @@ import { isEnumType, parseEnvironmentVariable } from './env.utils';
 export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   constructor(private readonly config?: EnvConfiguration<RuntimeEnvironment>) {}
 
+  /**
+   * Parse an environment variable as a string.
+   * @param variableName Name of the environment variable to parse
+   * @param environments
+   */
   parseString(
     variableName: string,
     environments: Partial<{
@@ -37,7 +42,49 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     }
     return value;
   }
+  /**
+   * Parse an environment variable as an array of strings.
+   * @param variableName Name of the environment variable to parse
+   * @param environments
+   */
+  parseStringArray(
+    variableName: string,
+    environments: Partial<{
+      [key in keyof RuntimeEnvironment]: string[] | (() => string[]);
+    }> & { default: string[] | (() => string[]) }
+  ): string[];
+  parseStringArray(
+    variableName: string,
+    environments: Partial<{
+      [key in keyof RuntimeEnvironment]: string[] | (() => string[]);
+    }> & { default?: string[] | (() => string[]) }
+  ): string[] | undefined;
+  parseStringArray(
+    variableName: string,
+    environments: Partial<{
+      [key in keyof RuntimeEnvironment]: string[] | (() => string[]);
+    }> & { default?: string[] | (() => string[]) }
+  ): string[] | undefined {
+    const valueStr = parseEnvironmentVariable(variableName, this.config);
+    let value: string[] | undefined = valueStr?.split(',') ?? undefined;
+    if (value === undefined && this.config?.runtime) {
+      const valueOrValueFunc =
+        environments[this.config.runtime] ?? environments.default;
+      if (typeof valueOrValueFunc === 'function') {
+        value = valueOrValueFunc();
+      } else {
+        value = valueOrValueFunc;
+      }
+    }
+    return value;
+  }
 
+  /**
+   * Parse an environment variable as an enum.
+   * @param variableName Name of the environment variable to parse
+   * @param enumType Enum type to parse the environment variable as
+   * @param environments
+   */
   parseEnum<TEnum extends { [key: string]: string }>(
     variableName: string,
     enumType: TEnum,
@@ -77,6 +124,60 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
         value = valueOrValueFunc();
       } else {
         value = valueOrValueFunc as TEnum[keyof TEnum] | undefined;
+      }
+    }
+    return value;
+  }
+
+  /**
+   * Parse an environment variable as an enum.
+   * @param variableName Name of the environment variable to parse
+   * @param enumType Enum type to parse the environment variable as
+   * @param environments
+   */
+  parseEnumArray<TEnum extends { [key: string]: string }>(
+    variableName: string,
+    enumType: TEnum,
+    environments: Partial<{
+      [key in keyof RuntimeEnvironment]:
+        | Array<TEnum[keyof TEnum]>
+        | (() => Array<TEnum[keyof TEnum]>);
+    }> & {
+      default: Array<TEnum[keyof TEnum]> | (() => Array<TEnum[keyof TEnum]>);
+    }
+  ): Array<TEnum[keyof TEnum]>;
+  parseEnumArray<TEnum extends { [key: string]: string }>(
+    variableName: string,
+    enumType: TEnum,
+    environments: Partial<{
+      [key in keyof RuntimeEnvironment]:
+        | Array<TEnum[keyof TEnum]>
+        | (() => Array<TEnum[keyof TEnum]>);
+    }> & {
+      default?: Array<TEnum[keyof TEnum]> | (() => Array<TEnum[keyof TEnum]>);
+    }
+  ): Array<TEnum[keyof TEnum]> | undefined;
+  parseEnumArray<TEnum extends { [key: string]: string }>(
+    variableName: string,
+    enumType: TEnum,
+    environments: Partial<{
+      [key in keyof RuntimeEnvironment]:
+        | Array<TEnum[keyof TEnum]>
+        | (() => Array<TEnum[keyof TEnum]>);
+    }> & {
+      default?: Array<TEnum[keyof TEnum]> | (() => Array<TEnum[keyof TEnum]>);
+    }
+  ): Array<TEnum[keyof TEnum]> | undefined {
+    const valueStr = parseEnvironmentVariable(variableName, this.config);
+    let value: Array<TEnum[keyof TEnum]> | undefined = undefined;
+
+    if (value === undefined && this.config?.runtime) {
+      const valueOrValueFunc =
+        environments[this.config.runtime] ?? environments.default;
+      if (typeof valueOrValueFunc === 'function') {
+        value = valueOrValueFunc();
+      } else {
+        value = valueOrValueFunc as Array<TEnum[keyof TEnum]> | undefined;
       }
     }
     return value;
