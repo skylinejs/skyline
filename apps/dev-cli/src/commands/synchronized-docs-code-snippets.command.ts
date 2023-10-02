@@ -15,10 +15,75 @@ async function walk(directoryPath: string): Promise<string[]> {
   return filepaths.flat(Number.POSITIVE_INFINITY) as string[];
 }
 
+interface CodeBlockProperties {
+  filepath?: string;
+  skipLines?: number;
+  remove?: string[];
+}
+
 export class SynchronizeDocsCodeSnippetsCommand {
   async run() {
     await this.synchronizeAllMarkdownCodeBlocks();
     await this.synchronizeAllDocusaurusCodeTabs();
+  }
+
+  private parseCodeBlockProperties(
+    line: string
+  ): CodeBlockProperties | undefined {
+    const properties: CodeBlockProperties = {};
+
+    const pathMatch = line.match(/path="([^"]+)"/);
+    if (pathMatch) {
+      properties.filepath = pathMatch[1];
+    }
+
+    // Abort if no path property was found
+    if (!properties.filepath) return undefined;
+
+    const skipLinesMatch = line.match(/skipLines="(\d+)"/);
+    if (skipLinesMatch) {
+      properties.skipLines = parseInt(skipLinesMatch[1]);
+    }
+
+    const replaceMatch = line.match(/remove="([^"]+)"/);
+    if (replaceMatch) {
+      properties.remove = replaceMatch[1].split(',');
+    }
+
+    return properties;
+  }
+
+  private readeSourceFile({
+    filepath,
+    remove,
+    skipLines,
+  }: CodeBlockProperties): string {
+    const fileContent = readFileSync(filepath, 'utf-8');
+    const lines = fileContent.split('\n');
+
+    // Skip lines
+    if (skipLines) {
+      lines.splice(0, skipLines);
+    }
+
+    // Remove strings
+    if (remove) {
+      for (const replaceString of remove) {
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          lines[i] = line.replace(replaceString, '');
+        }
+      }
+    }
+
+    // Always remove "\" character at the end of a line
+    // This is only needed for linebreaks in multi-line comments for VSCode inline documentation
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      lines[i] = line.replace(/\\$/, '');
+    }
+
+    return lines.join('\n');
   }
 
   private async synchronizeAllMarkdownCodeBlocks() {
@@ -37,7 +102,7 @@ export class SynchronizeDocsCodeSnippetsCommand {
       const replacements: { source: string; target: string }[] = [];
       // Find all code blocks with path property
       while (index < content.length) {
-        const nextIndex = content.indexOf('```ts path="', index);
+        const nextIndex = content.indexOf('```ts', index);
         if (nextIndex === -1) {
           break;
         }
@@ -52,31 +117,21 @@ export class SynchronizeDocsCodeSnippetsCommand {
         end += '```'.length;
         // console.log({ filepath, content: content.slice(start, end) });
 
-        const pathProperty = content
-          .substring(start, end)
-          .match(/path="([^"]+)"/)?.[1];
-
-        const skipLinesProperty = content
-          .substring(start, end)
-          .match(/skipLines="(\d+)"/)?.[1];
-        const skipLines = skipLinesProperty ? parseInt(skipLinesProperty) : 0;
-
-        // Read code snippet from file
-        let codeSnippet = readFileSync(pathProperty, 'utf-8');
-        if (skipLines) {
-          const lines = codeSnippet.split('\n');
-          codeSnippet = lines.slice(skipLines).join('\n');
-        }
-
-        // Write new content
-        const firstLine = content.substring(
-          start,
-          start + content.substring(start).indexOf('\n')
+        const codeProperties = this.parseCodeBlockProperties(
+          content.slice(start, end)
         );
-        replacements.push({
-          source: content.slice(start, end),
-          target: `${firstLine}\n` + codeSnippet + '```',
-        });
+        if (codeProperties) {
+          // Write new content
+          const firstLine = content.substring(
+            start,
+            start + content.substring(start).indexOf('\n')
+          );
+          replacements.push({
+            source: content.slice(start, end),
+            target:
+              `${firstLine}\n` + this.readeSourceFile(codeProperties) + '```',
+          });
+        }
 
         // Increment index
         index = end;
