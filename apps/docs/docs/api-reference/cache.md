@@ -107,8 +107,8 @@ interface CacheConfiguration {
 
 ### CacheStatistics
 
-```ts path="packages/cache/src/lib/interface/cache-statistics.interface.ts"
-export interface CacheStatistics {
+```ts path="packages/cache/src/lib/interface/cache-statistics.interface.ts" remove="export "
+interface CacheStatistics {
   /** Number of cache hits */
   numCacheHits: number;
 
@@ -139,6 +139,6 @@ export interface CacheStatistics {
 
 The type a cache key can have. `undefined` and `null` are explicitly excluded.
 
-```ts path="packages/cache/src/lib/interface/cache-key.type.ts"
-export type CacheKey = string | number | BigInt | boolean;
+```ts path="packages/cache/src/lib/interface/cache-key.type.ts" remove="export "
+type CacheKey = string | number | BigInt | boolean;
 ```
