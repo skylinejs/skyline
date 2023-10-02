@@ -16,3 +16,11 @@ export function parseEnvironmentVariable<
   const value = processEnv[variableName];
   return value;
 }
+
+export function isEnumType<TEnum extends { [key: string]: string }>(
+  enumType: TEnum,
+  value: unknown
+): value is TEnum[keyof TEnum] {
+  if (typeof value !== 'string') return false;
+  return Object.values(enumType).includes(value);
+}

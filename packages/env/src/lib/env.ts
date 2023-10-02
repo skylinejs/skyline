@@ -1,5 +1,5 @@
 import { EnvConfiguration } from './env-configuration.interface';
-import { parseEnvironmentVariable } from './env.utils';
+import { isEnumType, parseEnvironmentVariable } from './env.utils';
 
 export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   constructor(private readonly config?: EnvConfiguration<RuntimeEnvironment>) {}
@@ -66,9 +66,9 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     }> & { default?: TEnum[keyof TEnum] | (() => TEnum[keyof TEnum]) }
   ): TEnum[keyof TEnum] | undefined {
     const valueStr = parseEnvironmentVariable(variableName, this.config);
-    let value: TEnum[keyof TEnum] | undefined = valueStr as
-      | TEnum[keyof TEnum]
-      | undefined;
+    let value: TEnum[keyof TEnum] | undefined = isEnumType(enumType, valueStr)
+      ? valueStr
+      : undefined;
 
     if (value === undefined && this.config?.runtime) {
       const valueOrValueFunc =

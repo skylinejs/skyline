@@ -83,8 +83,8 @@ describe('SkylineEnv', () => {
 
   it('Parse enum environment variable', () => {
     enum DatabaseDriver {
-      POSTGRES = 'POSTGRES',
-      MYSQL = 'MYSQL',
+      POSTGRES = 'postgres',
+      MYSQL = 'mysql',
     }
 
     const envParser = new SkylineEnv<typeof RuntimeEnvironment>({
