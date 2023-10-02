@@ -28,5 +28,6 @@ describe('SkylineEnv', () => {
     };
 
     expect(env.database.host).toBe('localhost');
+    expect(env.database.port).toBe(5432);
   });
 });

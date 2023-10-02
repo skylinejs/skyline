@@ -13,7 +13,6 @@ export function parseEnvironmentVariable<
   }
 
   const processEnv = config.processEnv ?? process.env ?? {};
-  console.log({ processEnv, variableName });
   const value = processEnv[variableName];
   return value;
 }

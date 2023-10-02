@@ -22,7 +22,15 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]: string | (() => string);
     }> & { default?: string | (() => string) }
   ): string | undefined {
-    const value = parseEnvironmentVariable(key, this.config);
+    let value: string | undefined = parseEnvironmentVariable(key, this.config);
+    if (value === undefined && this.config?.runtime) {
+      const valueOrValueFunc = environments[this.config.runtime];
+      if (typeof valueOrValueFunc === 'function') {
+        value = valueOrValueFunc();
+      } else {
+        value = valueOrValueFunc;
+      }
+    }
     return value;
   }
 
@@ -31,20 +39,35 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     environments: Partial<{
       [key in keyof RuntimeEnvironment]: number | (() => number);
     }> & { default: number | (() => number) }
-  ): string;
+  ): number;
   parseNumber(
     key: string,
     environments: Partial<{
       [key in keyof RuntimeEnvironment]: number | (() => number);
     }> & { default?: number | (() => number) }
-  ): string | undefined;
+  ): number | undefined;
   parseNumber(
     key: string,
     environments: Partial<{
       [key in keyof RuntimeEnvironment]: number | (() => number);
     }> & { default?: number | (() => number) }
-  ): string | undefined {
-    return undefined;
+  ): number | undefined {
+    const valueStr = parseEnvironmentVariable(key, this.config);
+    let value: number | undefined = Number(valueStr);
+
+    if (isNaN(value) || !isFinite(value)) {
+      value = undefined;
+    }
+
+    if (value === undefined && this.config?.runtime) {
+      const valueOrValueFunc = environments[this.config.runtime];
+      if (typeof valueOrValueFunc === 'function') {
+        value = valueOrValueFunc();
+      } else {
+        value = valueOrValueFunc;
+      }
+    }
+    return value;
   }
 
   parseBoolean(
