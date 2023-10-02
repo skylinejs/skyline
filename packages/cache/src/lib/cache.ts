@@ -2,11 +2,9 @@ import {
   CacheInconsistencyError,
   CacheInputValidationError,
 } from './cache-error';
-import {
-  CacheConfiguration,
-  CacheKey,
-  CacheStatistics,
-} from './cache.interface';
+import { CacheConfiguration } from './interface/cache-configuration.interface';
+import { CacheStatistics } from './interface/cache-statistics.interface';
+import { CacheKey } from './interface/cache-key.type';
 import {
   extractMessageFromError,
   extractStackFromError,

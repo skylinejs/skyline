@@ -1,4 +1,4 @@
-import type { CacheKey } from './cache.interface';
+import type { CacheKey } from './interface/cache-key.type';
 
 export class CacheInconsistencyError extends Error {
   readonly key: CacheKey;

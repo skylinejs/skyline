@@ -3,7 +3,7 @@ import {
   CacheInconsistencyError,
   CacheInputValidationError,
 } from './cache-error';
-import { CacheConfiguration } from './cache.interface';
+import { CacheConfiguration } from './interface/cache-configuration.interface';
 import { CacheLogger } from './logger/cache-logger';
 import {
   CacheInconsistencyMessageInfo,

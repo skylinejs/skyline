@@ -1,7 +1,9 @@
 // Cache
 export * from './lib/cache';
 export * from './lib/cache-error';
-export * from './lib/cache.interface';
+export * from './lib/interface/cache-key.type';
+export * from './lib/interface/cache-statistics.interface';
+export * from './lib/interface/cache-configuration.interface';
 
 // Logger
 export * from './lib/logger/cache-logger';

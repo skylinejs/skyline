@@ -1,4 +1,4 @@
-import type { CacheKey } from '../cache.interface';
+import type { CacheKey } from '../interface/cache-key.type';
 
 export interface CacheLoggerConfiguration {
   enabled: boolean;
