@@ -1,7 +1,16 @@
-import { env } from './env';
+import { SkylineEnv } from './env';
 
-describe('env', () => {
+enum RuntimeEnvironment {
+  DEV = 'dev',
+  PRD = 'prd',
+}
+
+describe('SkylineEnv', () => {
   it('should work', () => {
-    expect(env()).toEqual('env');
+    const envParser = new SkylineEnv<typeof RuntimeEnvironment>();
+    const test = envParser.parseString('yes', {
+      DEV: 'yes',
+      PRD: 'no',
+    });
   });
 });
