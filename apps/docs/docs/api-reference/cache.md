@@ -15,7 +15,15 @@ The guiding principles of the Skyline caching approach can be found here: [Cachi
 
 ## SkylineCache
 
+Installation
+
+```sh
+npm install @skyline-js/cache
+```
+
 ```ts
+import { SkylineCache } from '@skyline-js/cache';
+
 const cache = new SkylineCache({});
 ```
 
