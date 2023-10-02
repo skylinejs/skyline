@@ -159,7 +159,7 @@ export class SkylineCache {
   }
 
   /**
-   * Get a cached value from the cache.
+   * Get a value from the cache.
    * @param namespace The namespace of the cached value (e.g. "user").
    * @param key The key of the cached value (e.g. the user ID: "123")
    * @param validator A validator function to validate the cached value.
@@ -261,7 +261,7 @@ export class SkylineCache {
   }
 
   /**
-   * Get multiple cached values from the cache.
+   * Get multiple values from the cache.
    * @param namespace The namespace of the cached values (e.g. "user").
    * @param keys The keys of the cached values (e.g. the user IDs: ["123", "456"])
    * @param validator A validator function to validate each cached value.
@@ -484,7 +484,6 @@ export class SkylineCache {
    * @param opts.validate  Whether the cache value should be validated.
    *                       This is used to detect cache inconsistencies.
    *                       Defaults to false (no cache values are validated).
-   * @return Nothing.
    */
   async setManyIfNotExist<T>(
     namespace: string,
@@ -768,7 +767,7 @@ export class SkylineCache {
   }
 
   /**
-   * Enables the cache skipping feature. This restore the default behavior of cache skips.
+   * Enables the cache skipping feature. This restore the default behavior of cache skips. \
    * This function only needs to be called if cache skips have been disabled in the first place.
    */
   enableCacheSkipping(): void {
@@ -786,7 +785,7 @@ export class SkylineCache {
   }
 
   /**
-   * Check if a namespace is disabled.
+   * Private/ internal function to check if a namespace is disabled.
    * @param namespace The namespace to check.
    * @returns True if the namespace is disabled, false otherwise.
    */
@@ -796,7 +795,7 @@ export class SkylineCache {
   }
 
   /**
-   * Disable a namespace.
+   * Private/ internal function to disable a namespace.
    * @param namespace The namespace to disable.
    */
   private async disableNamespace(namespace: string): Promise<void> {
@@ -833,14 +832,14 @@ export class SkylineCache {
    * Therefore, only the namespaces that have been synchronized are returned.
    * @returns The disabled namespaces.
    */
-  getDisabledNamespaces(): ReadonlyArray<string> {
+  getDisabledNamespaces(): string[] {
     return [...this.disabledNamespaces];
   }
 
   /**
-   * Add disabled namespaces.
+   * Set disabled namespaces.
    * Use this method if you want to manually handle namespace disabling.
-   * @param namespaces The namespaces to add.
+   * @param namespaces The namespaces to disable.
    */
   setDisabledNamespaces(...namespaces: string[]): void {
     this.disabledNamespaces = [...namespaces];
