@@ -169,7 +169,11 @@ To summarize, we leverage the asymmetry of a cache key being read (a lot) and a 
 
 ## Code example walkthrough
 
-I will demonstrate the Skyline caching strategy based on the following scenario: Yout want to build a NestJS web application server that stores its data in a relational database and uses Redis for caching. Your application has a dedicated data-access layer, which abstracts away the communication with the database. This is done via repositories, which offer functions to perform SQL operations on a specific database table (or multiple depending on the use-case). The database schema and therefore the SQL query structure is hidden from the consumer of the repository.
+I will demonstrate the Skyline caching strategy based on the following scenario: Yout want to build a NestJS web application server that stores its data in a relational database and uses Redis for caching. Your application has a dedicated data-access layer, which abstracts away the communication with the database. This is done via repositories, which offer functions to perform SQL operations on a specific database table (or multiple depending on the use-case). The database schema and therefore the SQL query structure is hidden from the consumer of the repository. The repository implements a read-through caching strategy:
+
+1. Check if the requested value is present in the cache.
+2. If it is present, retrieve the value from the cache and return it.
+3. If it is not present, retrieve the value from the database, write it to cache and then return it.
 
 We start with such a repository for the `user` entity:
 
