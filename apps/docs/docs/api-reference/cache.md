@@ -6,7 +6,7 @@ slug: cache
 
 # `@skyline-js/cache`
 
-:::note
+:::info
 
 This is the API reference for the `@skyline-js/cache` package. <br />
 The guiding principles of the Skyline caching approach can be found here: [Caching Primer](/docs/caching).
