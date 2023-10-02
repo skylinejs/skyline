@@ -327,7 +327,7 @@ export class SkylineCache {
 
       // Do not proceed if the namespace is disabled
       if (this.isNamespaceDisabled(namespace)) {
-        this.statistics.numCacheSkips += keys.length;
+        this.statistics.numCacheDisabledNamespaceSkips += keys.length;
         return { values: keys.map(() => undefined), skipped: true };
       }
 
