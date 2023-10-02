@@ -1,7 +1,7 @@
 import { EnvConfiguration } from './env-configuration.interface';
 
 export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
-  constructor(config?: EnvConfiguration<RuntimeEnvironment>) {}
+  constructor(private readonly config?: EnvConfiguration) {}
 
   parseString(
     key: string,
