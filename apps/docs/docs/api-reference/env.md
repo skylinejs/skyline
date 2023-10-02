@@ -13,6 +13,8 @@ The guiding principles of the Skyline environment approach can be found here: [E
 
 :::
 
+<!-- TODO: use monaco editor here with index.d.ts loaded to demonstrate type-safety of package -->
+
 ## SkylineEnv
 
 Installation
