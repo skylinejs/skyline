@@ -40,7 +40,8 @@
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "dev-cli:build"
+        "buildTarget": "dev-cli:build",
+        "inspect": false
       },
       "configurations": {
         "development": {
