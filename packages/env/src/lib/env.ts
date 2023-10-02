@@ -40,24 +40,35 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
 
   parseEnum<TEnum extends { [key: string]: string }>(
     variableName: string,
+    enumType: TEnum,
     environments: Partial<{
-      [key in keyof RuntimeEnvironment]: TEnum | (() => TEnum);
-    }> & { default: TEnum | (() => TEnum) }
-  ): TEnum;
+      [key in keyof RuntimeEnvironment]:
+        | TEnum[keyof TEnum]
+        | (() => TEnum[keyof TEnum]);
+    }> & { default: TEnum[keyof TEnum] | (() => TEnum[keyof TEnum]) }
+  ): TEnum[keyof TEnum];
   parseEnum<TEnum extends { [key: string]: string }>(
     variableName: string,
+    enumType: TEnum,
     environments: Partial<{
-      [key in keyof RuntimeEnvironment]: TEnum | (() => TEnum);
-    }> & { default?: TEnum | (() => TEnum) }
-  ): TEnum | undefined;
+      [key in keyof RuntimeEnvironment]:
+        | TEnum[keyof TEnum]
+        | (() => TEnum[keyof TEnum]);
+    }> & { default?: TEnum[keyof TEnum] | (() => TEnum[keyof TEnum]) }
+  ): TEnum[keyof TEnum] | undefined;
   parseEnum<TEnum extends { [key: string]: string }>(
     variableName: string,
+    enumType: TEnum,
     environments: Partial<{
-      [key in keyof RuntimeEnvironment]: TEnum | (() => TEnum);
-    }> & { default?: TEnum | (() => TEnum) }
-  ): TEnum | undefined {
+      [key in keyof RuntimeEnvironment]:
+        | TEnum[keyof TEnum]
+        | (() => TEnum[keyof TEnum]);
+    }> & { default?: TEnum[keyof TEnum] | (() => TEnum[keyof TEnum]) }
+  ): TEnum[keyof TEnum] | undefined {
     const valueStr = parseEnvironmentVariable(variableName, this.config);
-    let value: TEnum | undefined = valueStr as TEnum | undefined;
+    let value: TEnum[keyof TEnum] | undefined = valueStr as
+      | TEnum[keyof TEnum]
+      | undefined;
 
     if (value === undefined && this.config?.runtime) {
       const valueOrValueFunc =
@@ -65,7 +76,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       if (typeof valueOrValueFunc === 'function') {
         value = valueOrValueFunc();
       } else {
-        value = valueOrValueFunc as TEnum;
+        value = valueOrValueFunc as TEnum[keyof TEnum] | undefined;
       }
     }
     return value;
