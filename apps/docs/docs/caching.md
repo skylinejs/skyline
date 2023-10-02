@@ -49,6 +49,8 @@ sequenceDiagram
 
 ```
 
+> Note: the diagram does not show the database as a separate column due to space constraints.
+
 <br />
 
 Server 1 wants to read `user:1` from the cache. As the user is not cached yet, he has to fetch the user from the database. To have the user cached for the next read operation, Server 1 writes the user to the cache. In the meantime, Server 2 updates the name of `user:1`. He then proceeds to write the updated user to the cache.
@@ -385,7 +387,7 @@ export function isUserRowOrThrow(
 <TabItem value="user.controller" label="user.controller.ts">
 
 ```ts
-import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 
 @Controller()
@@ -407,8 +409,8 @@ export class UserController {
   }
 
   @Post('user')
-  async createUser() {
-    const user = await this.userRepo.createUser({ name: 'John Doe' });
+  async createUser(@Body() input: { name: string }) {
+    const user = await this.userRepo.createUser({ name: input.name });
     return { user };
   }
 
@@ -486,9 +488,7 @@ Due to the batched API of the method, we need to adjust the read-through caching
 
 This is the only read/write interaction with the cache that this repository has to implement, as all other read operations are derived from `getUsersByIds`. This part was easy, and the remaining cache interactions get even easier.
 
-The `updateUser` and `deleteUser` methods need to invalidate the cache key for the given user ID **before** the update/ deletion is performed on the database row. If the cache is invalidated after the database operation has finished, we would be in an inconsistent state as the cache still holds the old user value which diverges from the database row. You could argue that this cache inconsistency has no negative impact on the application, as receiving the old user value for a couple of milliseconds longer should be no problem as long as the Promise of the `updateUser` method call only resolves after the cache has been invalidated.
-
-However, this argument is very short-sighted.
+The `updateUser` and `deleteUser` methods simply need to invalidate the cache key for the given user ID **before** the update/ deletion is performed on the database row. If the cache is invalidated after the database operation has finished, the cache would be in an inconsistent state as it still holds the old user value which now diverges from the database row. If other repositories change make changes to the user table, they need to invalidate the respective cache keys as well. One of the main advantages of the invalidation approach instead of writing the updated value to the cache is that the method performing the update of the entity does not need to know how all the new values of the affected cache keys have to look like (which can be complex derivations or aggregates). This turns out to be very useful for larger applications.
 
 <!--
 ## Monitoring
