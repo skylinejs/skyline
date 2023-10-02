@@ -34,6 +34,7 @@ export class SynchronizeDocsCodeSnippetsCommand {
       const content = readFileSync(filepath, 'utf-8');
 
       let index = 0;
+      const replacements: { source: string; target: string }[] = [];
       // Find all code blocks with path property
       while (index < content.length) {
         const nextIndex = content.indexOf('```ts path="', index);
@@ -62,15 +63,20 @@ export class SynchronizeDocsCodeSnippetsCommand {
           start,
           start + content.substring(start).indexOf('\n')
         );
-        const newContent = content.replace(
-          content.slice(start, end),
-          `${firstLine}\n` + codeSnippet + '\n```'
-        );
-        writeFileSync(filepath, newContent);
+        replacements.push({
+          source: content.slice(start, end),
+          target: `${firstLine}\n` + codeSnippet + '\n```',
+        });
 
         // Increment index
         index = end;
       }
+
+      let newContent = content;
+      for (const { source, target } of replacements) {
+        newContent = newContent.replace(source, target);
+      }
+      writeFileSync(filepath, newContent);
     }
   }
 
@@ -87,6 +93,8 @@ export class SynchronizeDocsCodeSnippetsCommand {
       const content = readFileSync(filepath, 'utf-8');
 
       let index = 0;
+      const replacements: { source: string; target: string }[] = [];
+
       // Find all code blocks with path property
       while (index < content.length) {
         const nextIndex = content.indexOf('<Tabs path="', index);
@@ -124,15 +132,21 @@ export class SynchronizeDocsCodeSnippetsCommand {
           start,
           start + content.substring(start).indexOf('\n')
         );
-        const newContent = content.replace(
-          content.slice(start, end),
-          `${firstLine}\n` + codeSnippets + '\n</Tabs>'
-        );
-        writeFileSync(filepath, newContent);
+
+        replacements.push({
+          source: content.slice(start, end),
+          target: `${firstLine}\n` + codeSnippets + '\n</Tabs>',
+        });
 
         // Increment index
         index = end;
       }
+
+      let newContent = content;
+      for (const { source, target } of replacements) {
+        newContent = newContent.replace(source, target);
+      }
+      writeFileSync(filepath, newContent);
     }
   }
 
