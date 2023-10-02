@@ -1,7 +1,8 @@
 import { EnvConfiguration } from './env-configuration.interface';
+import { parseEnvironmentVariable } from './env.utils';
 
 export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
-  constructor(private readonly config?: EnvConfiguration) {}
+  constructor(private readonly config?: EnvConfiguration<RuntimeEnvironment>) {}
 
   parseString(
     key: string,
@@ -21,7 +22,8 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]: string | (() => string);
     }> & { default?: string | (() => string) }
   ): string | undefined {
-    return undefined;
+    const value = parseEnvironmentVariable(key, this.config);
+    return value;
   }
 
   parseNumber(
