@@ -52,11 +52,21 @@ export class SynchronizeDocsCodeSnippetsCommand {
         end += '```'.length;
         // console.log({ filepath, content: content.slice(start, end) });
 
-        let pathProperty = content
+        const pathProperty = content
           .substring(start, end)
           .match(/path="([^"]+)"/)?.[1];
 
-        const codeSnippet = readFileSync(pathProperty, 'utf-8');
+        const skipLinesProperty = content
+          .substring(start, end)
+          .match(/skipLines="(\d+)"/)?.[1];
+        const skipLines = skipLinesProperty ? parseInt(skipLinesProperty) : 0;
+
+        // Read code snippet from file
+        let codeSnippet = readFileSync(pathProperty, 'utf-8');
+        if (skipLines) {
+          const lines = codeSnippet.split('\n');
+          codeSnippet = lines.slice(skipLines).join('\n');
+        }
 
         // Write new content
         const firstLine = content.substring(
@@ -65,7 +75,7 @@ export class SynchronizeDocsCodeSnippetsCommand {
         );
         replacements.push({
           source: content.slice(start, end),
-          target: `${firstLine}\n` + codeSnippet + '\n```',
+          target: `${firstLine}\n` + codeSnippet + '```',
         });
 
         // Increment index

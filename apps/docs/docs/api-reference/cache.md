@@ -6,9 +6,7 @@
 
 ### CacheConfiguration
 
-```ts path="packages/cache/src/lib/interface/cache-configuration.interface.ts"
-import type { CacheLogLevel } from '../logger/cache-logger.interface';
-
+```ts path="packages/cache/src/lib/interface/cache-configuration.interface.ts" skipLines="2"
 export interface CacheConfiguration {
   /**
    * The prefix for all keys of this cache instance.\
@@ -105,7 +103,6 @@ export interface CacheConfiguration {
    */
   randomGeneratorSeed: string;
 }
-
 ```
 
 ### CacheStatistics
@@ -136,7 +133,6 @@ export interface CacheStatistics {
   /** Number of unknown cache errors */
   numCacheErrors: number;
 }
-
 ```
 
 ### CacheKey
@@ -145,5 +141,4 @@ The type a cache key can have. `undefined` and `null` are explicitly excluded.
 
 ```ts path="packages/cache/src/lib/interface/cache-key.type.ts"
 export type CacheKey = string | number | BigInt | boolean;
-
 ```
