@@ -151,4 +151,44 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     }
     return value;
   }
+
+  parseJSON<TJson extends object>(
+    variableName: string,
+    environments: Partial<{
+      [key in keyof RuntimeEnvironment]: TJson | (() => TJson);
+    }> & { default: TJson | (() => TJson) }
+  ): TJson;
+  parseJSON<TJson extends object>(
+    variableName: string,
+    environments: Partial<{
+      [key in keyof RuntimeEnvironment]: TJson | (() => TJson);
+    }> & { default?: TJson | (() => TJson) }
+  ): TJson | undefined;
+  parseJSON<TJson extends object>(
+    variableName: string,
+    environments: Partial<{
+      [key in keyof RuntimeEnvironment]: TJson | (() => TJson);
+    }> & { default?: TJson | (() => TJson) }
+  ): TJson | undefined {
+    const valueStr = parseEnvironmentVariable(variableName, this.config);
+    let value: TJson | undefined = undefined;
+    if (valueStr) {
+      try {
+        value = JSON.parse(valueStr);
+      } catch (e) {
+        value = undefined;
+      }
+    }
+
+    if (value === undefined && this.config?.runtime) {
+      const valueOrValueFunc =
+        environments[this.config.runtime] ?? environments.default;
+      if (typeof valueOrValueFunc === 'function') {
+        value = valueOrValueFunc();
+      } else {
+        value = valueOrValueFunc as TJson | undefined;
+      }
+    }
+    return value;
+  }
 }
