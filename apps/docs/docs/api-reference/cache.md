@@ -78,11 +78,7 @@ setIfNotExist<T>(
     namespace: string,
     keyFunc: (input: T) => CacheKey,
     value: T,
-    {
-      fetchedAt,
-      expiresIn,
-      ...opts
-    }: { fetchedAt: number; expiresIn?: number; validate?: boolean }
+    opts: { fetchedAt: number; expiresIn?: number; validate?: boolean }
   ): Promise<void>
 ```
 
@@ -104,11 +100,7 @@ setManyIfNotExist<T>(
     namespace: string,
     keyFunc: (input: T) => CacheKey,
     values: T[],
-    {
-      fetchedAt,
-      expiresIn,
-      ...opts
-    }: { fetchedAt: number; expiresIn?: number; validate?: boolean }
+    opts: { fetchedAt: number; expiresIn?: number; validate?: boolean }
   ): Promise<void>
 ```
 
@@ -129,7 +121,7 @@ Invalidate a cache value in the cache. Blocks the key for a short period of time
 invalidate(
     namespace: string,
     key: CacheKey,
-    { expiresIn }: { expiresIn?: number } = {}
+    opts: { expiresIn?: number } = {}
   ): Promise<void>
 ```
 
@@ -146,7 +138,7 @@ Invalidate multiple cache values in the cache. Blocks each key for a short perio
 ```ts
 invalidateMany(
     keys: ReadonlyArray<{ namespace: string; key: CacheKey }>,
-    { expiresIn }: { expiresIn?: number } = {}
+    opts: { expiresIn?: number } = {}
   ): Promise<void>
 ```
 
