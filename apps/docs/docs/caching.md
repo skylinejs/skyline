@@ -13,7 +13,7 @@ import CachingChart from '@site/src/components/CachingChart';
 :::note
 
 This page describes the guiding principles of the Skyline caching approach. <br />
-The API documentation of the `@skyline-js/cache` package can be found here
+The API reference of the `@skyline-js/cache` package can be found here: [@skyline-js/cache](/docs/api-reference/cache)
 
 :::
 
