@@ -171,9 +171,9 @@ To summarize, we leverage the asymmetry of a cache key being read (a lot) and a 
 
 I will demonstrate the Skyline caching strategy based on the following scenario: Yout want to build a NestJS web application server that stores its data in a relational database and uses Redis for caching. Your application has a dedicated data-access layer, which abstracts away the communication with the database. This is done via repositories, which offer functions to perform SQL operations on a specific database table (or multiple depending on the use-case). The database schema and therefore the SQL query structure is hidden from the consumer of the repository. The repository implements a read-through caching strategy:
 
-1. Check if the requested value is present in the cache.
-2. If it is present, retrieve the value from the cache and return it.
-3. If it is not present, retrieve the value from the database, write it to cache and then return it.
+1. Retrieve the requested value from the cache.
+2. If the value could be retrieved from the cache, return it.
+3. If the value is not present, retrieve the value from the database, write it to the cache and then return it.
 
 We start with such a repository for the `user` entity:
 
@@ -476,7 +476,13 @@ export class AppModule {}
 </TabItem>
 </Tabs>
 
-...
+The `getUsersByIds` retrieves one or more users by their ID. This function should be the basic building block for most of your repositories, as many other functions such as `getUserById`, `getUserByIdOrFail` etc. can be derived from it (and you are not tempted to implement a `Promise.all()` if you need to get multiple entities by ID later on...).
+
+Due to the batched API of the function, we need to adjust the read-through caching execution flow as follows:
+
+1. Retrieve the values for all input IDs from the cache.
+2. If some values are missing, retrieve the missing values from the database and write them to the cache.
+3. For each input ID, return either the retrieved value or `undefined` if the ID does not exist.
 
 <!--
 ## Monitoring
