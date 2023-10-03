@@ -1,7 +1,4 @@
-import {
-  EnvConfiguration,
-  EnvConfigurationInput,
-} from './env-configuration.interface';
+import { EnvConfiguration } from './env-configuration.interface';
 import { EnvInputValidationError, EnvParsingError } from './env-error';
 import {
   BooleanParsingptions,
@@ -19,7 +16,7 @@ import {
 
 export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   private readonly config: EnvConfiguration<RuntimeEnvironment>;
-  constructor(config?: EnvConfigurationInput<RuntimeEnvironment>) {
+  constructor(config?: Partial<EnvConfiguration<RuntimeEnvironment>>) {
     this.config = {
       // Runtime environment
       runtime: config?.runtime as RuntimeEnvironment[keyof RuntimeEnvironment],
