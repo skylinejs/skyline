@@ -9,8 +9,8 @@ import {
   isEnumType,
   isNotNullish,
   assignOptions,
-  parseArrayEnvironmentVariable,
-  parseBooleanEnvironmentVariable,
+  parseArrayValue,
+  parseBooleanValue,
   parseEnvironmentVariable,
 } from './env.utils';
 
@@ -127,10 +127,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   ): boolean | undefined {
     const config = assignOptions(this.config, options);
     const valueStr = parseEnvironmentVariable(variableName, config);
-    let value: boolean | undefined = parseBooleanEnvironmentVariable(
-      valueStr,
-      this.config
-    );
+    let value: boolean | undefined = parseBooleanValue(valueStr, this.config);
 
     // Environment variable is set but could not be parsed as boolean
     if (valueStr !== undefined && value === undefined) {
@@ -185,7 +182,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   ): boolean[] | undefined {
     const config = assignOptions(this.config, options);
     const arrayStr = parseEnvironmentVariable(variableName, config);
-    const valuesStr = parseArrayEnvironmentVariable(arrayStr, config);
+    const valuesStr = parseArrayValue(arrayStr, config);
 
     // Environment variable is set but could not be parsed as an array
     if (arrayStr !== undefined && valuesStr === undefined) {
@@ -202,7 +199,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
 
     if (valuesStr) {
       values = valuesStr
-        .map((valueStr) => parseBooleanEnvironmentVariable(valueStr, config))
+        .map((valueStr) => parseBooleanValue(valueStr, config))
         .filter(isNotNullish);
 
       // Environment variable is set but could not be parsed as boolean

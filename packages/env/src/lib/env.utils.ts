@@ -74,7 +74,13 @@ export function parseEnvironmentVariable<
   return value;
 }
 
-export function parseBooleanEnvironmentVariable<
+/**
+ * Parses a value to a boolean.
+ * @param value The value to parse.
+ * @param config The parsing configuration to use.
+ * @returns The parsed boolean value, or undefined if the value could not be parsed.
+ */
+export function parseBooleanValue<
   RuntimeEnvironment extends { [key: string]: string }
 >(
   value: unknown,
@@ -102,7 +108,13 @@ export function parseBooleanEnvironmentVariable<
   return undefined;
 }
 
-export function parseArrayEnvironmentVariable<
+/**
+ * Parses a value to an array of strings.
+ * @param value The value to parse.
+ * @param config The parsing configuration to use.
+ * @returns The parsed array of strings, or undefined if the value could not be parsed.
+ */
+export function parseArrayValue<
   RuntimeEnvironment extends { [key: string]: string }
 >(
   value: unknown,
