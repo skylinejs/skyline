@@ -18,8 +18,7 @@ export function parseEnvironmentVariable<
     );
   }
 
-  const processEnv = config.processEnv ?? process.env ?? {};
-  const value = processEnv[variableName];
+  const value = config.processEnv[variableName];
   return value;
 }
 

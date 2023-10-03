@@ -2,6 +2,7 @@ import {
   EnvConfiguration,
   EnvConfigurationInput,
 } from './env-configuration.interface';
+import { EnvInputValidationError } from './env-error';
 import { isEnumType, parseEnvironmentVariable } from './env.utils';
 
 export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
@@ -37,10 +38,26 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       ],
     };
 
-    // Validate runtime
-    if (config?.runtime && config?.runtimes) {
-      if (!config.runtimes[config.runtime]) {
-        throw new Error(`Invalid runtime: ${this.config.runtime}`);
+    // Validate runtime if possible
+    if (this.config?.runtime?.trim() === '') {
+      throw new EnvInputValidationError(
+        `[SkylineEnv.constructor] Runtime was provided but is empty string.`,
+        { value: this.config.runtime, parameter: 'runtime' }
+      );
+    }
+
+    if (this.config?.runtime !== undefined && this.config?.runtimes) {
+      if (!this.config.runtimes[this.config.runtime]) {
+        throw new EnvInputValidationError(
+          [
+            `[SkylineEnv.constructor] Invalid runtime: "`,
+            this.config.runtime,
+            '". Valid runtimes are: "',
+            Object.keys(this.config.runtimes).join('", "'),
+            '".',
+          ].join(''),
+          { value: this.config.runtime, parameter: 'runtime' }
+        );
       }
     }
   }

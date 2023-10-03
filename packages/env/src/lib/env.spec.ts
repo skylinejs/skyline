@@ -1,4 +1,5 @@
 import { SkylineEnv } from './env';
+import { EnvInputValidationError, EnvParsingError } from './env-error';
 
 enum RuntimeEnvironment {
   DEV = 'DEV',
@@ -7,6 +8,50 @@ enum RuntimeEnvironment {
 }
 
 describe('SkylineEnv', () => {
+  it('Validate runtime environment', () => {
+    // Pass if runtime is not provided
+    expect(() => new SkylineEnv<typeof RuntimeEnvironment>({})).not.toThrow();
+
+    expect(
+      () => new SkylineEnv({ runtimes: RuntimeEnvironment })
+    ).not.toThrow();
+
+    expect(
+      () =>
+        new SkylineEnv({
+          runtime: undefined,
+          runtimes: RuntimeEnvironment,
+        })
+    ).not.toThrow();
+
+    // Pass if runtime is provided but no runtimes are provided
+    expect(
+      () => new SkylineEnv<typeof RuntimeEnvironment>({ runtime: 'stub' })
+    ).not.toThrow();
+
+    // Throw if runtime is empty string
+    expect(
+      () =>
+        new SkylineEnv({
+          runtime: '',
+          runtimes: RuntimeEnvironment,
+        })
+    ).toThrowError(EnvInputValidationError);
+
+    // Throw if runtime does not match any of the runtimes
+    expect(
+      () =>
+        new SkylineEnv({
+          runtime: RuntimeEnvironment.DEV.toLowerCase(),
+          runtimes: RuntimeEnvironment,
+        })
+    ).toThrowError(EnvInputValidationError);
+  });
+
+  it('Parse boolean environment variable', () => {
+    // Parse boolean environment variable
+  });
+
   it('Parse string environment variable', () => {
     const envParser = new SkylineEnv<typeof RuntimeEnvironment>({
       processEnv: {
