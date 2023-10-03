@@ -78,19 +78,19 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
    */
   parseString(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: string | (() => string);
     }> & { default: string | (() => string) }
   ): string;
   parseString(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: string | (() => string);
     }> & { default?: string | (() => string) }
   ): string | undefined;
   parseString(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: string | (() => string);
     }> & { default?: string | (() => string) }
   ): string | undefined {
@@ -99,8 +99,10 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       this.config
     );
     if (value === undefined && this.config?.runtime) {
-      const valueOrValueFunc =
-        environments[this.config.runtime] ?? environments.default;
+      const valueOrValueFunc = environments
+        ? environments[this.config.runtime] ?? environments.default
+        : undefined;
+
       if (typeof valueOrValueFunc === 'function') {
         value = valueOrValueFunc();
       } else {
@@ -116,27 +118,29 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
    */
   parseStringArray(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: string[] | (() => string[]);
     }> & { default: string[] | (() => string[]) }
   ): string[];
   parseStringArray(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: string[] | (() => string[]);
     }> & { default?: string[] | (() => string[]) }
   ): string[] | undefined;
   parseStringArray(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: string[] | (() => string[]);
     }> & { default?: string[] | (() => string[]) }
   ): string[] | undefined {
     const valueStr = parseEnvironmentVariable(variableName, this.config);
     let value: string[] | undefined = valueStr?.split(',') ?? undefined;
     if (value === undefined && this.config?.runtime) {
-      const valueOrValueFunc =
-        environments[this.config.runtime] ?? environments.default;
+      const valueOrValueFunc = environments
+        ? environments[this.config.runtime] ?? environments.default
+        : undefined;
+
       if (typeof valueOrValueFunc === 'function') {
         value = valueOrValueFunc();
       } else {
@@ -155,7 +159,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   parseEnum<TEnum extends { [key: string]: string }>(
     variableName: string,
     enumType: TEnum,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]:
         | TEnum[keyof TEnum]
         | (() => TEnum[keyof TEnum]);
@@ -164,7 +168,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   parseEnum<TEnum extends { [key: string]: string }>(
     variableName: string,
     enumType: TEnum,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]:
         | TEnum[keyof TEnum]
         | (() => TEnum[keyof TEnum]);
@@ -173,7 +177,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   parseEnum<TEnum extends { [key: string]: string }>(
     variableName: string,
     enumType: TEnum,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]:
         | TEnum[keyof TEnum]
         | (() => TEnum[keyof TEnum]);
@@ -185,8 +189,10 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       : undefined;
 
     if (value === undefined && this.config?.runtime) {
-      const valueOrValueFunc =
-        environments[this.config.runtime] ?? environments.default;
+      const valueOrValueFunc = environments
+        ? environments[this.config.runtime] ?? environments.default
+        : undefined;
+
       if (typeof valueOrValueFunc === 'function') {
         value = valueOrValueFunc();
       } else {
@@ -205,7 +211,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   parseEnumArray<TEnum extends { [key: string]: string }>(
     variableName: string,
     enumType: TEnum,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]:
         | Array<TEnum[keyof TEnum]>
         | (() => Array<TEnum[keyof TEnum]>);
@@ -216,7 +222,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   parseEnumArray<TEnum extends { [key: string]: string }>(
     variableName: string,
     enumType: TEnum,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]:
         | Array<TEnum[keyof TEnum]>
         | (() => Array<TEnum[keyof TEnum]>);
@@ -227,7 +233,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   parseEnumArray<TEnum extends { [key: string]: string }>(
     variableName: string,
     enumType: TEnum,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]:
         | Array<TEnum[keyof TEnum]>
         | (() => Array<TEnum[keyof TEnum]>);
@@ -239,8 +245,10 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     let value: Array<TEnum[keyof TEnum]> | undefined = undefined;
 
     if (value === undefined && this.config?.runtime) {
-      const valueOrValueFunc =
-        environments[this.config.runtime] ?? environments.default;
+      const valueOrValueFunc = environments
+        ? environments[this.config.runtime] ?? environments.default
+        : undefined;
+
       if (typeof valueOrValueFunc === 'function') {
         value = valueOrValueFunc();
       } else {
@@ -252,19 +260,19 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
 
   parseNumber(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: number | (() => number);
     }> & { default: number | (() => number) }
   ): number;
   parseNumber(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: number | (() => number);
     }> & { default?: number | (() => number) }
   ): number | undefined;
   parseNumber(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: number | (() => number);
     }> & { default?: number | (() => number) }
   ): number | undefined {
@@ -276,8 +284,10 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     }
 
     if (value === undefined && this.config?.runtime) {
-      const valueOrValueFunc =
-        environments[this.config.runtime] ?? environments.default;
+      const valueOrValueFunc = environments
+        ? environments[this.config.runtime] ?? environments.default
+        : undefined;
+
       if (typeof valueOrValueFunc === 'function') {
         value = valueOrValueFunc();
       } else {
@@ -289,19 +299,19 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
 
   parseNumberArray(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: number[] | (() => number[]);
     }> & { default: number[] | (() => number[]) }
   ): number[];
   parseNumberArray(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: number[] | (() => number[]);
     }> & { default?: number[] | (() => number[]) }
   ): number[] | undefined;
   parseNumberArray(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: number[] | (() => number[]);
     }> & { default?: number[] | (() => number[]) }
   ): number[] | undefined {
@@ -309,8 +319,10 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     let value: number[] | undefined = [Number(valueStr)];
 
     if (value === undefined && this.config?.runtime) {
-      const valueOrValueFunc =
-        environments[this.config.runtime] ?? environments.default;
+      const valueOrValueFunc = environments
+        ? environments[this.config.runtime] ?? environments.default
+        : undefined;
+
       if (typeof valueOrValueFunc === 'function') {
         value = valueOrValueFunc();
       } else {
@@ -373,19 +385,19 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
 
   parseBooleanArray(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: boolean[] | (() => boolean[]);
     }> & { default: boolean[] | (() => boolean[]) }
   ): boolean[];
   parseBooleanArray(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: boolean[] | (() => boolean[]);
     }> & { default?: boolean[] | (() => boolean[]) }
   ): boolean[] | undefined;
   parseBooleanArray(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: boolean[] | (() => boolean[]);
     }> & { default?: boolean[] | (() => boolean[]) }
   ): boolean[] | undefined {
@@ -425,8 +437,10 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     }
 
     if (values === undefined && this.config?.runtime) {
-      const valueOrValueFunc =
-        environments[this.config.runtime] ?? environments.default;
+      const valueOrValueFunc = environments
+        ? environments[this.config.runtime] ?? environments.default
+        : undefined;
+
       if (typeof valueOrValueFunc === 'function') {
         values = valueOrValueFunc();
       } else {
@@ -438,19 +452,19 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
 
   parseJSON<TJson extends object>(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: TJson | (() => TJson);
     }> & { default: TJson | (() => TJson) }
   ): TJson;
   parseJSON<TJson extends object>(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: TJson | (() => TJson);
     }> & { default?: TJson | (() => TJson) }
   ): TJson | undefined;
   parseJSON<TJson extends object>(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: TJson | (() => TJson);
     }> & { default?: TJson | (() => TJson) }
   ): TJson | undefined {
@@ -465,8 +479,10 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     }
 
     if (value === undefined && this.config?.runtime) {
-      const valueOrValueFunc =
-        environments[this.config.runtime] ?? environments.default;
+      const valueOrValueFunc = environments
+        ? environments[this.config.runtime] ?? environments.default
+        : undefined;
+
       if (typeof valueOrValueFunc === 'function') {
         value = valueOrValueFunc();
       } else {

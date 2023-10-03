@@ -42,8 +42,8 @@ export function parseBooleanEnvironmentVariable<
   }
 
   if (typeof value === 'string') {
-    if (config.booleanTrueValues.includes(value)) return true;
-    if (config.booleanFalseValues.includes(value)) return false;
+    if (config.booleanTrueValues.includes(value.trim())) return true;
+    if (config.booleanFalseValues.includes(value.trim())) return false;
     return undefined;
   }
 
