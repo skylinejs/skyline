@@ -1,4 +1,4 @@
-import { SkylineCliCommand } from './cli-command';
+import type { SkylineCliCommand } from './command/cli-command';
 import { CliConfiguration } from './cli-configuration.interface';
 import chalk from 'chalk';
 

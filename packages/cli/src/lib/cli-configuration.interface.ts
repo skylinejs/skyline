@@ -1,4 +1,4 @@
-import { SkylineCliCommand } from './cli-command';
+import type { SkylineCliCommand } from './command/cli-command';
 import { CliInactivityTimeout } from './cli-inactivity-timeout';
 
 export interface CliConfiguration {

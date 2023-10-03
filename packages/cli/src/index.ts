@@ -1,2 +1,2 @@
 export * from './lib/cli';
-export * from './lib/cli-command';
+export * from './lib/command/cli-command';

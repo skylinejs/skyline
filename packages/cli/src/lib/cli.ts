@@ -7,9 +7,10 @@ import {
   getCommandPromptMessage,
 } from './cli.utils';
 import InquirerAutocompletePrompt from 'inquirer-autocomplete-prompt';
-import { SkylineCliCommand } from './cli-command';
+import { SkylineCliCommand } from './command/cli-command';
 import { fuzzyFilter } from './fuzzy-filter';
-import { HelpCommand } from './help.command';
+import { HelpCommand } from './command/help.command';
+import { ExitCommand } from './command/exit.command';
 
 export class SkylineCli {
   private readonly config: CliConfiguration;
@@ -56,11 +57,13 @@ export class SkylineCli {
       process.exit(0);
     });
 
-    // Register help command
+    // Register commands
     this.registerCommand(HelpCommand);
+    this.registerCommand(ExitCommand);
   }
 
   registerCommand(command: typeof SkylineCliCommand) {
+    if (this.config.commands.find((c) => c === command)) return;
     this.config.commands.push(command);
   }
 
@@ -108,13 +111,13 @@ export class SkylineCli {
           name: 'command',
           pageSize: this.config.commandPromptPageSize,
           message: getCommandPromptMessage(this.config),
-          source: (_: any, search: string) => {
+          source: (_: unknown, search: string) => {
             search = (search || '').trim();
             if (!search) return commands;
 
             // Apply fuzzy filter
             const filteredCommandNames = fuzzyFilter(search, commands, {
-              extract: (command: any) => command.name,
+              extract: (command: { name: string }) => command.name,
             }).map((result: any) => result.original);
 
             return filteredCommandNames;
