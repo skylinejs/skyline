@@ -20,7 +20,10 @@ export function getCommandPromptMessage(
   return `${cliName}${config.commandPromptMessage}`;
 }
 
-export function getCommandDisplayName(command: typeof SkylineCliCommand) {
+export function getCommandDisplayName(
+  command: typeof SkylineCliCommand,
+  config: Pick<CliConfiguration, 'commandDisplayNameCapitalize'>
+) {
   if (command.displayName) return command.displayName;
 
   let name = command.name;
@@ -36,5 +39,9 @@ export function getCommandDisplayName(command: typeof SkylineCliCommand) {
     .toLowerCase()
     .trim();
 
+  // Capitalize first letter
+  if (config.commandDisplayNameCapitalize) {
+    name = name.charAt(0).toUpperCase() + name.slice(1);
+  }
   return name;
 }

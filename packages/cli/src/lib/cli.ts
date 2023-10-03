@@ -19,13 +19,13 @@ export class SkylineCli {
       cliNameColor: config.cliNameColor ?? '#000000',
       cliNameBackgroundColor: config.cliNameBackgroundColor ?? '#FFFFFF',
 
-      // === Command prompt ===
+      // === Command  ===
+      commands: config.commands ?? [],
       commandPromptMessage: config.commandPromptMessage ?? 'Execute a command',
       commandPromptPageSize: config.commandPromptPageSize ?? 10,
+      commandDisplayNameCapitalize: config.commandDisplayNameCapitalize ?? true,
 
       configurationFilePath: config.configurationFilePath ?? '.skylinerc.json',
-
-      commands: config.commands ?? [],
     };
 
     // Inquirer
@@ -68,7 +68,7 @@ export class SkylineCli {
           source: (_: any, search: string) => {
             search = (search || '').trim();
             const commands = this.config.commands.map((command) => ({
-              name: getCommandDisplayName(command),
+              name: getCommandDisplayName(command, this.config),
               value: command,
             }));
 

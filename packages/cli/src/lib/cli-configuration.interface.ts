@@ -9,10 +9,9 @@ export interface CliConfiguration {
 
   // === Commands ===
   commands: Array<typeof SkylineCliCommand>;
-
-  // === Command prompt ===
   commandPromptMessage: string;
   commandPromptPageSize: number;
+  commandDisplayNameCapitalize: boolean;
 
   // === Error handling ===
   exitOnCommandError?: boolean | number;
