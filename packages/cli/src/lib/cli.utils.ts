@@ -10,11 +10,11 @@ export function getCommandPromptMessage(
     | 'commandPromptMessage'
   >
 ) {
-  const cliName = config.cliName
-    ? chalk.hex(config.cliNameColor).bgHex(config.cliNameBackgroundColor)(
-        config.cliName
-      )
-    : '';
+  let cliName = '';
+  if (config.cliName) {
+    const { cliNameColor: color, cliNameBackgroundColor: bgColor } = config;
+    cliName = chalk.hex(color).bgHex(bgColor)(`[${config.cliName}]`) + ' ';
+  }
 
-  return `[${cliName}] ${config.commandPromptMessage}`;
+  return `${cliName}${config.commandPromptMessage}`;
 }

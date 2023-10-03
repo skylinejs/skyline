@@ -11,8 +11,8 @@ export class SkylineCli {
   constructor(config: Partial<CliConfiguration> = {}) {
     this.config = {
       cliName: config.cliName ?? 'skyline',
-      cliNameColor: config.cliNameColor ?? '#FFFFFF',
-      cliNameBackgroundColor: config.cliNameBackgroundColor ?? '#BA2C73',
+      cliNameColor: config.cliNameColor ?? '#000000',
+      cliNameBackgroundColor: config.cliNameBackgroundColor ?? '#FFFFFF',
 
       commandPromptMessage: config.commandPromptMessage ?? 'Execute a command',
     };
