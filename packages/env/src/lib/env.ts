@@ -5,6 +5,8 @@ import {
 import { EnvInputValidationError, EnvParsingError } from './env-error';
 import {
   isEnumType,
+  isNotNullish,
+  parseArrayEnvironmentVariable,
   parseBooleanEnvironmentVariable,
   parseEnvironmentVariable,
 } from './env.utils';
@@ -18,6 +20,9 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       processEnv: config?.processEnv ?? process.env ?? {},
 
       prefix: config?.prefix ?? '',
+
+      // Array parsing
+      arraySeparator: config?.arraySeparator ?? ',',
 
       // Boolean parsing
       booleanTrueValues: config?.booleanTrueValues ?? [
@@ -45,7 +50,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     // Validate runtime if possible
     if (this.config?.runtime?.trim() === '') {
       throw new EnvInputValidationError(
-        `[SkylineEnv.constructor] Runtime was provided but is empty string.`,
+        `[env.constructor] Runtime was provided but is empty string.`,
         { value: this.config.runtime, parameter: 'runtime' }
       );
     }
@@ -54,7 +59,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       if (!this.config.runtimes[this.config.runtime]) {
         throw new EnvInputValidationError(
           [
-            `[SkylineEnv.constructor] Invalid runtime: "`,
+            `[env.constructor] Invalid runtime: "`,
             this.config.runtime,
             '". Valid runtimes are: "',
             Object.keys(this.config.runtimes).join('", "'),
@@ -342,7 +347,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     // Environment variable is set but could not be parsed as boolean
     if (valueStr !== undefined && value === undefined) {
       throw new EnvParsingError(
-        `[SkylineEnv.parseBoolean] Could not parse value "${valueStr}" as boolean for environment variable "${variableName}".`,
+        `[env.parseBoolean] Could not parse value "${valueStr}" as boolean for environment variable "${variableName}".`,
         {
           variableName,
           value: valueStr,
@@ -384,19 +389,51 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]: boolean[] | (() => boolean[]);
     }> & { default?: boolean[] | (() => boolean[]) }
   ): boolean[] | undefined {
-    const valueStr = parseEnvironmentVariable(variableName, this.config);
-    let value: boolean[] | undefined = [Boolean(valueStr)];
+    const arrayStr = parseEnvironmentVariable(variableName, this.config);
+    const valuesStr = parseArrayEnvironmentVariable(arrayStr, this.config);
 
-    if (value === undefined && this.config?.runtime) {
+    // Environment variable is set but could not be parsed as an array
+    if (arrayStr !== undefined && valuesStr === undefined) {
+      throw new EnvParsingError(
+        `[env.parseBooleanArray] Could not parse value "${arrayStr}" as array for environment variable "${variableName}".`,
+        {
+          variableName,
+          value: arrayStr,
+        }
+      );
+    }
+
+    let values: boolean[] | undefined = undefined;
+
+    if (valuesStr) {
+      values = valuesStr
+        .map((valueStr) =>
+          parseBooleanEnvironmentVariable(valueStr, this.config)
+        )
+        .filter(isNotNullish);
+
+      // Environment variable is set but could not be parsed as boolean
+      if (valuesStr.length !== values.length) {
+        throw new EnvParsingError(
+          `[env.parseBooleanArray] Could not parse value "${arrayStr}" as array of booleans for environment variable "${variableName}".`,
+          {
+            variableName,
+            value: arrayStr,
+          }
+        );
+      }
+    }
+
+    if (values === undefined && this.config?.runtime) {
       const valueOrValueFunc =
         environments[this.config.runtime] ?? environments.default;
       if (typeof valueOrValueFunc === 'function') {
-        value = valueOrValueFunc();
+        values = valueOrValueFunc();
       } else {
-        value = valueOrValueFunc;
+        values = valueOrValueFunc;
       }
     }
-    return value;
+    return values;
   }
 
   parseJSON<TJson extends object>(

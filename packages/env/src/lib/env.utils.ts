@@ -10,7 +10,7 @@ export function parseEnvironmentVariable<
   RuntimeEnvironment extends { [key: string]: string }
 >(
   variableName: string,
-  config: EnvConfiguration<RuntimeEnvironment>
+  config: Pick<EnvConfiguration<RuntimeEnvironment>, 'prefix' | 'processEnv'>
 ): string | undefined {
   if (config.prefix && !variableName.startsWith(config.prefix.toLowerCase())) {
     throw new Error(
@@ -50,10 +50,31 @@ export function parseBooleanEnvironmentVariable<
   return undefined;
 }
 
+export function parseArrayEnvironmentVariable<
+  RuntimeEnvironment extends { [key: string]: string }
+>(
+  value: unknown,
+  config: Pick<EnvConfiguration<RuntimeEnvironment>, 'arraySeparator'>
+): string[] | undefined {
+  if (typeof value === 'string') {
+    return value.split(config.arraySeparator);
+  }
+
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  return undefined;
+}
+
 export function isEnumType<TEnum extends { [key: string]: string }>(
   enumType: TEnum,
   value: unknown
 ): value is TEnum[keyof TEnum] {
   if (typeof value !== 'string') return false;
   return Object.values(enumType).includes(value);
+}
+
+export function isNotNullish<T>(el: T | null | undefined): el is T {
+  return el !== null && el !== undefined;
 }

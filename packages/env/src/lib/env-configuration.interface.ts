@@ -9,6 +9,10 @@ export interface EnvConfigurationInput<
   dotenv?: string;
   removeAfterParse?: boolean;
 
+  // Array parsing
+  arraySeparator?: string;
+
+  // Boolean parsing
   booleanTrueValues?: string[];
   booleanFalseValues?: string[];
 }
@@ -24,6 +28,10 @@ export interface EnvConfiguration<
   dotenv?: string;
   removeAfterParse?: boolean;
 
+  // Array parsing
+  arraySeparator: string;
+
+  // Boolean parsing
   booleanTrueValues: string[];
   booleanFalseValues: string[];
 }
