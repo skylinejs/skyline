@@ -1,4 +1,5 @@
 import { EnvConfiguration } from './env-configuration.interface';
+import { EnvParsingError } from './env-error';
 
 /**
  * Parses an environment variable from the process environment.
@@ -12,19 +13,64 @@ export function parseEnvironmentVariable<
   variableName: string,
   config: Pick<
     EnvConfiguration<RuntimeEnvironment>,
-    'variableNamePrefix' | 'processEnv'
+    | 'processEnv'
+    | 'variableNamePrefix'
+    | 'variableNameIgnoreCasing'
+    | 'valueTrim'
+    | 'valueEncoding'
+    | 'valueRemoveAfterParse'
   >
 ): string | undefined {
-  if (
-    config.variableNamePrefix &&
-    !variableName.startsWith(config.variableNamePrefix.toLowerCase())
-  ) {
-    throw new Error(
-      `Cannot obtain environment variable "${variableName}": has to start with "${config.variableNamePrefix}"`
+  // Variable name prefix
+  const variableNamePrefix = config.variableNamePrefix;
+  if (variableNamePrefix && !variableName.startsWith(variableNamePrefix)) {
+    throw new EnvParsingError(
+      `Cannot obtain environment variable "${variableName}": has to start with "${variableNamePrefix}"`,
+      {
+        variableName,
+        value: variableNamePrefix,
+      }
     );
   }
 
-  const value = config.processEnv[variableName];
+  // Get environment variable value
+  let value: string | undefined = undefined;
+  if (config.variableNameIgnoreCasing) {
+    value = Object.entries(config.processEnv).find(
+      ([key]) => key.toLowerCase() === variableName.toLowerCase()
+    )?.[1];
+  } else {
+    value = config.processEnv[variableName];
+  }
+
+  // Trim value
+  if (value && config.valueTrim) {
+    value = value.trim();
+  }
+
+  // Encoding
+  if (value && config.valueEncoding) {
+    switch (config.valueEncoding) {
+      case 'base64':
+        value = Buffer.from(value, 'base64').toString();
+        break;
+      case 'base64url':
+        value = Buffer.from(value, 'base64url').toString();
+        break;
+      case 'hex':
+        value = Buffer.from(value, 'hex').toString();
+        break;
+      case 'url':
+        value = decodeURIComponent(value);
+        break;
+    }
+  }
+
+  // Remove after parse
+  if (value && config.valueRemoveAfterParse) {
+    delete config.processEnv[variableName];
+  }
+
   return value;
 }
 
