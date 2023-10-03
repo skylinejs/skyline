@@ -30,11 +30,11 @@ export function getCommandName(command: typeof SkylineCliCommand) {
     name = name.slice(0, -'Command'.length);
   }
 
-  // Split on uppercase letters
-  name = name.replace(/([A-Z])/g, ' $1');
-
-  // Lowercase
-  name = name.toLowerCase();
+  // Split on uppercase letters, lowercase and trim
+  name = name
+    .replace(/([A-Z])/g, ' $1')
+    .toLowerCase()
+    .trim();
 
   return name;
 }

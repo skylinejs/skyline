@@ -4,7 +4,7 @@ import inquirer from 'inquirer';
 import { getCommandName, getCommandPromptMessage } from './cli.utils';
 import InquirerAutocompletePrompt from 'inquirer-autocomplete-prompt';
 import { SkylineCliCommand } from './cli-command';
-import { levenshteinDistance } from './levenshtein-distance';
+import { fuzzyFilter } from './levenshtein-distance';
 
 export class SkylineCli {
   private readonly config: CliConfiguration;
@@ -58,11 +58,18 @@ export class SkylineCli {
           message: getCommandPromptMessage(this.config),
           source: (_: any, search: string) => {
             search = (search || '').trim();
-            const commandNames = this.config.commands
-              .map((command) => getCommandName(command))
-              .filter((commandName) => commandName.includes(search));
+            const commandNames = this.config.commands.map((command) =>
+              getCommandName(command)
+            );
 
-            return commandNames;
+            if (!search) return commandNames;
+
+            // Filter via levenshtein distance
+            const filteredCommandNames = fuzzyFilter(search, commandNames, {
+              extract: (cmd: string) => cmd,
+            }).map((result: any) => result.original);
+
+            return filteredCommandNames;
           },
         },
       ]);
