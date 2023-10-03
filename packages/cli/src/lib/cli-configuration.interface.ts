@@ -6,4 +6,9 @@ export interface CliConfiguration {
    * Defaults to no timeout
    */
   inactivityTimeout?: number | CliInactivityTimeout;
+
+  cliName: string;
+  cliNameColor: string;
+  cliNameBackgroundColor: string;
+  commandPromptMessage: string;
 }

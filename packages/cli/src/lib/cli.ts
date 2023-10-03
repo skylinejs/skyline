@@ -1,13 +1,21 @@
 import { CliConfiguration } from './cli-configuration.interface';
 import { CliInactivityTimeout } from './cli-inactivity-timeout';
 import inquirer from 'inquirer';
+import { getCommandPromptMessage } from './cli.utils';
 
 export class SkylineCli {
-  private config: CliConfiguration;
-  private timeout?: CliInactivityTimeout;
+  private readonly config: CliConfiguration;
+  private readonly timeout?: CliInactivityTimeout;
+  private exit = false;
 
   constructor(config: Partial<CliConfiguration> = {}) {
-    this.config = {};
+    this.config = {
+      cliName: config.cliName ?? 'skyline',
+      cliNameColor: config.cliNameColor ?? '#FFFFFF',
+      cliNameBackgroundColor: config.cliNameBackgroundColor ?? '#BA2C73',
+
+      commandPromptMessage: config.commandPromptMessage ?? 'Execute a command',
+    };
 
     // Inactivity timeout
     if (config.inactivityTimeout instanceof CliInactivityTimeout) {
@@ -20,7 +28,24 @@ export class SkylineCli {
       });
     }
     this.timeout?.register();
+
+    // SIGINT handler
+    process.on('SIGINT', () => {
+      this.exit = true;
+      process.exit(0);
+    });
   }
 
-  async run() {}
+  async run() {
+    while (!this.exit) {
+      // Prompt for command
+      const { command } = await inquirer.prompt<{ command: string }>([
+        {
+          type: 'input',
+          name: 'command',
+          message: getCommandPromptMessage(this.config),
+        },
+      ]);
+    }
+  }
 }
