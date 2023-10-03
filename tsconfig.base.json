@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@skyline-js/cli": ["packages/cli/src/index.ts"],
       "@skylinejs/cache": ["packages/cache/src/index.ts"],
       "@skylinejs/env": ["packages/env/src/index.ts"]
     }
