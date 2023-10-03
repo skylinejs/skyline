@@ -27,6 +27,7 @@ export class SkylineCli {
       // === Command  ===
       commands: config.commands ?? [HelpCommand],
       commandIdSeparator: config.commandIdSeparator ?? '-',
+      commandPathSeparator: config.commandPathSeparator ?? ':',
       commandPromptMessage: config.commandPromptMessage ?? 'Execute a command',
       commandPromptPageSize: config.commandPromptPageSize ?? 10,
       commandDisplayNameCapitalize: config.commandDisplayNameCapitalize ?? true,

@@ -6,6 +6,11 @@ export class SkylineCliCommand {
   static commandId?: string | string[];
 
   /**
+   * The command path. Provide this option to group commands into subdirectories.
+   */
+  static commandPath?: string | string[];
+
+  /**
    * The display name of the command. Default is derived from the class name.
    */
   static displayName?: string;

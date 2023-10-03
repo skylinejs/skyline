@@ -50,6 +50,7 @@ export interface CliConfiguration {
   commandPromptMessage: string;
   commandPromptPageSize: number;
   commandIdSeparator: string;
+  commandPathSeparator: string;
   commandDisplayNameCapitalize: boolean;
 
   // === Error handling ===
