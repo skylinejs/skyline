@@ -72,6 +72,130 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   }
 
   /**
+   * Parse an environment variable as a boolean.
+   * @param variableName Name of the environment variable to parse
+   * @param environments Optional environments to get default value from
+   * @returns The parsed boolean value, or undefined if the variable is not set.
+   */
+  parseBoolean(
+    variableName: string,
+    environments?: Partial<{
+      [key in keyof RuntimeEnvironment]: boolean | (() => boolean);
+    }> & { default: boolean | (() => boolean) }
+  ): boolean;
+  parseBoolean(
+    variableName: string,
+    environments?: Partial<{
+      [key in keyof RuntimeEnvironment]: boolean | (() => boolean);
+    }> & { default?: boolean | (() => boolean) }
+  ): boolean | undefined;
+  parseBoolean(
+    variableName: string,
+    environments?: Partial<{
+      [key in keyof RuntimeEnvironment]: boolean | (() => boolean);
+    }> & { default?: boolean | (() => boolean) }
+  ): boolean | undefined {
+    const valueStr = parseEnvironmentVariable(variableName, this.config);
+    let value: boolean | undefined = parseBooleanEnvironmentVariable(
+      valueStr,
+      this.config
+    );
+
+    // Environment variable is set but could not be parsed as boolean
+    if (valueStr !== undefined && value === undefined) {
+      throw new EnvParsingError(
+        `[env.parseBoolean] Could not parse value "${valueStr}" as boolean for environment variable "${variableName}".`,
+        {
+          variableName,
+          value: valueStr,
+        }
+      );
+    }
+
+    // Environment variable is not set, try to get default value for runtime
+    if (value === undefined && this.config?.runtime) {
+      const valueOrValueFunc = environments
+        ? environments[this.config.runtime] ?? environments.default
+        : undefined;
+
+      if (typeof valueOrValueFunc === 'function') {
+        value = valueOrValueFunc();
+      } else {
+        value = valueOrValueFunc;
+      }
+    }
+
+    return value;
+  }
+
+  parseBooleanArray(
+    variableName: string,
+    environments?: Partial<{
+      [key in keyof RuntimeEnvironment]: boolean[] | (() => boolean[]);
+    }> & { default: boolean[] | (() => boolean[]) }
+  ): boolean[];
+  parseBooleanArray(
+    variableName: string,
+    environments?: Partial<{
+      [key in keyof RuntimeEnvironment]: boolean[] | (() => boolean[]);
+    }> & { default?: boolean[] | (() => boolean[]) }
+  ): boolean[] | undefined;
+  parseBooleanArray(
+    variableName: string,
+    environments?: Partial<{
+      [key in keyof RuntimeEnvironment]: boolean[] | (() => boolean[]);
+    }> & { default?: boolean[] | (() => boolean[]) }
+  ): boolean[] | undefined {
+    const arrayStr = parseEnvironmentVariable(variableName, this.config);
+    const valuesStr = parseArrayEnvironmentVariable(arrayStr, this.config);
+
+    // Environment variable is set but could not be parsed as an array
+    if (arrayStr !== undefined && valuesStr === undefined) {
+      throw new EnvParsingError(
+        `[env.parseBooleanArray] Could not parse value "${arrayStr}" as array for environment variable "${variableName}".`,
+        {
+          variableName,
+          value: arrayStr,
+        }
+      );
+    }
+
+    let values: boolean[] | undefined = undefined;
+
+    if (valuesStr) {
+      values = valuesStr
+        .map((valueStr) =>
+          parseBooleanEnvironmentVariable(valueStr, this.config)
+        )
+        .filter(isNotNullish);
+
+      // Environment variable is set but could not be parsed as boolean
+      if (valuesStr.length !== values.length) {
+        throw new EnvParsingError(
+          `[env.parseBooleanArray] Could not parse value "${arrayStr}" as array of booleans for environment variable "${variableName}".`,
+          {
+            variableName,
+            value: arrayStr,
+          }
+        );
+      }
+    }
+
+    if (values === undefined && this.config?.runtime) {
+      const valueOrValueFunc = environments
+        ? environments[this.config.runtime] ?? environments.default
+        : undefined;
+
+      if (typeof valueOrValueFunc === 'function') {
+        values = valueOrValueFunc();
+      } else {
+        values = valueOrValueFunc;
+      }
+    }
+    return values;
+  }
+
+  /**
    * Parse an environment variable as a string.
    * @param variableName Name of the environment variable to parse
    * @param environments
@@ -330,124 +454,6 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       }
     }
     return value;
-  }
-
-  parseBoolean(
-    variableName: string,
-    environments?: Partial<{
-      [key in keyof RuntimeEnvironment]: boolean | (() => boolean);
-    }> & { default: boolean | (() => boolean) }
-  ): boolean;
-  parseBoolean(
-    variableName: string,
-    environments?: Partial<{
-      [key in keyof RuntimeEnvironment]: boolean | (() => boolean);
-    }> & { default?: boolean | (() => boolean) }
-  ): boolean | undefined;
-  parseBoolean(
-    variableName: string,
-    environments?: Partial<{
-      [key in keyof RuntimeEnvironment]: boolean | (() => boolean);
-    }> & { default?: boolean | (() => boolean) }
-  ): boolean | undefined {
-    const valueStr = parseEnvironmentVariable(variableName, this.config);
-    let value: boolean | undefined = parseBooleanEnvironmentVariable(
-      valueStr,
-      this.config
-    );
-
-    // Environment variable is set but could not be parsed as boolean
-    if (valueStr !== undefined && value === undefined) {
-      throw new EnvParsingError(
-        `[env.parseBoolean] Could not parse value "${valueStr}" as boolean for environment variable "${variableName}".`,
-        {
-          variableName,
-          value: valueStr,
-        }
-      );
-    }
-
-    // Environment variable is not set, try to get default value for runtime
-    if (value === undefined && this.config?.runtime) {
-      const valueOrValueFunc = environments
-        ? environments[this.config.runtime] ?? environments.default
-        : undefined;
-
-      if (typeof valueOrValueFunc === 'function') {
-        value = valueOrValueFunc();
-      } else {
-        value = valueOrValueFunc;
-      }
-    }
-
-    return value;
-  }
-
-  parseBooleanArray(
-    variableName: string,
-    environments?: Partial<{
-      [key in keyof RuntimeEnvironment]: boolean[] | (() => boolean[]);
-    }> & { default: boolean[] | (() => boolean[]) }
-  ): boolean[];
-  parseBooleanArray(
-    variableName: string,
-    environments?: Partial<{
-      [key in keyof RuntimeEnvironment]: boolean[] | (() => boolean[]);
-    }> & { default?: boolean[] | (() => boolean[]) }
-  ): boolean[] | undefined;
-  parseBooleanArray(
-    variableName: string,
-    environments?: Partial<{
-      [key in keyof RuntimeEnvironment]: boolean[] | (() => boolean[]);
-    }> & { default?: boolean[] | (() => boolean[]) }
-  ): boolean[] | undefined {
-    const arrayStr = parseEnvironmentVariable(variableName, this.config);
-    const valuesStr = parseArrayEnvironmentVariable(arrayStr, this.config);
-
-    // Environment variable is set but could not be parsed as an array
-    if (arrayStr !== undefined && valuesStr === undefined) {
-      throw new EnvParsingError(
-        `[env.parseBooleanArray] Could not parse value "${arrayStr}" as array for environment variable "${variableName}".`,
-        {
-          variableName,
-          value: arrayStr,
-        }
-      );
-    }
-
-    let values: boolean[] | undefined = undefined;
-
-    if (valuesStr) {
-      values = valuesStr
-        .map((valueStr) =>
-          parseBooleanEnvironmentVariable(valueStr, this.config)
-        )
-        .filter(isNotNullish);
-
-      // Environment variable is set but could not be parsed as boolean
-      if (valuesStr.length !== values.length) {
-        throw new EnvParsingError(
-          `[env.parseBooleanArray] Could not parse value "${arrayStr}" as array of booleans for environment variable "${variableName}".`,
-          {
-            variableName,
-            value: arrayStr,
-          }
-        );
-      }
-    }
-
-    if (values === undefined && this.config?.runtime) {
-      const valueOrValueFunc = environments
-        ? environments[this.config.runtime] ?? environments.default
-        : undefined;
-
-      if (typeof valueOrValueFunc === 'function') {
-        values = valueOrValueFunc();
-      } else {
-        values = valueOrValueFunc;
-      }
-    }
-    return values;
   }
 
   parseJSON<TJson extends object>(
