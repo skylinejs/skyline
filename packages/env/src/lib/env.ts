@@ -74,7 +74,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       arraySeparator: config?.arraySeparator ?? ',',
       arrayMinLength: config?.arrayMinLength,
       arrayMaxLength: config?.arrayMaxLength,
-      arrayUniqueItems: config?.arrayUniqueItems,
+      arrayUniqueItems: config?.arrayUniqueItems ?? false,
     };
 
     // Validate runtime if possible
@@ -104,7 +104,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   /**
    * Parse an environment variable as a boolean.
    * @param variableName Name of the environment variable to parse
-   * @param options Optional options to get default value from
+   * @param options Optional parsing options
    * @returns The parsed boolean value, or undefined if the variable is not set.
    */
   parseBoolean(
@@ -159,6 +159,12 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     return value;
   }
 
+  /**
+   * Parse an environment variable as an array of booleans.
+   * @param variableName Name of the environment variable to parse
+   * @param options Optional parsing options
+   * @returns The parsed boolean array, or undefined if the variable is not set.
+   */
   parseBooleanArray(
     variableName: string,
     options?: Partial<{
@@ -228,7 +234,8 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   /**
    * Parse an environment variable as a string.
    * @param variableName Name of the environment variable to parse
-   * @param options
+   * @param options Optional parsing options
+   * @returns The parsed string value, or undefined if the variable is not set.
    */
   parseString(
     variableName: string,
@@ -271,7 +278,8 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   /**
    * Parse an environment variable as an array of strings.
    * @param variableName Name of the environment variable to parse
-   * @param options
+   * @param options Optional parsing options
+   * @returns The parsed string array, or undefined if the variable is not set.
    */
   parseStringArray(
     variableName: string,
@@ -312,7 +320,8 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
    * Parse an environment variable as an enum.
    * @param variableName Name of the environment variable to parse
    * @param enumType Enum type to parse the environment variable as
-   * @param options
+   * @param options Optional parsing options
+   * @returns The parsed enum value, or undefined if the variable is not set.
    */
   parseEnum<TEnum extends { [key: string]: string }>(
     variableName: string,
@@ -364,7 +373,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
    * Parse an environment variable as an enum.
    * @param variableName Name of the environment variable to parse
    * @param enumType Enum type to parse the environment variable as
-   * @param options
+   * @param options Optional parsing options
    */
   parseEnumArray<TEnum extends { [key: string]: string }>(
     variableName: string,
@@ -416,6 +425,12 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     return value;
   }
 
+  /**
+   * Parse an environment variable as a number.
+   * @param variableName Name of the environment variable to parse
+   * @param options Optional parsing options
+   * @returns The parsed number value, or undefined if the variable is not set.
+   */
   parseNumber(
     variableName: string,
     options?: Partial<{
@@ -455,6 +470,12 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     return value;
   }
 
+  /**
+   * Parse an environment variable as an array of numbers.
+   * @param variableName Name of the environment variable to parse
+   * @param options Optional parsing options
+   * @returns The parsed number array, or undefined if the variable is not set.
+   */
   parseNumberArray(
     variableName: string,
     options?: Partial<{
@@ -490,6 +511,11 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     return value;
   }
 
+  /**
+   * Parse an environment variable as a JSON object.
+   * @param variableName Name of the environment variable to parse
+   * @param options Optional parsing options
+   */
   parseJSON<TJson extends object>(
     variableName: string,
     options?: Partial<{
