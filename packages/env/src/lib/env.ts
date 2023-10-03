@@ -2,10 +2,10 @@ import {
   EnvConfiguration,
   EnvConfigurationInput,
 } from './env-configuration.interface';
-import { EnvInputValidationError } from './env-error';
+import { EnvInputValidationError, EnvParsingError } from './env-error';
 import {
   isEnumType,
-  parseBooleanFromString,
+  parseBooleanEnvironmentVariable,
   parseEnvironmentVariable,
 } from './env.utils';
 
@@ -334,11 +334,23 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     }> & { default?: boolean | (() => boolean) }
   ): boolean | undefined {
     const valueStr = parseEnvironmentVariable(variableName, this.config);
-    let value: boolean | undefined = parseBooleanFromString(
+    let value: boolean | undefined = parseBooleanEnvironmentVariable(
       valueStr,
       this.config
     );
 
+    // Environment variable is set but could not be parsed as boolean
+    if (valueStr !== undefined && value === undefined) {
+      throw new EnvParsingError(
+        `[SkylineEnv.parseBoolean] Could not parse value "${valueStr}" as boolean for environment variable "${variableName}".`,
+        {
+          variableName,
+          value: valueStr,
+        }
+      );
+    }
+
+    // Environment variable is not set, try to get default value for runtime
     if (value === undefined && this.config?.runtime) {
       const valueOrValueFunc = environments
         ? environments[this.config.runtime] ?? environments.default
@@ -350,6 +362,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
         value = valueOrValueFunc;
       }
     }
+
     return value;
   }
 

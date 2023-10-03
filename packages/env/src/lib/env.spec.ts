@@ -52,109 +52,108 @@ describe('SkylineEnv', () => {
     // Parse boolean environment variable
     const envParser = new SkylineEnv<typeof RuntimeEnvironment>({
       processEnv: {
-        testTrue1: 'true',
-        testTrue2: '1',
-        testTrue3: 'yes',
-        testTrue4: 'y',
-        testTrue5: 'on',
-        testTrue6: 'enabled',
-        testTrue7: 'enable',
-        testTrue8: 'ok',
-        testTrue9: 'okay',
-        testFalse1: '0',
-        testFalse2: 'no',
-        testFalse3: 'n',
-        testFalse4: 'off',
-        testFalse5: 'disabled',
-        testFalse6: 'disable',
-        testFalse7: 'false',
+        true1: 'true',
+        true2: '1',
+        true3: 'yes',
+        true4: 'y',
+        true5: 'on',
+        true6: 'enabled',
+        true7: 'enable',
+        true8: 'ok',
+        true9: 'okay',
+        false1: '0',
+        false2: 'no',
+        false3: 'n',
+        false4: 'off',
+        false5: 'disabled',
+        false6: 'disable',
+        false7: 'false',
       },
     });
 
     const env = {
-      testTrue1: envParser.parseBoolean('testTrue1'),
-      testTrue2: envParser.parseBoolean('testTrue2'),
-      testTrue3: envParser.parseBoolean('testTrue3'),
-      testTrue4: envParser.parseBoolean('testTrue4'),
-      testTrue5: envParser.parseBoolean('testTrue5'),
-      testTrue6: envParser.parseBoolean('testTrue6'),
-      testTrue7: envParser.parseBoolean('testTrue7'),
-      testTrue8: envParser.parseBoolean('testTrue8'),
-      testTrue9: envParser.parseBoolean('testTrue9'),
-      testFalse1: envParser.parseBoolean('testFalse1'),
-      testFalse2: envParser.parseBoolean('testFalse2'),
-      testFalse3: envParser.parseBoolean('testFalse3'),
-      testFalse4: envParser.parseBoolean('testFalse4'),
-      testFalse5: envParser.parseBoolean('testFalse5'),
-      testFalse6: envParser.parseBoolean('testFalse6'),
-      testFalse7: envParser.parseBoolean('testFalse7'),
+      true1: envParser.parseBoolean('true1'),
+      true2: envParser.parseBoolean('true2'),
+      true3: envParser.parseBoolean('true3'),
+      true4: envParser.parseBoolean('true4'),
+      true5: envParser.parseBoolean('true5'),
+      true6: envParser.parseBoolean('true6'),
+      true7: envParser.parseBoolean('true7'),
+      true8: envParser.parseBoolean('true8'),
+      true9: envParser.parseBoolean('true9'),
+      false1: envParser.parseBoolean('false1'),
+      false2: envParser.parseBoolean('false2'),
+      false3: envParser.parseBoolean('false3'),
+      false4: envParser.parseBoolean('false4'),
+      false5: envParser.parseBoolean('false5'),
+      false6: envParser.parseBoolean('false6'),
+      false7: envParser.parseBoolean('false7'),
     };
 
     expect(env).toEqual({
-      testTrue1: true,
-      testTrue2: true,
-      testTrue3: true,
-      testTrue4: true,
-      testTrue5: true,
-      testTrue6: true,
-      testTrue7: true,
-      testTrue8: true,
-      testTrue9: true,
-      testFalse1: false,
-      testFalse2: false,
-      testFalse3: false,
-      testFalse4: false,
-      testFalse5: false,
-      testFalse6: false,
-      testFalse7: false,
+      true1: true,
+      true2: true,
+      true3: true,
+      true4: true,
+      true5: true,
+      true6: true,
+      true7: true,
+      true8: true,
+      true9: true,
+      false1: false,
+      false2: false,
+      false3: false,
+      false4: false,
+      false5: false,
+      false6: false,
+      false7: false,
     });
   });
 
   it('Parse boolean environment variable with custom configuration', () => {
     // Parse boolean environment variable
-    const envParser = new SkylineEnv<typeof RuntimeEnvironment>({
+    const parser = new SkylineEnv<typeof RuntimeEnvironment>({
       processEnv: {
-        testTrue1: 'true',
-        testTrue2: '1',
-        testTrue3: 'yes',
-        testTrue4: 'y',
-        testTrue5: 'on',
-        testTrue6: 'enabled',
-        testTrue7: 'enable',
-        testTrue8: 'ok',
-        testTrue9: 'okay',
-        testTrue10: '+',
-        testFalse1: '0',
-        testFalse2: 'no',
-        testFalse3: 'n',
-        testFalse4: 'off',
-        testFalse5: 'disabled',
-        testFalse6: 'disable',
-        testFalse7: 'false',
-        testFalse8: '-',
+        true1: 'true',
+        true2: '1',
+        true3: 'yes',
+        true4: 'y',
+        true5: 'on',
+        true6: 'enabled',
+        true7: 'enable',
+        true8: 'ok',
+        true9: 'okay',
+        true10: '+',
+        false1: '0',
+        false2: 'no',
+        false3: 'n',
+        false4: 'off',
+        false5: 'disabled',
+        false6: 'disable',
+        false7: 'false',
+        false8: '-',
       },
       booleanFalseValues: ['false', '-', '0'],
       booleanTrueValues: ['true', '+', '1'],
     });
-
-    const env = {
-      testTrue1: envParser.parseBoolean('testTrue1'),
-      testTrue2: envParser.parseBoolean('testTrue2'),
-      testTrue3: envParser.parseBoolean('testTrue3'),
-      testTrue4: envParser.parseBoolean('testTrue4'),
-      testTrue5: envParser.parseBoolean('testTrue5'),
-      testTrue6: envParser.parseBoolean('testTrue6'),
-      testTrue7: envParser.parseBoolean('testTrue7'),
-      testTrue8: envParser.parseBoolean('testTrue8'),
-      testTrue9: envParser.parseBoolean('testTrue9'),
-      testFalse1: envParser.parseBoolean('testFalse1'),
-      testFalse2: envParser.parseBoolean('testFalse2'),
-      testFalse3: envParser.parseBoolean('testFalse3'),
-      testFalse4: envParser.parseBoolean('testFalse4'),
-      testFalse5: envParser.parseBoolean('testFalse5'),
-      testFalse6: envParser.parseBoolean('testFalse6'),
-      testFalse7: envParser.parseBoolean('testFalse7'),
-    };
+    expect(parser.parseBoolean('true1')).toBe(true);
+    expect(parser.parseBoolean('true2')).toBe(true);
+    expect(() => parser.parseBoolean('true3')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('true4')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('true5')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('true6')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('true7')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('true8')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('true9')).toThrowError(EnvParsingError);
+    expect(parser.parseBoolean('true10')).toBe(true);
+    expect(parser.parseBoolean('false1')).toBe(false);
+    expect(() => parser.parseBoolean('false2')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('false3')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('false4')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('false5')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('false6')).toThrowError(EnvParsingError);
+    expect(parser.parseBoolean('false7')).toBe(false);
+    expect(parser.parseBoolean('false8')).toBe(false);
   });
 
   it('Parse string environment variable', () => {

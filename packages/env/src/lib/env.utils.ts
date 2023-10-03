@@ -22,7 +22,7 @@ export function parseEnvironmentVariable<
   return value;
 }
 
-export function parseBooleanFromString<
+export function parseBooleanEnvironmentVariable<
   RuntimeEnvironment extends { [key: string]: string }
 >(
   value: unknown,
