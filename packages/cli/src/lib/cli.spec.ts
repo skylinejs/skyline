@@ -1,7 +1,7 @@
-import { cli } from './cli';
+import { SkylineCli } from './cli';
 
-describe('cli', () => {
+describe('SkylineCli', () => {
   it('should work', () => {
-    expect(cli()).toEqual('cli');
+    expect(new SkylineCli());
   });
 });
