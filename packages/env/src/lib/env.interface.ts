@@ -18,3 +18,9 @@ export interface ArrayParsingOptions {
   maxLength?: number;
   uniqueItems?: boolean;
 }
+
+export interface JsonParsingOptions {
+  minProperties?: number;
+  maxProperties?: number;
+  required?: string[];
+}
