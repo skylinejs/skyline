@@ -2,11 +2,13 @@ import { CliConfiguration } from './cli-configuration.interface';
 import { CliInactivityTimeout } from './cli-inactivity-timeout';
 import inquirer from 'inquirer';
 import { getCommandPromptMessage } from './cli.utils';
-import * as inquirerAutocompletePrompt from 'inquirer-autocomplete-prompt';
+import InquirerAutocompletePrompt from 'inquirer-autocomplete-prompt';
+import { SkylineCliCommand } from './cli-command';
 
 export class SkylineCli {
   private readonly config: CliConfiguration;
   private readonly timeout?: CliInactivityTimeout;
+
   private exit = false;
 
   constructor(config: Partial<CliConfiguration> = {}) {
@@ -15,11 +17,12 @@ export class SkylineCli {
       cliNameColor: config.cliNameColor ?? '#000000',
       cliNameBackgroundColor: config.cliNameBackgroundColor ?? '#FFFFFF',
 
+      commands: config.commands ?? [],
       commandPromptMessage: config.commandPromptMessage ?? 'Execute a command',
     };
 
     // Inquirer
-    inquirer.registerPrompt('autocomplete', inquirerAutocompletePrompt);
+    inquirer.registerPrompt('autocomplete', InquirerAutocompletePrompt);
 
     // Inactivity timeout
     if (config.inactivityTimeout instanceof CliInactivityTimeout) {
@@ -38,6 +41,10 @@ export class SkylineCli {
       this.exit = true;
       process.exit(0);
     });
+  }
+
+  registerCommand(command: typeof SkylineCliCommand) {
+    this.config.commands.push(command);
   }
 
   async run() {

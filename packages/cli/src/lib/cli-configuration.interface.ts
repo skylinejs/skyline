@@ -1,3 +1,4 @@
+import { SkylineCliCommand } from './cli-command';
 import { CliInactivityTimeout } from './cli-inactivity-timeout';
 
 export interface CliConfiguration {
@@ -11,4 +12,6 @@ export interface CliConfiguration {
   cliNameColor: string;
   cliNameBackgroundColor: string;
   commandPromptMessage: string;
+
+  commands: Array<typeof SkylineCliCommand>;
 }
