@@ -84,3 +84,19 @@ export function isEnumType<TEnum extends { [key: string]: string }>(
 export function isNotNullish<T>(el: T | null | undefined): el is T {
   return el !== null && el !== undefined;
 }
+
+export function assignOptions<T extends object>(config: T, options: any): T {
+  const result: any = { ...config };
+
+  if (!options || typeof options !== 'object') {
+    return result;
+  }
+
+  Object.keys(options).forEach((key) => {
+    const value = options[key];
+    if (value !== undefined) {
+      result[key] = value;
+    }
+  });
+  return result;
+}

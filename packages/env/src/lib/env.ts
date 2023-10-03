@@ -11,6 +11,7 @@ import {
 import {
   isEnumType,
   isNotNullish,
+  assignOptions,
   parseArrayEnvironmentVariable,
   parseBooleanEnvironmentVariable,
   parseEnvironmentVariable,
@@ -126,7 +127,8 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]: boolean | (() => boolean);
     }> & { default?: boolean | (() => boolean) } & BooleanParsingptions
   ): boolean | undefined {
-    const valueStr = parseEnvironmentVariable(variableName, this.config);
+    const config = assignOptions(this.config, options);
+    const valueStr = parseEnvironmentVariable(variableName, config);
     let value: boolean | undefined = parseBooleanEnvironmentVariable(
       valueStr,
       this.config
@@ -177,8 +179,9 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]: boolean[] | (() => boolean[]);
     }> & { default?: boolean[] | (() => boolean[]) } & BooleanParsingptions
   ): boolean[] | undefined {
-    const arrayStr = parseEnvironmentVariable(variableName, this.config);
-    const valuesStr = parseArrayEnvironmentVariable(arrayStr, this.config);
+    const config = assignOptions(this.config, options);
+    const arrayStr = parseEnvironmentVariable(variableName, config);
+    const valuesStr = parseArrayEnvironmentVariable(arrayStr, config);
 
     // Environment variable is set but could not be parsed as an array
     if (arrayStr !== undefined && valuesStr === undefined) {
@@ -195,9 +198,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
 
     if (valuesStr) {
       values = valuesStr
-        .map((valueStr) =>
-          parseBooleanEnvironmentVariable(valueStr, this.config)
-        )
+        .map((valueStr) => parseBooleanEnvironmentVariable(valueStr, config))
         .filter(isNotNullish);
 
       // Environment variable is set but could not be parsed as boolean
@@ -212,9 +213,9 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       }
     }
 
-    if (values === undefined && this.config?.runtime) {
+    if (values === undefined && config?.runtime) {
       const valueOrValueFunc = options
-        ? options[this.config.runtime] ?? options.default
+        ? options[config.runtime] ?? options.default
         : undefined;
 
       if (typeof valueOrValueFunc === 'function') {
