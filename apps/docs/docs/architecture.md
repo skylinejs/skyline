@@ -1,6 +1,7 @@
 ---
 sidebar_position: 7
 slug: architecture
+draft: true
 ---
 
 # Architecture

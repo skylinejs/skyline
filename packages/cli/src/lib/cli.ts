@@ -25,7 +25,7 @@ export class SkylineCli {
       cliNameBackgroundColor: config.cliNameBackgroundColor ?? 'magenta',
 
       // === Command  ===
-      commands: config.commands ?? [HelpCommand],
+      commands: config.commands ?? [],
       commandIdSeparator: config.commandIdSeparator ?? '-',
       commandPathSeparator: config.commandPathSeparator ?? ':',
       commandPromptMessage: config.commandPromptMessage ?? 'Execute a command',
@@ -55,6 +55,9 @@ export class SkylineCli {
       this.exit = true;
       process.exit(0);
     });
+
+    // Register help command
+    this.registerCommand(HelpCommand);
   }
 
   registerCommand(command: typeof SkylineCliCommand) {
@@ -84,6 +87,13 @@ export class SkylineCli {
       process.exit(0);
     }
 
+    const commands = this.config.commands
+      .filter((command) => !command.hidden)
+      .map((command) => ({
+        name: getCommandDisplayName(command, this.config),
+        value: command,
+      }));
+
     // Interactive prompting
     while (!this.exit) {
       // Empty line
@@ -100,11 +110,6 @@ export class SkylineCli {
           message: getCommandPromptMessage(this.config),
           source: (_: any, search: string) => {
             search = (search || '').trim();
-            const commands = this.config.commands.map((command) => ({
-              name: getCommandDisplayName(command, this.config),
-              value: command,
-            }));
-
             if (!search) return commands;
 
             // Apply fuzzy filter

@@ -1,6 +1,7 @@
 ---
 sidebar_position: 6
 slug: /healthcheck
+draft: true
 ---
 
 # Healthcheck
