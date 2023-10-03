@@ -38,5 +38,10 @@ async function main() {
 }
 
 // void main();
-const cli = new SkylineCli();
+const cli = new SkylineCli({
+  commands: [
+    SynchronizeDocsCodeSnippetsCommand,
+    PublishDocsToGithubPagesCommand,
+  ],
+});
 void cli.run();

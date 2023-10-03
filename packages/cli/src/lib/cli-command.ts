@@ -1,1 +1,3 @@
-export class SkylineCliCommand {}
+export class SkylineCliCommand {
+  static commandName?: string;
+}

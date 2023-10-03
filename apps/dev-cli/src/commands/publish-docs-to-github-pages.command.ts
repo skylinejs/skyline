@@ -1,7 +1,8 @@
+import { SkylineCliCommand } from '@skyline-js/cli';
 import { execSync } from 'child_process';
 import { writeFileSync } from 'fs';
 
-export class PublishDocsToGithubPagesCommand {
+export class PublishDocsToGithubPagesCommand extends SkylineCliCommand {
   async run() {
     console.log('Publishing docs to github-pages');
     console.log('Running npm run build ...');
