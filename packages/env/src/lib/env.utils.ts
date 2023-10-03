@@ -22,32 +22,31 @@ export function parseEnvironmentVariable<
   return value;
 }
 
-export function parseBooleanFromString(
-  value: string,
-  config: EnvConfiguration
+export function parseBooleanFromString<
+  RuntimeEnvironment extends { [key: string]: string }
+>(
+  value: unknown,
+  config: Pick<
+    EnvConfiguration<RuntimeEnvironment>,
+    'booleanTrueValues' | 'booleanFalseValues'
+  >
 ): boolean | undefined {
-  const booleanTrueValues = config.booleanTrueValues ?? [
-    'true',
-    '1',
-    'yes',
-    'y',
-    'on',
-    'enabled',
-    'enable',
-    'ok',
-    'okay',
-  ];
-  const booleanFalseValues = config.booleanFalseValues ?? [
-    'false',
-    '0',
-    'no',
-    'n',
-    'off',
-    'disabled',
-    'disable',
-  ];
-  if (booleanTrueValues.includes(value)) return true;
-  if (booleanFalseValues.includes(value)) return false;
+  if (typeof value === 'boolean') {
+    return value;
+  }
+
+  if (typeof value === 'number') {
+    if (value === 1) return true;
+    if (value === 0) return false;
+    return undefined;
+  }
+
+  if (typeof value === 'string') {
+    if (config.booleanTrueValues.includes(value)) return true;
+    if (config.booleanFalseValues.includes(value)) return false;
+    return undefined;
+  }
+
   return undefined;
 }
 

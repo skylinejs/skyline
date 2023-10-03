@@ -3,7 +3,11 @@ import {
   EnvConfigurationInput,
 } from './env-configuration.interface';
 import { EnvInputValidationError } from './env-error';
-import { isEnumType, parseEnvironmentVariable } from './env.utils';
+import {
+  isEnumType,
+  parseBooleanFromString,
+  parseEnvironmentVariable,
+} from './env.utils';
 
 export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   private readonly config: EnvConfiguration<RuntimeEnvironment>;
@@ -313,28 +317,33 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
 
   parseBoolean(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: boolean | (() => boolean);
     }> & { default: boolean | (() => boolean) }
   ): boolean;
   parseBoolean(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: boolean | (() => boolean);
     }> & { default?: boolean | (() => boolean) }
   ): boolean | undefined;
   parseBoolean(
     variableName: string,
-    environments: Partial<{
+    environments?: Partial<{
       [key in keyof RuntimeEnvironment]: boolean | (() => boolean);
     }> & { default?: boolean | (() => boolean) }
   ): boolean | undefined {
     const valueStr = parseEnvironmentVariable(variableName, this.config);
-    let value: boolean | undefined = Boolean(valueStr);
+    let value: boolean | undefined = parseBooleanFromString(
+      valueStr,
+      this.config
+    );
 
     if (value === undefined && this.config?.runtime) {
-      const valueOrValueFunc =
-        environments[this.config.runtime] ?? environments.default;
+      const valueOrValueFunc = environments
+        ? environments[this.config.runtime] ?? environments.default
+        : undefined;
+
       if (typeof valueOrValueFunc === 'function') {
         value = valueOrValueFunc();
       } else {
