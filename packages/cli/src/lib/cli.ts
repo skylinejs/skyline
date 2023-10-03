@@ -2,6 +2,7 @@ import { CliConfiguration } from './cli-configuration.interface';
 import { CliInactivityTimeout } from './cli-inactivity-timeout';
 import inquirer from 'inquirer';
 import { getCommandPromptMessage } from './cli.utils';
+import * as inquirerAutocompletePrompt from 'inquirer-autocomplete-prompt';
 
 export class SkylineCli {
   private readonly config: CliConfiguration;
@@ -16,6 +17,9 @@ export class SkylineCli {
 
       commandPromptMessage: config.commandPromptMessage ?? 'Execute a command',
     };
+
+    // Inquirer
+    inquirer.registerPrompt('autocomplete', inquirerAutocompletePrompt);
 
     // Inactivity timeout
     if (config.inactivityTimeout instanceof CliInactivityTimeout) {
@@ -41,9 +45,12 @@ export class SkylineCli {
       // Prompt for command
       const { command } = await inquirer.prompt<{ command: string }>([
         {
-          type: 'input',
+          type: 'autocomplete',
           name: 'command',
           message: getCommandPromptMessage(this.config),
+          source: () => {
+            return ['1', '2', '3'];
+          },
         },
       ]);
     }
