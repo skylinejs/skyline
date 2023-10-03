@@ -1,3 +1,4 @@
+import { SkylineCliCommand } from '@skyline-js/cli';
 import { readFile, readFileSync, writeFileSync } from 'node:fs';
 import { readdir } from 'node:fs/promises';
 import { join } from 'path';
@@ -21,7 +22,7 @@ interface CodeBlockProperties {
   remove?: string[];
 }
 
-export class SynchronizeDocsCodeSnippetsCommand {
+export class SynchronizeDocsCodeSnippetsCommand extends SkylineCliCommand {
   async run() {
     console.log('Synchronizing code snippets in docs...');
     await this.synchronizeAllMarkdownCodeBlocks();

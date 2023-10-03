@@ -77,16 +77,16 @@ export class SkylineCli {
         command,
       }));
 
-      const command = commands.find((command) =>
+      const Command = commands.find((command) =>
         command.ids.includes(commandId)
       )?.command;
 
-      if (!command) {
+      if (!Command) {
         console.error(`Unknown command "${commandId}"`);
         process.exit(1);
       }
 
-      await new command().run();
+      await this.runCommand(Command);
       process.exit(0);
     }
 
@@ -103,12 +103,12 @@ export class SkylineCli {
       process.stdout.write('\n');
 
       // Prompt for command
-      const { command } = await inquirer.prompt<{
-        command: typeof SkylineCliCommand;
+      const { Command } = await inquirer.prompt<{
+        Command: typeof SkylineCliCommand;
       }>([
         {
           type: 'autocomplete',
-          name: 'command',
+          name: 'Command',
           pageSize: this.config.commandPromptPageSize,
           message: getCommandPromptMessage(this.config),
           source: (_: unknown, search: string) => {
@@ -125,7 +125,14 @@ export class SkylineCli {
         },
       ]);
 
-      await new command().run();
+      await this.runCommand(Command);
     }
+  }
+
+  async runCommand(Command: typeof SkylineCliCommand) {
+    const command = new Command();
+    command.config = this.config;
+    const result = await command.run();
+    return result;
   }
 }
