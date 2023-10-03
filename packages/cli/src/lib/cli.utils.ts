@@ -20,8 +20,8 @@ export function getCommandPromptMessage(
   return `${cliName}${config.commandPromptMessage}`;
 }
 
-export function getCommandName(command: typeof SkylineCliCommand) {
-  if (command.commandName) return command.commandName;
+export function getCommandDisplayName(command: typeof SkylineCliCommand) {
+  if (command.displayName) return command.displayName;
 
   let name = command.name;
 

@@ -1,7 +1,7 @@
 import { CliConfiguration } from './cli-configuration.interface';
 import { CliInactivityTimeout } from './cli-inactivity-timeout';
 import inquirer from 'inquirer';
-import { getCommandName, getCommandPromptMessage } from './cli.utils';
+import { getCommandDisplayName, getCommandPromptMessage } from './cli.utils';
 import InquirerAutocompletePrompt from 'inquirer-autocomplete-prompt';
 import { SkylineCliCommand } from './cli-command';
 import { fuzzyFilter } from './levenshtein-distance';
@@ -14,12 +14,18 @@ export class SkylineCli {
 
   constructor(config: Partial<CliConfiguration> = {}) {
     this.config = {
+      // === CLI name ===
       cliName: config.cliName ?? 'skyline',
       cliNameColor: config.cliNameColor ?? '#000000',
       cliNameBackgroundColor: config.cliNameBackgroundColor ?? '#FFFFFF',
 
-      commands: config.commands ?? [],
+      // === Command prompt ===
       commandPromptMessage: config.commandPromptMessage ?? 'Execute a command',
+      commandPromptPageSize: config.commandPromptPageSize ?? 10,
+
+      configurationFilePath: config.configurationFilePath ?? '.skylinerc.json',
+
+      commands: config.commands ?? [],
     };
 
     // Inquirer
@@ -57,17 +63,18 @@ export class SkylineCli {
         {
           type: 'autocomplete',
           name: 'command',
+          pageSize: this.config.commandPromptPageSize,
           message: getCommandPromptMessage(this.config),
           source: (_: any, search: string) => {
             search = (search || '').trim();
             const commands = this.config.commands.map((command) => ({
-              name: getCommandName(command),
+              name: getCommandDisplayName(command),
               value: command,
             }));
 
             if (!search) return commands;
 
-            // Filter via levenshtein distance
+            // Apply fuzzy filter
             const filteredCommandNames = fuzzyFilter(search, commands, {
               extract: (command: any) => command.name,
             }).map((result: any) => result.original);
@@ -76,6 +83,8 @@ export class SkylineCli {
           },
         },
       ]);
+
+      await new command().run();
     }
   }
 }
