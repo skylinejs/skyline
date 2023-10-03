@@ -1,10 +1,15 @@
 import { CliConfiguration } from './cli-configuration.interface';
 import { CliInactivityTimeout } from './cli-inactivity-timeout';
 import inquirer from 'inquirer';
-import { getCommandDisplayName, getCommandPromptMessage } from './cli.utils';
+import {
+  getCommandDisplayName,
+  getCommandIds,
+  getCommandPromptMessage,
+} from './cli.utils';
 import InquirerAutocompletePrompt from 'inquirer-autocomplete-prompt';
 import { SkylineCliCommand } from './cli-command';
 import { fuzzyFilter } from './fuzzy-filter';
+import { HelpCommand } from './help.command';
 
 export class SkylineCli {
   private readonly config: CliConfiguration;
@@ -20,7 +25,8 @@ export class SkylineCli {
       cliNameBackgroundColor: config.cliNameBackgroundColor ?? 'magenta',
 
       // === Command  ===
-      commands: config.commands ?? [],
+      commands: config.commands ?? [HelpCommand],
+      commandIdSeparator: config.commandIdSeparator ?? '-',
       commandPromptMessage: config.commandPromptMessage ?? 'Execute a command',
       commandPromptPageSize: config.commandPromptPageSize ?? 10,
       commandDisplayNameCapitalize: config.commandDisplayNameCapitalize ?? true,
@@ -55,6 +61,29 @@ export class SkylineCli {
   }
 
   async run() {
+    // Check if commandId was provided via CLI arguments
+    let [, , commandId] = process.argv;
+
+    if (commandId) {
+      const commands = this.config.commands.map((command) => ({
+        ids: getCommandIds(command, this.config),
+        command,
+      }));
+
+      const command = commands.find((command) =>
+        command.ids.includes(commandId)
+      )?.command;
+
+      if (!command) {
+        console.error(`Unknown command "${commandId}"`);
+        process.exit(1);
+      }
+
+      await new command().run();
+      process.exit(0);
+    }
+
+    // Interactive prompting
     while (!this.exit) {
       // Empty line
       process.stdout.write('\n');
