@@ -93,27 +93,22 @@ const config = {
             title: 'Docs',
             items: [
               {
-                label: 'Tutorial',
+                label: 'Introduction',
                 to: '/docs/introduction',
               },
-            ],
-          },
-          {
-            title: 'Community',
-            items: [
               {
-                label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
+                label: 'Environment',
+                to: '/docs/environment',
+              },
+              {
+                label: 'Caching',
+                to: '/docs/caching',
               },
             ],
           },
           {
             title: 'More',
             items: [
-              {
-                label: 'Blog',
-                to: '/blog',
-              },
               {
                 label: 'GitHub',
                 href: 'https://github.com/skylinejs/skyline',
