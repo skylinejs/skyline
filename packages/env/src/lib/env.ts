@@ -3,6 +3,7 @@ import {
   EnvConfigurationInput,
 } from './env-configuration.interface';
 import { EnvInputValidationError, EnvParsingError } from './env-error';
+import { StringParsingOptions } from './env.interface';
 import {
   isEnumType,
   isNotNullish,
@@ -198,33 +199,37 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   /**
    * Parse an environment variable as a string.
    * @param variableName Name of the environment variable to parse
-   * @param environments
+   * @param options
    */
   parseString(
     variableName: string,
-    environments?: Partial<{
+    options?: Partial<{
       [key in keyof RuntimeEnvironment]: string | (() => string);
-    }> & { default: string | (() => string) }
+    }> &
+      StringParsingOptions & { default: string | (() => string) }
   ): string;
   parseString(
     variableName: string,
-    environments?: Partial<{
+    options?: Partial<{
       [key in keyof RuntimeEnvironment]: string | (() => string);
-    }> & { default?: string | (() => string) }
+    }> &
+      StringParsingOptions & { default?: string | (() => string) }
   ): string | undefined;
   parseString(
     variableName: string,
-    environments?: Partial<{
+    options?: Partial<{
       [key in keyof RuntimeEnvironment]: string | (() => string);
-    }> & { default?: string | (() => string) }
+    }> &
+      StringParsingOptions & { default?: string | (() => string) }
   ): string | undefined {
     let value: string | undefined = parseEnvironmentVariable(
       variableName,
       this.config
     );
+
     if (value === undefined && this.config?.runtime) {
-      const valueOrValueFunc = environments
-        ? environments[this.config.runtime] ?? environments.default
+      const valueOrValueFunc = options
+        ? options[this.config.runtime] ?? options.default
         : undefined;
 
       if (typeof valueOrValueFunc === 'function') {
@@ -235,6 +240,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     }
     return value;
   }
+
   /**
    * Parse an environment variable as an array of strings.
    * @param variableName Name of the environment variable to parse
