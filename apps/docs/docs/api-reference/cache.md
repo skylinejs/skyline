@@ -24,7 +24,7 @@ npm install @skyline-js/cache
 ```ts
 import { SkylineCache } from '@skyline-js/cache';
 
-const cache = new SkylineCache({});
+const cache = new SkylineCache();
 ```
 
 ### cache.get

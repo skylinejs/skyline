@@ -26,7 +26,7 @@ npm install @skyline-js/env
 ```ts
 import { SkylineEnv } from '@skyline-js/env';
 
-const env = new SkylineEnv({});
+const env = new SkylineEnv();
 ```
 
 <br />
