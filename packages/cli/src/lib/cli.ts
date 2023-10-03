@@ -4,7 +4,7 @@ import inquirer from 'inquirer';
 import { getCommandDisplayName, getCommandPromptMessage } from './cli.utils';
 import InquirerAutocompletePrompt from 'inquirer-autocomplete-prompt';
 import { SkylineCliCommand } from './cli-command';
-import { fuzzyFilter } from './levenshtein-distance';
+import { fuzzyFilter } from './fuzzy-filter';
 
 export class SkylineCli {
   private readonly config: CliConfiguration;
