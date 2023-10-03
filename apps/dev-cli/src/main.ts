@@ -1,11 +1,11 @@
-import * as inquirer from 'inquirer';
+import inquirer from 'inquirer';
 import { SynchronizeDocsCodeSnippetsCommand } from './commands/synchronized-docs-code-snippets.command';
 import { PublishDocsToGithubPagesCommand } from './commands/publish-docs-to-github-pages.command';
 
 async function main() {
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    const { command } = await inquirer.default.prompt([
+    const { command } = await inquirer.prompt([
       {
         message: 'Command',
         type: 'list',

@@ -1,5 +1,6 @@
 import { CliConfiguration } from './cli-configuration.interface';
 import { CliInactivityTimeout } from './cli-inactivity-timeout';
+import inquirer from 'inquirer';
 
 export class SkylineCli {
   private config: CliConfiguration;
@@ -20,4 +21,6 @@ export class SkylineCli {
     }
     this.timeout?.register();
   }
+
+  async run() {}
 }
