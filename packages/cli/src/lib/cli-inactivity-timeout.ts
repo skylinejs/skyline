@@ -1,9 +1,10 @@
 import { PassThrough } from 'stream';
 
 export interface CliInactivityTimeoutConfiguration {
-  stdinTimeout: number;
-  stdoutTimeout: number;
-  stderrTimeout: number;
+  checkIntervalMs: number;
+  stdinTimeoutMs: number;
+  stdoutTimeoutMs: number;
+  stderrTimeoutMs: number;
 }
 
 export class CliInactivityTimeout {
@@ -15,9 +16,10 @@ export class CliInactivityTimeout {
   constructor(config: Partial<CliInactivityTimeoutConfiguration> = {}) {
     // Default to 24 hours
     this.config = {
-      stdinTimeout: config.stdinTimeout ?? 1_000 * 60 * 60 * 24,
-      stdoutTimeout: config.stdoutTimeout ?? 1_000 * 60 * 60 * 24,
-      stderrTimeout: config.stderrTimeout ?? 1_000 * 60 * 60 * 24,
+      checkIntervalMs: config.checkIntervalMs ?? 5_000,
+      stdinTimeoutMs: config.stdinTimeoutMs ?? 1_000 * 60 * 60 * 24,
+      stdoutTimeoutMs: config.stdoutTimeoutMs ?? 1_000 * 60 * 60 * 24,
+      stderrTimeoutMs: config.stderrTimeoutMs ?? 1_000 * 60 * 60 * 24,
     };
   }
 
@@ -28,7 +30,6 @@ export class CliInactivityTimeout {
       process.stdin.pipe(_stdin);
       _stdin.on('data', () => {
         this.stdinEmissionAt = Date.now();
-        this.checkInactivityTimeouts();
       });
     }
 
@@ -37,7 +38,6 @@ export class CliInactivityTimeout {
       const write = process.stdout.write.bind(process.stdout);
       process.stdout.write = (data: any, ...args: any[]) => {
         this.stdoutEmissionAt = Date.now();
-        this.checkInactivityTimeouts();
 
         return write(data, ...args);
       };
@@ -48,19 +48,24 @@ export class CliInactivityTimeout {
       const write = process.stderr.write.bind(process.stderr);
       process.stderr.write = (data: any, ...args: any[]) => {
         this.stderrEmissionAt = Date.now();
-        this.checkInactivityTimeouts();
 
         return write(data, ...args);
       };
     }
+
+    // Schedule check
+    setInterval(
+      () => this.checkInactivityTimeouts(),
+      this.config.checkIntervalMs
+    );
   }
 
   private checkInactivityTimeouts() {
     const now = Date.now();
     if (
-      now - this.stdinEmissionAt > this.config.stdinTimeout &&
-      now - this.stdoutEmissionAt > this.config.stdoutTimeout &&
-      now - this.stderrEmissionAt > this.config.stderrTimeout
+      now - this.stdinEmissionAt > this.config.stdinTimeoutMs &&
+      now - this.stdoutEmissionAt > this.config.stdoutTimeoutMs &&
+      now - this.stderrEmissionAt > this.config.stderrTimeoutMs
     ) {
       process.stdout.write('No activity. Exiting.');
       process.exit(0);

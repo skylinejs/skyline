@@ -36,9 +36,9 @@ export class SkylineCli {
       this.timeout = config.inactivityTimeout;
     } else if (typeof config.inactivityTimeout === 'number') {
       this.timeout = new CliInactivityTimeout({
-        stdinTimeout: config.inactivityTimeout,
-        stdoutTimeout: config.inactivityTimeout,
-        stderrTimeout: config.inactivityTimeout,
+        stdinTimeoutMs: config.inactivityTimeout,
+        stdoutTimeoutMs: config.inactivityTimeout,
+        stderrTimeoutMs: config.inactivityTimeout,
       });
     }
     this.timeout?.register();
