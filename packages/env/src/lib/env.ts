@@ -20,14 +20,18 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   private readonly config: EnvConfiguration<RuntimeEnvironment>;
   constructor(config?: EnvConfigurationInput<RuntimeEnvironment>) {
     this.config = {
+      // Runtime environment
       runtime: config?.runtime as RuntimeEnvironment[keyof RuntimeEnvironment],
       runtimes: config?.runtimes,
       processEnv: config?.processEnv ?? process.env ?? {},
 
-      prefix: config?.prefix ?? '',
+      // Variable name
+      variableNamePrefix: config?.variableNamePrefix ?? '',
+      variableNameIgnoreCasing: config?.variableNameIgnoreCasing ?? false,
 
-      // Array parsing
-      arraySeparator: config?.arraySeparator ?? ',',
+      // Variable value
+      removeAfterParse: config?.removeAfterParse ?? false,
+      valueTrim: config?.valueTrim ?? false,
 
       // Boolean parsing
       booleanTrueValues: config?.booleanTrueValues ?? [
@@ -50,6 +54,28 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
         'disabled',
         'disable',
       ],
+
+      // String parsing
+      stringMinLength: config?.stringMinLength,
+      stringMaxLength: config?.stringMaxLength,
+      stringPattern: config?.stringPattern,
+
+      // Number parsing
+      numberMinimum: config?.numberMinimum,
+      numberMaximum: config?.numberMaximum,
+      numberExclusiveMinimum: config?.numberExclusiveMinimum,
+      numberExclusiveMaximum: config?.numberExclusiveMaximum,
+
+      // JSON parsing
+      jsonMinProperties: config?.jsonMinProperties,
+      jsonMaxProperties: config?.jsonMaxProperties,
+      jsonRequired: config?.jsonRequired,
+
+      // Array parsing
+      arraySeparator: config?.arraySeparator ?? ',',
+      arrayMinLength: config?.arrayMinLength,
+      arrayMaxLength: config?.arrayMaxLength,
+      arrayUniqueItems: config?.arrayUniqueItems,
     };
 
     // Validate runtime if possible

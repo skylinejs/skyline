@@ -10,11 +10,17 @@ export function parseEnvironmentVariable<
   RuntimeEnvironment extends { [key: string]: string }
 >(
   variableName: string,
-  config: Pick<EnvConfiguration<RuntimeEnvironment>, 'prefix' | 'processEnv'>
+  config: Pick<
+    EnvConfiguration<RuntimeEnvironment>,
+    'variableNamePrefix' | 'processEnv'
+  >
 ): string | undefined {
-  if (config.prefix && !variableName.startsWith(config.prefix.toLowerCase())) {
+  if (
+    config.variableNamePrefix &&
+    !variableName.startsWith(config.variableNamePrefix.toLowerCase())
+  ) {
     throw new Error(
-      `Cannot obtain environment variable "${variableName}": has to start with "${config.prefix}"`
+      `Cannot obtain environment variable "${variableName}": has to start with "${config.variableNamePrefix}"`
     );
   }
 

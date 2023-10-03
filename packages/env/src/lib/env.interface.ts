@@ -1,26 +1,40 @@
-export interface BooleanParsingptions {}
+export interface ParsingOptions {
+  // Variable name
+  variableNamePrefix?: boolean;
+  variableNameIgnoreCasing?: boolean;
 
-export interface StringParsingOptions {
-  minLength?: number;
-  maxLength?: number;
-  pattern?: RegExp | string;
+  // Variable value
+  removeAfterParse?: boolean;
+  valueTrim?: boolean;
 }
 
-export interface NumberParsingOptions {
-  minimum?: number;
-  maximum?: number;
-  exclusiveMinimum?: number;
-  exclusiveMaximum?: number;
+export interface BooleanParsingptions extends ParsingOptions {
+  booleanTrueValues?: string[];
+  booleanFalseValues?: string[];
 }
 
-export interface ArrayParsingOptions {
-  minLength?: number;
-  maxLength?: number;
-  uniqueItems?: boolean;
+export interface StringParsingOptions extends ParsingOptions {
+  stringMinLength?: number;
+  stringMaxLength?: number;
+  stringPattern?: RegExp | string;
 }
 
-export interface JsonParsingOptions {
-  minProperties?: number;
-  maxProperties?: number;
-  required?: string[];
+export interface NumberParsingOptions extends ParsingOptions {
+  numberMinimum?: number;
+  numberMaximum?: number;
+  numberExclusiveMinimum?: number;
+  numberExclusiveMaximum?: number;
+}
+
+export interface JsonParsingOptions extends ParsingOptions {
+  jsonMinProperties?: number;
+  jsonMaxProperties?: number;
+  jsonRequired?: string[];
+}
+
+export interface ArrayParsingOptions extends ParsingOptions {
+  arraySeparator?: string;
+  arrayMinLength?: number;
+  arrayMaxLength?: number;
+  arrayUniqueItems?: boolean;
 }
