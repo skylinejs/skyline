@@ -1,9 +1,9 @@
 ---
-sidebar_position: 6
-slug: /healthcheck
+sidebar_position: 7
+slug: architecture
 ---
 
-# Healthcheck
+# Architecture
 
 :::caution In development
 

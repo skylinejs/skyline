@@ -1,7 +1,19 @@
+---
+sidebar_position: 4
+slug: email
+---
+
 # Email
+
+:::caution In development
+
+This part of SkylineJS is still in development.
+
+:::
 
 Despite the yearly announcement that "email is dead", every server application continues to send out emails.
 
+<!--
 ## MJML
 
 Mjml is a good balance in complexity and power, does all the email legacy and responsive stuff
@@ -32,3 +44,5 @@ email has a lot of steps and components/ infra in between you sending and the us
 Therefore paramount to test emails.
 You can use mailhog for this as a local SMTP server for DEV/ CI.
 However, mailhog api is not good for reliable tests, so this package provides you with the necessary utilities.
+
+-->

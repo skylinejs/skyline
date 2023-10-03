@@ -1,8 +1,12 @@
 ---
-sidebar_position: 3
+sidebar_position: 5
 slug: /translation
 ---
 
 # Translation
 
-@skyline-js/translate
+:::caution In development
+
+This part of SkylineJS is still in development.
+
+:::
