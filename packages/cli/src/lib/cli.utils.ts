@@ -1,5 +1,5 @@
 import { CliConfiguration } from './cli-configuration.interface';
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 
 export function getCommandPromptMessage(
   config: Pick<

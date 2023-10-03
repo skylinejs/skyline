@@ -1,6 +1,7 @@
-import inquirer from 'inquirer';
 import { SynchronizeDocsCodeSnippetsCommand } from './commands/synchronized-docs-code-snippets.command';
 import { PublishDocsToGithubPagesCommand } from './commands/publish-docs-to-github-pages.command';
+import { SkylineCli } from '@skyline-js/cli';
+import inquirer from 'inquirer';
 
 async function main() {
   // eslint-disable-next-line no-constant-condition
@@ -36,4 +37,6 @@ async function main() {
   }
 }
 
-void main();
+// void main();
+const cli = new SkylineCli();
+void cli.run();
