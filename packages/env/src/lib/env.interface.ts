@@ -1,11 +1,14 @@
+export type ValueEncodingType = 'base64' | 'base64url' | 'hex' | 'url';
+
 export interface ParsingOptions {
   // Variable name
   variableNamePrefix?: boolean;
   variableNameIgnoreCasing?: boolean;
 
   // Variable value
-  removeAfterParse?: boolean;
   valueTrim?: boolean;
+  valueEncoding?: ValueEncodingType;
+  valueRemoveAfterParse?: boolean;
 }
 
 export interface BooleanParsingptions extends ParsingOptions {

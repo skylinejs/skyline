@@ -156,30 +156,6 @@ describe('SkylineEnv', () => {
     expect(parser.parseBoolean('false8')).toBe(false);
   });
 
-  it('Parse string environment variable', () => {
-    const envParser = new SkylineEnv<typeof RuntimeEnvironment>({
-      processEnv: {
-        SERVER_DATABASE_HOST: 'localhost',
-      },
-    });
-
-    const env = {
-      database: {
-        host: envParser.parseString('SERVER_DATABASE_HOST', {
-          DEV: '127.0.0.1',
-          PRD: 'db.example.org',
-        }),
-        port: envParser.parseNumber('SERVER_DATABASE_PORT', {
-          DEV: 5432,
-          PRD: 5433,
-        }),
-      },
-    };
-
-    expect(env.database.host).toBe('localhost');
-    expect(env.database.port).toBe(undefined);
-  });
-
   it('Parse boolean array environment variable with default configuration', () => {
     // Parse boolean array environment variable
     const parser = new SkylineEnv<typeof RuntimeEnvironment>({
@@ -302,6 +278,30 @@ describe('SkylineEnv', () => {
   });
 
   /** === */
+
+  it('Parse string environment variable', () => {
+    const envParser = new SkylineEnv<typeof RuntimeEnvironment>({
+      processEnv: {
+        SERVER_DATABASE_HOST: 'localhost',
+      },
+    });
+
+    const env = {
+      database: {
+        host: envParser.parseString('SERVER_DATABASE_HOST', {
+          DEV: '127.0.0.1',
+          PRD: 'db.example.org',
+        }),
+        port: envParser.parseNumber('SERVER_DATABASE_PORT', {
+          DEV: 5432,
+          PRD: 5433,
+        }),
+      },
+    };
+
+    expect(env.database.host).toBe('localhost');
+    expect(env.database.port).toBe(undefined);
+  });
 
   it('Parse string environment variable', () => {
     const envParser = new SkylineEnv<typeof RuntimeEnvironment>({

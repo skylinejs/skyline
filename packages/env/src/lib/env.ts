@@ -31,8 +31,9 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       variableNameIgnoreCasing: config?.variableNameIgnoreCasing ?? false,
 
       // Variable value
-      removeAfterParse: config?.removeAfterParse ?? false,
       valueTrim: config?.valueTrim ?? false,
+      valueEncoding: config?.valueEncoding,
+      valueRemoveAfterParse: config?.valueRemoveAfterParse ?? false,
 
       // Boolean parsing
       booleanTrueValues: config?.booleanTrueValues ?? [
@@ -250,14 +251,15 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]: string | (() => string);
     }> & { default?: string | (() => string) } & StringParsingOptions
   ): string | undefined {
+    const config = assignOptions(this.config, options);
     let value: string | undefined = parseEnvironmentVariable(
       variableName,
-      this.config
+      config
     );
 
-    if (value === undefined && this.config?.runtime) {
+    if (value === undefined && config?.runtime) {
       const valueOrValueFunc = options
-        ? options[this.config.runtime] ?? options.default
+        ? options[config.runtime] ?? options.default
         : undefined;
 
       if (typeof valueOrValueFunc === 'function') {
@@ -292,11 +294,12 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]: string[] | (() => string[]);
     }> & { default?: string[] | (() => string[]) } & StringParsingOptions
   ): string[] | undefined {
-    const valueStr = parseEnvironmentVariable(variableName, this.config);
+    const config = assignOptions(this.config, options);
+    const valueStr = parseEnvironmentVariable(variableName, config);
     let value: string[] | undefined = valueStr?.split(',') ?? undefined;
-    if (value === undefined && this.config?.runtime) {
+    if (value === undefined && config?.runtime) {
       const valueOrValueFunc = options
-        ? options[this.config.runtime] ?? options.default
+        ? options[config.runtime] ?? options.default
         : undefined;
 
       if (typeof valueOrValueFunc === 'function') {

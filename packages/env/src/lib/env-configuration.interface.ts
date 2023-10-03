@@ -1,3 +1,5 @@
+import { ValueEncodingType } from './env.interface';
+
 export interface EnvConfigurationInput<
   RuntimeEnvironment extends { [key: string]: string } = {}
 > {
@@ -11,8 +13,9 @@ export interface EnvConfigurationInput<
   variableNameIgnoreCasing?: boolean;
 
   // Variable value
-  removeAfterParse?: boolean;
   valueTrim?: boolean;
+  valueEncoding?: ValueEncodingType;
+  valueRemoveAfterParse?: boolean;
 
   // Boolean parsing
   booleanTrueValues?: string[];
@@ -54,8 +57,9 @@ export interface EnvConfiguration<
   variableNameIgnoreCasing: boolean;
 
   // Variable value
-  removeAfterParse: boolean;
   valueTrim: boolean;
+  valueEncoding?: ValueEncodingType;
+  valueRemoveAfterParse: boolean;
 
   // Boolean parsing
   booleanTrueValues: string[];
