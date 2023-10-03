@@ -13,8 +13,13 @@ export function getCommandPromptMessage(
 ) {
   let cliName = '';
   if (config.cliName) {
-    const { cliNameColor: color, cliNameBackgroundColor: bgColor } = config;
-    cliName = chalk.hex(color).bgHex(bgColor)(`[${config.cliName}]`) + ' ';
+    cliName = `[${config.cliName}]`;
+
+    const { cliNameColor: color, cliNameBackgroundColor } = config;
+    const bgColor = 'bg' + capitalize(cliNameBackgroundColor);
+    cliName = (chalk as any)[bgColor](cliName);
+    cliName = chalk[color](cliName);
+    cliName += ' ';
   }
 
   return `${cliName}${config.commandPromptMessage}`;
@@ -41,7 +46,11 @@ export function getCommandDisplayName(
 
   // Capitalize first letter
   if (config.commandDisplayNameCapitalize) {
-    name = name.charAt(0).toUpperCase() + name.slice(1);
+    name = capitalize(name);
   }
   return name;
+}
+
+export function capitalize(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }

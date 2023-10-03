@@ -15,9 +15,9 @@ export class SkylineCli {
   constructor(config: Partial<CliConfiguration> = {}) {
     this.config = {
       // === CLI name ===
-      cliName: config.cliName ?? 'skyline',
-      cliNameColor: config.cliNameColor ?? '#000000',
-      cliNameBackgroundColor: config.cliNameBackgroundColor ?? '#FFFFFF',
+      cliName: config.cliName !== undefined ? config.cliName : 'skyline',
+      cliNameColor: config.cliNameColor ?? 'black',
+      cliNameBackgroundColor: config.cliNameBackgroundColor ?? 'magenta',
 
       // === Command  ===
       commands: config.commands ?? [],
@@ -56,6 +56,9 @@ export class SkylineCli {
 
   async run() {
     while (!this.exit) {
+      // Empty line
+      process.stdout.write('\n');
+
       // Prompt for command
       const { command } = await inquirer.prompt<{
         command: typeof SkylineCliCommand;

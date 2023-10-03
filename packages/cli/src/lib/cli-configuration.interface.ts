@@ -3,9 +3,45 @@ import { CliInactivityTimeout } from './cli-inactivity-timeout';
 
 export interface CliConfiguration {
   // === CLI name ===
-  cliName: string;
-  cliNameColor: string;
-  cliNameBackgroundColor: string;
+  cliName: string | null;
+  cliNameColor:
+    | 'black'
+    | 'red'
+    | 'green'
+    | 'yellow'
+    | 'blue'
+    | 'magenta'
+    | 'cyan'
+    | 'white'
+    | 'gray'
+    | 'grey'
+    | 'blackBright'
+    | 'redBright'
+    | 'greenBright'
+    | 'yellowBright'
+    | 'blueBright'
+    | 'magentaBright'
+    | 'cyanBright'
+    | 'whiteBright';
+  cliNameBackgroundColor:
+    | 'black'
+    | 'red'
+    | 'green'
+    | 'yellow'
+    | 'blue'
+    | 'magenta'
+    | 'cyan'
+    | 'white'
+    | 'gray'
+    | 'grey'
+    | 'blackBright'
+    | 'redBright'
+    | 'greenBright'
+    | 'yellowBright'
+    | 'blueBright'
+    | 'magentaBright'
+    | 'cyanBright'
+    | 'whiteBright';
 
   // === Commands ===
   commands: Array<typeof SkylineCliCommand>;

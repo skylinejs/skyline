@@ -23,8 +23,10 @@ interface CodeBlockProperties {
 
 export class SynchronizeDocsCodeSnippetsCommand {
   async run() {
+    console.log('Synchronizing code snippets in docs...');
     await this.synchronizeAllMarkdownCodeBlocks();
     await this.synchronizeAllDocusaurusCodeTabs();
+    console.log('Done');
   }
 
   private parseCodeBlockProperties(

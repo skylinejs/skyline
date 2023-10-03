@@ -7,6 +7,5 @@ new SkylineCli({
     SynchronizeDocsCodeSnippetsCommand,
     PublishDocsToGithubPagesCommand,
   ],
-  commandDisplayNameCapitalize: true,
   inactivityTimeout: 1_000 * 60 * 60 * 24, // 1 day
 }).run();
