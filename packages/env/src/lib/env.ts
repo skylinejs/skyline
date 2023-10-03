@@ -1,8 +1,49 @@
-import { EnvConfiguration } from './env-configuration.interface';
+import {
+  EnvConfiguration,
+  EnvConfigurationInput,
+} from './env-configuration.interface';
 import { isEnumType, parseEnvironmentVariable } from './env.utils';
 
 export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
-  constructor(private readonly config?: EnvConfiguration<RuntimeEnvironment>) {}
+  private readonly config: EnvConfiguration<RuntimeEnvironment>;
+  constructor(config?: EnvConfigurationInput<RuntimeEnvironment>) {
+    this.config = {
+      runtime: config?.runtime as RuntimeEnvironment[keyof RuntimeEnvironment],
+      runtimes: config?.runtimes,
+      processEnv: config?.processEnv ?? process.env ?? {},
+
+      prefix: config?.prefix ?? '',
+
+      // Boolean parsing
+      booleanTrueValues: config?.booleanTrueValues ?? [
+        'true',
+        '1',
+        'yes',
+        'y',
+        'on',
+        'enabled',
+        'enable',
+        'ok',
+        'okay',
+      ],
+      booleanFalseValues: config?.booleanFalseValues ?? [
+        'false',
+        '0',
+        'no',
+        'n',
+        'off',
+        'disabled',
+        'disable',
+      ],
+    };
+
+    // Validate runtime
+    if (config?.runtime && config?.runtimes) {
+      if (!config.runtimes[config.runtime]) {
+        throw new Error(`Invalid runtime: ${this.config.runtime}`);
+      }
+    }
+  }
 
   /**
    * Parse an environment variable as a string.
@@ -220,6 +261,39 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     return value;
   }
 
+  parseNumberArray(
+    variableName: string,
+    environments: Partial<{
+      [key in keyof RuntimeEnvironment]: number[] | (() => number[]);
+    }> & { default: number[] | (() => number[]) }
+  ): number[];
+  parseNumberArray(
+    variableName: string,
+    environments: Partial<{
+      [key in keyof RuntimeEnvironment]: number[] | (() => number[]);
+    }> & { default?: number[] | (() => number[]) }
+  ): number[] | undefined;
+  parseNumberArray(
+    variableName: string,
+    environments: Partial<{
+      [key in keyof RuntimeEnvironment]: number[] | (() => number[]);
+    }> & { default?: number[] | (() => number[]) }
+  ): number[] | undefined {
+    const valueStr = parseEnvironmentVariable(variableName, this.config);
+    let value: number[] | undefined = [Number(valueStr)];
+
+    if (value === undefined && this.config?.runtime) {
+      const valueOrValueFunc =
+        environments[this.config.runtime] ?? environments.default;
+      if (typeof valueOrValueFunc === 'function') {
+        value = valueOrValueFunc();
+      } else {
+        value = valueOrValueFunc;
+      }
+    }
+    return value;
+  }
+
   parseBoolean(
     variableName: string,
     environments: Partial<{
@@ -240,6 +314,39 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   ): boolean | undefined {
     const valueStr = parseEnvironmentVariable(variableName, this.config);
     let value: boolean | undefined = Boolean(valueStr);
+
+    if (value === undefined && this.config?.runtime) {
+      const valueOrValueFunc =
+        environments[this.config.runtime] ?? environments.default;
+      if (typeof valueOrValueFunc === 'function') {
+        value = valueOrValueFunc();
+      } else {
+        value = valueOrValueFunc;
+      }
+    }
+    return value;
+  }
+
+  parseBooleanArray(
+    variableName: string,
+    environments: Partial<{
+      [key in keyof RuntimeEnvironment]: boolean[] | (() => boolean[]);
+    }> & { default: boolean[] | (() => boolean[]) }
+  ): boolean[];
+  parseBooleanArray(
+    variableName: string,
+    environments: Partial<{
+      [key in keyof RuntimeEnvironment]: boolean[] | (() => boolean[]);
+    }> & { default?: boolean[] | (() => boolean[]) }
+  ): boolean[] | undefined;
+  parseBooleanArray(
+    variableName: string,
+    environments: Partial<{
+      [key in keyof RuntimeEnvironment]: boolean[] | (() => boolean[]);
+    }> & { default?: boolean[] | (() => boolean[]) }
+  ): boolean[] | undefined {
+    const valueStr = parseEnvironmentVariable(variableName, this.config);
+    let value: boolean[] | undefined = [Boolean(valueStr)];
 
     if (value === undefined && this.config?.runtime) {
       const valueOrValueFunc =
