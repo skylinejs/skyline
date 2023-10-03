@@ -51,22 +51,25 @@ export class SkylineCli {
   async run() {
     while (!this.exit) {
       // Prompt for command
-      const { command } = await inquirer.prompt<{ command: string }>([
+      const { command } = await inquirer.prompt<{
+        command: typeof SkylineCliCommand;
+      }>([
         {
           type: 'autocomplete',
           name: 'command',
           message: getCommandPromptMessage(this.config),
           source: (_: any, search: string) => {
             search = (search || '').trim();
-            const commandNames = this.config.commands.map((command) =>
-              getCommandName(command)
-            );
+            const commands = this.config.commands.map((command) => ({
+              name: getCommandName(command),
+              value: command,
+            }));
 
-            if (!search) return commandNames;
+            if (!search) return commands;
 
             // Filter via levenshtein distance
-            const filteredCommandNames = fuzzyFilter(search, commandNames, {
-              extract: (cmd: string) => cmd,
+            const filteredCommandNames = fuzzyFilter(search, commands, {
+              extract: (command: any) => command.name,
             }).map((result: any) => result.original);
 
             return filteredCommandNames;
