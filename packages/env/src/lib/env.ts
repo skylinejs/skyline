@@ -1,5 +1,9 @@
 import { EnvConfiguration } from './env-configuration.interface';
-import { EnvInputValidationError, EnvParsingError } from './env-error';
+import {
+  EnvInputValidationError,
+  EnvParsingError,
+  EnvValidationError,
+} from './env-error';
 import {
   BooleanParsingptions,
   NumberParsingOptions,
@@ -13,6 +17,7 @@ import {
   parseBooleanValue,
   parseEnvironmentVariable,
   parseNumberValue,
+  validateNumberValue,
 } from './env.utils';
 
 export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
@@ -450,7 +455,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   ): number | undefined {
     const config = assignOptions(this.config, options);
     const valueStr = parseEnvironmentVariable(variableName, this.config);
-    let value: number | undefined = parseNumberValue(valueStr, config);
+    let value: number | undefined = parseNumberValue(valueStr);
 
     // Environment variable is set but could not be parsed as number
     if (valueStr !== undefined && value === undefined) {
@@ -474,6 +479,19 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
         value = valueOrValueFunc;
       }
     }
+
+    // Validate number value
+    const validationResult = validateNumberValue(value, config);
+    if (typeof validationResult === 'string') {
+      throw new EnvValidationError(
+        `[env.parseNumber] Invalid value "${value}" for environment variable "${variableName}". ${validationResult}`,
+        {
+          variableName,
+          value: valueStr,
+        }
+      );
+    }
+
     return value;
   }
 
@@ -520,7 +538,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
 
     if (valuesStr) {
       values = valuesStr
-        .map((valueStr) => parseNumberValue(valueStr, config))
+        .map((valueStr) => parseNumberValue(valueStr))
         .filter(isNotNullish);
 
       // Environment variable is set but could not be parsed as number

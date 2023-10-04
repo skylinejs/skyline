@@ -110,16 +110,7 @@ export function parseBooleanValue<
 
 export function parseNumberValue<
   RuntimeEnvironment extends { [key: string]: string }
->(
-  value: unknown,
-  config: Pick<
-    EnvConfiguration<RuntimeEnvironment>,
-    | 'numberMinimum'
-    | 'numberMaximum'
-    | 'numberExclusiveMinimum'
-    | 'numberExclusiveMaximum'
-  >
-): number | undefined {
+>(value: unknown): number | undefined {
   if (typeof value === 'number') {
     return value;
   }
@@ -138,7 +129,7 @@ export function parseNumberValue<
 export function validateNumberValue<
   RuntimeEnvironment extends { [key: string]: string }
 >(
-  value: number,
+  value: number | undefined,
   config: Pick<
     EnvConfiguration<RuntimeEnvironment>,
     | 'numberMinimum'
@@ -147,27 +138,38 @@ export function validateNumberValue<
     | 'numberExclusiveMinimum'
     | 'numberExclusiveMaximum'
   >
-): boolean {
+): true | string {
+  if (value === undefined) return true;
+
+  // Number minimum
   if (config.numberMinimum !== undefined && value < config.numberMinimum) {
-    return false;
+    return `Value must be greater than or equal to "${config.numberMinimum}".`;
   }
 
+  // Number maximum
   if (config.numberMaximum !== undefined && value > config.numberMaximum) {
-    return false;
+    return `Value must be less than or equal to "${config.numberMaximum}".`;
   }
 
+  // Number is integer
+  if (config.numberIsInteger && !Number.isInteger(value)) {
+    return `Value must be an integer.`;
+  }
+
+  // Number exclusive minimum
   if (
     config.numberExclusiveMinimum !== undefined &&
     value <= config.numberExclusiveMinimum
   ) {
-    return false;
+    return `Value must be greater than "${config.numberExclusiveMinimum}".`;
   }
 
+  // Number exclusive maximum
   if (
     config.numberExclusiveMaximum !== undefined &&
     value >= config.numberExclusiveMaximum
   ) {
-    return false;
+    return `Value must be less than "${config.numberExclusiveMaximum}".`;
   }
 
   return true;

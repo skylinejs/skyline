@@ -1,5 +1,9 @@
 import { SkylineEnv } from './env';
-import { EnvInputValidationError, EnvParsingError } from './env-error';
+import {
+  EnvInputValidationError,
+  EnvParsingError,
+  EnvValidationError,
+} from './env-error';
 
 enum RuntimeEnvironment {
   DEV = 'DEV',
@@ -474,6 +478,70 @@ describe('SkylineEnv', () => {
 
     expect(() => parser.parseNumber('fail5')).toThrowError(EnvParsingError);
     expect(() => parser.parseNumber('fail5')).toThrow('env.parseNumber');
+  });
+
+  it('Parse number environment variable with validation constraints', () => {
+    // Parse number environment variable
+    const parser = new SkylineEnv<typeof RuntimeEnvironment>({
+      processEnv: {
+        test1: '10',
+        test2: '100',
+        test3: '1.2',
+        test4: '1000',
+        test5: '10000',
+      },
+    });
+
+    const env = {
+      test1: parser.parseNumber('test1', { numberMinimum: 10 }),
+      test2: parser.parseNumber('test2', { numberMaximum: 100 }),
+      test3: parser.parseNumber('test3', { numberIsInteger: false }),
+      test4: parser.parseNumber('test4', { numberExclusiveMinimum: 999 }),
+      test5: parser.parseNumber('test5', { numberExclusiveMaximum: 10001 }),
+    };
+
+    expect(env).toEqual({
+      test1: 10,
+      test2: 100,
+      test3: 1.2,
+      test4: 1000,
+      test5: 10000,
+    });
+
+    expect(() => parser.parseNumber('test1', { numberMinimum: 11 })).toThrow(
+      EnvValidationError
+    );
+    expect(() =>
+      parser.parseNumber('test1', { numberMinimum: 11 })
+    ).toThrowError('greater than or equal');
+
+    expect(() => parser.parseNumber('test2', { numberMaximum: 99 })).toThrow(
+      EnvValidationError
+    );
+    expect(() =>
+      parser.parseNumber('test2', { numberMaximum: 99 })
+    ).toThrowError('less than or equal');
+
+    expect(() =>
+      parser.parseNumber('test3', { numberIsInteger: true })
+    ).toThrow(EnvValidationError);
+    expect(() =>
+      parser.parseNumber('test3', { numberIsInteger: true })
+    ).toThrowError('integer');
+
+    expect(() =>
+      parser.parseNumber('test4', { numberExclusiveMinimum: 1000 })
+    ).toThrow(EnvValidationError);
+    expect(() =>
+      parser.parseNumber('test4', { numberExclusiveMinimum: 1000 })
+    ).toThrowError('greater than ');
+
+    expect(() =>
+      parser.parseNumber('test5', { numberExclusiveMaximum: 10000 })
+    ).toThrow(EnvValidationError);
+    expect(() =>
+      parser.parseNumber('test5', { numberExclusiveMaximum: 10000 })
+    ).toThrowError('less than');
   });
 
   it('Parse number array environment variable with custom configuration', () => {
