@@ -218,6 +218,7 @@ describe('SkylineEnv', () => {
         test1: 'true',
         test2: 'true,1',
         test3: 'yes,false',
+        test4: 'yes,false,1,0,0,0,1',
 
         fail1: 'y, 0',
         fail2: 'on, no',
@@ -236,12 +237,14 @@ describe('SkylineEnv', () => {
       test1: parser.parseBooleanArray('test1'),
       test2: parser.parseBooleanArray('test2'),
       test3: parser.parseBooleanArray('test3'),
+      test4: parser.parseBooleanArray('test4'),
     };
 
     expect(env).toEqual({
       test1: [true],
       test2: [true, true],
       test3: [true, false],
+      test4: [true, false, true, false, false, false, true],
     });
 
     expect(() => parser.parseBooleanArray('fail1')).toThrowError(
@@ -277,7 +280,62 @@ describe('SkylineEnv', () => {
     );
   });
 
-  /** === */
+  it('Parse number environment variable with default configuration', () => {
+    // Parse number environment variable
+    const parser = new SkylineEnv<typeof RuntimeEnvironment>({
+      processEnv: {
+        test1: '1',
+        test2: '0',
+        test3: '-1',
+        test4: '1.1',
+        test5: '0.0',
+        test6: '-1.1',
+        test7: '5432',
+        test8: '1000000',
+        test9: '1000000.1',
+
+        fail1: '1, 2',
+        fail2: '[1]',
+        fail3: '"1"',
+        fail4: '1.1.1',
+        fail5: '1,1',
+      },
+    });
+
+    const env = {
+      test1: parser.parseNumber('test1'),
+      test2: parser.parseNumber('test2'),
+      test3: parser.parseNumber('test3'),
+      test4: parser.parseNumber('test4'),
+      test5: parser.parseNumber('test5'),
+      test6: parser.parseNumber('test6'),
+      test7: parser.parseNumber('test7'),
+      test8: parser.parseNumber('test8'),
+      test9: parser.parseNumber('test9'),
+      test10: parser.parseNumber('test10'),
+    };
+
+    expect(env).toEqual({
+      test1: 1,
+      test2: 0,
+      test3: -1,
+      test4: 1.1,
+      test5: 0.0,
+      test6: -1.1,
+      test7: 5432,
+      test8: 1000000,
+      test9: 1000000.1,
+      test10: undefined,
+    });
+
+    expect(() => parser.parseNumber('fail1')).toThrowError(EnvParsingError);
+    expect(() => parser.parseNumber('fail2')).toThrowError(EnvParsingError);
+    expect(() => parser.parseNumber('fail3')).toThrowError(EnvParsingError);
+    expect(() => parser.parseNumber('fail4')).toThrowError(EnvParsingError);
+    expect(() => parser.parseNumber('fail5')).toThrowError(EnvParsingError);
+  });
+
+  /** === Refactor this ===*/
 
   it('Parse string environment variable', () => {
     const envParser = new SkylineEnv<typeof RuntimeEnvironment>({
