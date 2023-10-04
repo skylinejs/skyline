@@ -108,9 +108,7 @@ export function parseBooleanValue<
   return undefined;
 }
 
-export function parseNumberValue<
-  RuntimeEnvironment extends { [key: string]: string }
->(value: unknown): number | undefined {
+export function parseNumberValue(value: unknown): number | undefined {
   if (typeof value === 'number') {
     return value;
   }
@@ -196,6 +194,41 @@ export function parseArrayValue<
   }
 
   return undefined;
+}
+
+export function validateArrayValue<
+  RuntimeEnvironment extends { [key: string]: string }
+>(
+  value: string[] | undefined,
+  config: Pick<
+    EnvConfiguration<RuntimeEnvironment>,
+    'arrayMinLength' | 'arrayMaxLength' | 'arrayUniqueItems'
+  >
+): true | string {
+  if (value === undefined) return true;
+
+  // Array min length
+  if (
+    config.arrayMinLength !== undefined &&
+    value.length < config.arrayMinLength
+  ) {
+    return `Array must have at least ${config.arrayMinLength} items.`;
+  }
+
+  // Array max length
+  if (
+    config.arrayMaxLength !== undefined &&
+    value.length > config.arrayMaxLength
+  ) {
+    return `Array must have at most ${config.arrayMaxLength} items.`;
+  }
+
+  // Array unique items
+  if (config.arrayUniqueItems && new Set(value).size !== value.length) {
+    return `Array must have unique items.`;
+  }
+
+  return true;
 }
 
 export function isEnumType<TEnum extends { [key: string]: string }>(

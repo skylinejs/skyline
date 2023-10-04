@@ -18,6 +18,7 @@ import {
   parseEnvironmentVariable,
   parseNumberValue,
   validateNumberValue,
+  validateArrayValue,
 } from './env.utils';
 
 export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
@@ -195,6 +196,18 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     if (arrayStr !== undefined && valuesStr === undefined) {
       throw new EnvParsingError(
         `[env.parseBooleanArray] Could not parse value "${arrayStr}" as array for environment variable "${variableName}".`,
+        {
+          variableName,
+          value: arrayStr,
+        }
+      );
+    }
+
+    // Validate array value
+    const validationResult = validateArrayValue(valuesStr, config);
+    if (typeof validationResult === 'string') {
+      throw new EnvValidationError(
+        `[env.parseBooleanArray] Invalid value "${arrayStr}" for environment variable "${variableName}". ${validationResult}`,
         {
           variableName,
           value: arrayStr,
