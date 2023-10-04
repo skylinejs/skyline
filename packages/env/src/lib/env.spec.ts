@@ -50,7 +50,7 @@ describe('SkylineEnv', () => {
 
   it('Parse boolean environment variable with default configuration', () => {
     // Parse boolean environment variable
-    const envParser = new SkylineEnv<typeof RuntimeEnvironment>({
+    const parser = new SkylineEnv<typeof RuntimeEnvironment>({
       processEnv: {
         true1: 'true',
         true2: '1',
@@ -72,22 +72,22 @@ describe('SkylineEnv', () => {
     });
 
     const env = {
-      true1: envParser.parseBoolean('true1'),
-      true2: envParser.parseBoolean('true2'),
-      true3: envParser.parseBoolean('true3'),
-      true4: envParser.parseBoolean('true4'),
-      true5: envParser.parseBoolean('true5'),
-      true6: envParser.parseBoolean('true6'),
-      true7: envParser.parseBoolean('true7'),
-      true8: envParser.parseBoolean('true8'),
-      true9: envParser.parseBoolean('true9'),
-      false1: envParser.parseBoolean('false1'),
-      false2: envParser.parseBoolean('false2'),
-      false3: envParser.parseBoolean('false3'),
-      false4: envParser.parseBoolean('false4'),
-      false5: envParser.parseBoolean('false5'),
-      false6: envParser.parseBoolean('false6'),
-      false7: envParser.parseBoolean('false7'),
+      true1: parser.parseBoolean('true1'),
+      true2: parser.parseBoolean('true2'),
+      true3: parser.parseBoolean('true3'),
+      true4: parser.parseBoolean('true4'),
+      true5: parser.parseBoolean('true5'),
+      true6: parser.parseBoolean('true6'),
+      true7: parser.parseBoolean('true7'),
+      true8: parser.parseBoolean('true8'),
+      true9: parser.parseBoolean('true9'),
+      false1: parser.parseBoolean('false1'),
+      false2: parser.parseBoolean('false2'),
+      false3: parser.parseBoolean('false3'),
+      false4: parser.parseBoolean('false4'),
+      false5: parser.parseBoolean('false5'),
+      false6: parser.parseBoolean('false6'),
+      false7: parser.parseBoolean('false7'),
     };
 
     expect(env).toEqual({
@@ -107,6 +107,49 @@ describe('SkylineEnv', () => {
       false5: false,
       false6: false,
       false7: false,
+    });
+  });
+
+  it('Parse boolean environment variable with environment fallbacks', () => {
+    // Parse boolean environment variable
+    const parser = new SkylineEnv<typeof RuntimeEnvironment>({
+      runtime: RuntimeEnvironment.DEV,
+      processEnv: {
+        true1: 'true',
+        false1: 'false',
+      },
+    });
+
+    const env = {
+      true1: parser.parseBoolean('true1'),
+      true2: parser.parseBoolean('true2'),
+      true3: parser.parseBoolean('true3', { DEV: true }),
+      true4: parser.parseBoolean('true4', { PRD: true }),
+      true5: parser.parseBoolean('true5', { default: true }),
+      true6: parser.parseBoolean('true6', { CI: true }),
+
+      false1: parser.parseBoolean('false1'),
+      false2: parser.parseBoolean('false2'),
+      false3: parser.parseBoolean('false3', { DEV: false }),
+      false4: parser.parseBoolean('false4', { PRD: false }),
+      false5: parser.parseBoolean('false5', { default: false }),
+      false6: parser.parseBoolean('false6', { CI: false }),
+    };
+
+    expect(env).toEqual({
+      true1: true,
+      true2: undefined,
+      true3: true,
+      true4: undefined,
+      true5: true,
+      true6: undefined,
+
+      false1: false,
+      false2: undefined,
+      false3: false,
+      false4: undefined,
+      false5: false,
+      false6: undefined,
     });
   });
 
@@ -477,7 +520,7 @@ describe('SkylineEnv', () => {
   /** === Refactor this ===*/
 
   it('Parse string environment variable', () => {
-    const envParser = new SkylineEnv<typeof RuntimeEnvironment>({
+    const parser = new SkylineEnv<typeof RuntimeEnvironment>({
       processEnv: {
         SERVER_DATABASE_HOST: 'localhost',
       },
@@ -485,11 +528,11 @@ describe('SkylineEnv', () => {
 
     const env = {
       database: {
-        host: envParser.parseString('SERVER_DATABASE_HOST', {
+        host: parser.parseString('SERVER_DATABASE_HOST', {
           DEV: '127.0.0.1',
           PRD: 'db.example.org',
         }),
-        port: envParser.parseNumber('SERVER_DATABASE_PORT', {
+        port: parser.parseNumber('SERVER_DATABASE_PORT', {
           DEV: 5432,
           PRD: 5433,
         }),
@@ -501,7 +544,7 @@ describe('SkylineEnv', () => {
   });
 
   it('Parse string environment variable', () => {
-    const envParser = new SkylineEnv<typeof RuntimeEnvironment>({
+    const parser = new SkylineEnv<typeof RuntimeEnvironment>({
       runtime: RuntimeEnvironment.DEV,
       processEnv: {
         SERVER_DATABASE_HOST: 'localhost',
@@ -510,11 +553,11 @@ describe('SkylineEnv', () => {
 
     const env = {
       database: {
-        host: envParser.parseString('SERVER_DATABASE_HOST', {
+        host: parser.parseString('SERVER_DATABASE_HOST', {
           DEV: '127.0.0.1',
           PRD: 'db.example.org',
         }),
-        port: envParser.parseNumber('SERVER_DATABASE_PORT', {
+        port: parser.parseNumber('SERVER_DATABASE_PORT', {
           DEV: 5432,
           PRD: 5433,
         }),
@@ -526,7 +569,7 @@ describe('SkylineEnv', () => {
   });
 
   it('Parse string environment variable', () => {
-    const envParser = new SkylineEnv<typeof RuntimeEnvironment>({
+    const parser = new SkylineEnv<typeof RuntimeEnvironment>({
       runtime: RuntimeEnvironment.PRD,
       processEnv: {
         SERVER_DATABASE_HOST: 'localhost',
@@ -535,11 +578,11 @@ describe('SkylineEnv', () => {
 
     const env = {
       database: {
-        host: envParser.parseString('SERVER_DATABASE_HOST', {
+        host: parser.parseString('SERVER_DATABASE_HOST', {
           DEV: '127.0.0.1',
           PRD: 'db.example.org',
         }),
-        port: envParser.parseNumber('SERVER_DATABASE_PORT', {
+        port: parser.parseNumber('SERVER_DATABASE_PORT', {
           DEV: 5432,
           PRD: 5433,
         }),
@@ -556,7 +599,7 @@ describe('SkylineEnv', () => {
       MYSQL = 'mysql',
     }
 
-    const envParser = new SkylineEnv<typeof RuntimeEnvironment>({
+    const parser = new SkylineEnv<typeof RuntimeEnvironment>({
       runtime: RuntimeEnvironment.DEV,
       processEnv: {
         SERVER_DATABASE_HOST: 'localhost',
@@ -565,15 +608,15 @@ describe('SkylineEnv', () => {
 
     const env = {
       database: {
-        host: envParser.parseString('SERVER_DATABASE_HOST', {
+        host: parser.parseString('SERVER_DATABASE_HOST', {
           DEV: '127.0.0.1',
           PRD: 'db.example.org',
         }),
-        port: envParser.parseNumber('SERVER_DATABASE_PORT', {
+        port: parser.parseNumber('SERVER_DATABASE_PORT', {
           DEV: 5432,
           PRD: 5433,
         }),
-        driver: envParser.parseEnum('SERVER_DATABASE_DRIVER', DatabaseDriver, {
+        driver: parser.parseEnum('SERVER_DATABASE_DRIVER', DatabaseDriver, {
           DEV: () => DatabaseDriver.POSTGRES,
         }),
       },
