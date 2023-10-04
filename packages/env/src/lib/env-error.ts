@@ -1,3 +1,6 @@
+/**
+ * Parsing error thrown when a value cannot be parsed from an environment variable.
+ */
 export class EnvParsingError extends Error {
   readonly variableName: string;
   readonly value: unknown;
@@ -15,6 +18,9 @@ export class EnvParsingError extends Error {
   }
 }
 
+/**
+ * Validation error thrown when an invalid input is provided to the method.
+ */
 export class EnvInputValidationError extends Error {
   readonly parameter: string;
   readonly value: unknown;

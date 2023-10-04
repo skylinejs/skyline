@@ -108,6 +108,33 @@ export function parseBooleanValue<
   return undefined;
 }
 
+export function parseNumberValue<
+  RuntimeEnvironment extends { [key: string]: string }
+>(
+  value: unknown,
+  config: Pick<
+    EnvConfiguration<RuntimeEnvironment>,
+    | 'numberMinimum'
+    | 'numberMaximum'
+    | 'numberExclusiveMinimum'
+    | 'numberExclusiveMaximum'
+  >
+): number | undefined {
+  if (typeof value === 'number') {
+    return value;
+  }
+
+  if (typeof value === 'string') {
+    const parsedValue = Number(value);
+    if (isNaN(parsedValue) || !isFinite(parsedValue)) {
+      return undefined;
+    }
+    return parsedValue;
+  }
+
+  return undefined;
+}
+
 /**
  * Parses a value to an array of strings.
  * @param value The value to parse.

@@ -138,20 +138,46 @@ describe('SkylineEnv', () => {
     });
     expect(parser.parseBoolean('true1')).toBe(true);
     expect(parser.parseBoolean('true2')).toBe(true);
+
     expect(() => parser.parseBoolean('true3')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('true3')).toThrow('env.parseBoolean');
+
     expect(() => parser.parseBoolean('true4')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('true4')).toThrow('env.parseBoolean');
+
     expect(() => parser.parseBoolean('true5')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('true5')).toThrow('env.parseBoolean');
+
     expect(() => parser.parseBoolean('true6')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('true6')).toThrow('env.parseBoolean');
+
     expect(() => parser.parseBoolean('true7')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('true7')).toThrow('env.parseBoolean');
+
     expect(() => parser.parseBoolean('true8')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('true8')).toThrow('env.parseBoolean');
+
     expect(() => parser.parseBoolean('true9')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('true9')).toThrow('env.parseBoolean');
+
     expect(parser.parseBoolean('true10')).toBe(true);
     expect(parser.parseBoolean('false1')).toBe(false);
+
     expect(() => parser.parseBoolean('false2')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('false2')).toThrow('env.parseBoolean');
+
     expect(() => parser.parseBoolean('false3')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('false3')).toThrow('env.parseBoolean');
+
     expect(() => parser.parseBoolean('false4')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('false4')).toThrow('env.parseBoolean');
+
     expect(() => parser.parseBoolean('false5')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('false5')).toThrow('env.parseBoolean');
+
     expect(() => parser.parseBoolean('false6')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('false6')).toThrow('env.parseBoolean');
+
     expect(parser.parseBoolean('false7')).toBe(false);
     expect(parser.parseBoolean('false8')).toBe(false);
   });
@@ -342,6 +368,110 @@ describe('SkylineEnv', () => {
 
     expect(() => parser.parseNumber('fail5')).toThrowError(EnvParsingError);
     expect(() => parser.parseNumber('fail5')).toThrow('env.parseNumber');
+  });
+
+  it('Parse number array environment variable with custom configuration', () => {
+    // Parse number array environment variable
+    const parser = new SkylineEnv<typeof RuntimeEnvironment>({
+      processEnv: {
+        test1: '1',
+        test2: '0',
+        test3: '-1',
+        test4: '1.1',
+        test5: '0.0',
+        test6: '-1.1',
+        test7: '5432',
+        test8: '1000000',
+        test9: '1000000.1',
+        test10: '1, 2',
+        test11: '1,1',
+        test12: '100, 200.5, 300,1.1,1.2',
+        test13: '10e3,12e12',
+
+        fail1: '[1]',
+        fail2: '"1"',
+        fail3: '1.1.1',
+        fail4: 'Infinity',
+        fail5: 'NaN',
+        fail6: '100e1000',
+      },
+    });
+
+    const env = {
+      test1: parser.parseNumberArray('test1'),
+      test2: parser.parseNumberArray('test2'),
+      test3: parser.parseNumberArray('test3'),
+      test4: parser.parseNumberArray('test4'),
+      test5: parser.parseNumberArray('test5'),
+      test6: parser.parseNumberArray('test6'),
+      test7: parser.parseNumberArray('test7'),
+      test8: parser.parseNumberArray('test8'),
+      test9: parser.parseNumberArray('test9'),
+      test10: parser.parseNumberArray('test10'),
+      test11: parser.parseNumberArray('test11'),
+      test12: parser.parseNumberArray('test12'),
+      test13: parser.parseNumberArray('test13'),
+      test14: parser.parseNumberArray('test14'),
+    };
+
+    expect(env).toEqual({
+      test1: [1],
+      test2: [0],
+      test3: [-1],
+      test4: [1.1],
+      test5: [0.0],
+      test6: [-1.1],
+      test7: [5432],
+      test8: [1000000],
+      test9: [1000000.1],
+      test10: [1, 2],
+      test11: [1, 1],
+      test12: [100, 200.5, 300, 1.1, 1.2],
+      test13: [10000, 12000000000000],
+      test14: undefined,
+    });
+
+    expect(() => parser.parseNumberArray('fail1')).toThrowError(
+      EnvParsingError
+    );
+    expect(() => parser.parseNumberArray('fail1')).toThrow(
+      'env.parseNumberArray'
+    );
+
+    expect(() => parser.parseNumberArray('fail2')).toThrowError(
+      EnvParsingError
+    );
+    expect(() => parser.parseNumberArray('fail2')).toThrow(
+      'env.parseNumberArray'
+    );
+
+    expect(() => parser.parseNumberArray('fail3')).toThrowError(
+      EnvParsingError
+    );
+    expect(() => parser.parseNumberArray('fail3')).toThrow(
+      'env.parseNumberArray'
+    );
+
+    expect(() => parser.parseNumberArray('fail4')).toThrowError(
+      EnvParsingError
+    );
+    expect(() => parser.parseNumberArray('fail4')).toThrow(
+      'env.parseNumberArray'
+    );
+
+    expect(() => parser.parseNumberArray('fail5')).toThrowError(
+      EnvParsingError
+    );
+    expect(() => parser.parseNumberArray('fail5')).toThrow(
+      'env.parseNumberArray'
+    );
+
+    expect(() => parser.parseNumberArray('fail6')).toThrowError(
+      EnvParsingError
+    );
+    expect(() => parser.parseNumberArray('fail6')).toThrow(
+      'env.parseNumberArray'
+    );
   });
 
   /** === Refactor this ===*/

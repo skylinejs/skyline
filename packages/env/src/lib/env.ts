@@ -12,6 +12,7 @@ import {
   parseArrayValue,
   parseBooleanValue,
   parseEnvironmentVariable,
+  parseNumberValue,
 } from './env.utils';
 
 export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
@@ -446,12 +447,9 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]: number | (() => number);
     }> & { default?: number | (() => number) } & NumberParsingOptions
   ): number | undefined {
+    const config = assignOptions(this.config, options);
     const valueStr = parseEnvironmentVariable(variableName, this.config);
-    let value: number | undefined = Number(valueStr);
-
-    if (isNaN(value) || !isFinite(value)) {
-      value = undefined;
-    }
+    let value: number | undefined = parseNumberValue(valueStr, config);
 
     // Environment variable is set but could not be parsed as number
     if (valueStr !== undefined && value === undefined) {
@@ -502,21 +500,52 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]: number[] | (() => number[]);
     }> & { default?: number[] | (() => number[]) } & NumberParsingOptions
   ): number[] | undefined {
-    const valueStr = parseEnvironmentVariable(variableName, this.config);
-    let value: number[] | undefined = [Number(valueStr)];
+    const config = assignOptions(this.config, options);
+    const arrayStr = parseEnvironmentVariable(variableName, config);
+    const valuesStr = parseArrayValue(arrayStr, config);
 
-    if (value === undefined && this.config?.runtime) {
+    // Environment variable is set but could not be parsed as an array
+    if (arrayStr !== undefined && valuesStr === undefined) {
+      throw new EnvParsingError(
+        `[env.parseNumberArray] Could not parse value "${arrayStr}" as array for environment variable "${variableName}".`,
+        {
+          variableName,
+          value: arrayStr,
+        }
+      );
+    }
+
+    let values: number[] | undefined = undefined;
+
+    if (valuesStr) {
+      values = valuesStr
+        .map((valueStr) => parseNumberValue(valueStr, config))
+        .filter(isNotNullish);
+
+      // Environment variable is set but could not be parsed as number
+      if (valuesStr.length !== values.length) {
+        throw new EnvParsingError(
+          `[env.parseNumberArray] Could not parse value "${arrayStr}" as array of numbers for environment variable "${variableName}".`,
+          {
+            variableName,
+            value: arrayStr,
+          }
+        );
+      }
+    }
+
+    if (values === undefined && config?.runtime) {
       const valueOrValueFunc = options
-        ? options[this.config.runtime] ?? options.default
+        ? options[config.runtime] ?? options.default
         : undefined;
 
       if (typeof valueOrValueFunc === 'function') {
-        value = valueOrValueFunc();
+        values = valueOrValueFunc();
       } else {
-        value = valueOrValueFunc;
+        values = valueOrValueFunc;
       }
     }
-    return value;
+    return values;
   }
 
   /**
