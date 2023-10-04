@@ -8,6 +8,7 @@ import {
   ArrayParsingOptions,
   BooleanParsingptions,
   EnumParsingOptions,
+  JsonParsingOptions,
   NumberParsingOptions,
   StringParsingOptions,
 } from './env.interface';
@@ -80,9 +81,10 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       numberExclusiveMaximum: config?.numberExclusiveMaximum,
 
       // JSON parsing
+      jsonRequired: config?.jsonRequired ?? [],
       jsonMinProperties: config?.jsonMinProperties,
       jsonMaxProperties: config?.jsonMaxProperties,
-      jsonRequired: config?.jsonRequired,
+      jsonAdditionalProperties: config?.jsonAdditionalProperties ?? true,
 
       // Array parsing
       arraySeparator: config?.arraySeparator ?? ',',
@@ -623,7 +625,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     }> & { default?: number | (() => number) } & NumberParsingOptions
   ): number | undefined {
     const config = assignOptions(this.config, options);
-    const valueStr = parseEnvironmentVariable(variableName, this.config);
+    const valueStr = parseEnvironmentVariable(variableName, config);
     let value: number | undefined = parseNumberValue(valueStr);
 
     // Environment variable is set but could not be parsed as number
@@ -637,9 +639,9 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       );
     }
 
-    if (value === undefined && this.config?.runtime) {
+    if (value === undefined && config?.runtime) {
       const valueOrValueFunc = options
-        ? options[this.config.runtime] ?? options.default
+        ? options[config.runtime] ?? options.default
         : undefined;
 
       if (typeof valueOrValueFunc === 'function') {
@@ -775,21 +777,22 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     variableName: string,
     options?: Partial<{
       [key in keyof RuntimeEnvironment]: TJson | (() => TJson);
-    }> & { default: TJson | (() => TJson) }
+    }> & { default: TJson | (() => TJson) } & JsonParsingOptions
   ): TJson;
   parseJSON<TJson extends object>(
     variableName: string,
     options?: Partial<{
       [key in keyof RuntimeEnvironment]: TJson | (() => TJson);
-    }> & { default?: TJson | (() => TJson) }
+    }> & { default?: TJson | (() => TJson) } & JsonParsingOptions
   ): TJson | undefined;
   parseJSON<TJson extends object>(
     variableName: string,
     options?: Partial<{
       [key in keyof RuntimeEnvironment]: TJson | (() => TJson);
-    }> & { default?: TJson | (() => TJson) }
+    }> & { default?: TJson | (() => TJson) } & JsonParsingOptions
   ): TJson | undefined {
-    const valueStr = parseEnvironmentVariable(variableName, this.config);
+    const config = assignOptions(this.config, options);
+    const valueStr = parseEnvironmentVariable(variableName, config);
     let value: TJson | undefined = undefined;
     if (valueStr) {
       try {
@@ -799,9 +802,9 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       }
     }
 
-    if (value === undefined && this.config?.runtime) {
+    if (value === undefined && config?.runtime) {
       const valueOrValueFunc = options
-        ? options[this.config.runtime] ?? options.default
+        ? options[config.runtime] ?? options.default
         : undefined;
 
       if (typeof valueOrValueFunc === 'function') {

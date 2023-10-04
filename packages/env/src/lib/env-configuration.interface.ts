@@ -116,6 +116,11 @@ export interface EnvConfiguration<
 
   // === JSON parsing ===
   /**
+   * The required properties of the JSON object.
+   */
+  jsonRequired: string[];
+
+  /**
    * The minimum number of properties of the JSON object.
    */
   jsonMinProperties?: number;
@@ -126,9 +131,9 @@ export interface EnvConfiguration<
   jsonMaxProperties?: number;
 
   /**
-   * The required properties of the JSON object.
+   * Whether to allow additional properties of the JSON object.
    */
-  jsonRequired?: string[];
+  jsonAdditionalProperties: boolean;
 
   // === Array parsing ===
   /**

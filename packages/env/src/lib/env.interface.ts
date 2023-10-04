@@ -117,6 +117,11 @@ export interface JsonParsingOptions extends ParsingOptions {
    * The required properties of the JSON object.
    */
   jsonRequired?: string[];
+
+  /**
+   * Whether to allow additional properties of the JSON object.
+   */
+  jsonAdditionalProperties?: boolean;
 }
 
 export interface ArrayParsingOptions extends ParsingOptions {
