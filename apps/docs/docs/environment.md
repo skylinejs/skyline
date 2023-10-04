@@ -50,7 +50,7 @@ To avoid these issues, your environment variable management should be based on t
 
 3. All non-sensitive environment variables are declared and maintained inside the codebase. There is no value in scattering your different environment configs across multiple `.env` files and inside your deployment scripts.
 
-4. Error handling should be as strict as possible. Each unexpected environment state should lead to a failure of the application. This way you can rollback the application update immediately and prevent it from causing issues in production.
+4. Error handling should be as strict as possible. Each unexpected environment state should lead to a failure of the application. This way you can rollback the application update immediately and prevent it from causing issues in production later on.
 
 # Example code walkthrough
 
@@ -61,7 +61,7 @@ import { SkylineEnv } from '@skyline-js/env';
 
 const parser = new SkylineEnv();
 
-const env = {
+export const env = {
   api: {
     host: parser.parseString('SERVER_API_HOST'),
     port: parser.parseNumber('SERVER_API_PORT'),
@@ -72,8 +72,6 @@ const env = {
     port: parser.parseString('SERVER_DATABASE_PORT'),
   },
 };
-
-export { env };
 ```
 
 The rest of the application can now consume the parsed environment variables the same way they would access `process.env`:
@@ -114,7 +112,7 @@ const parser = new SkylineEnv({
   valueTrim: true,
 });
 
-const env = {
+export const env = {
   api: {
     host: parser.parseString('SERVER_API_HOST', {
       default: 'http://localhost',
@@ -148,8 +146,6 @@ const env = {
     }),
   },
 };
-
-export { env };
 ```
 
 <!--
