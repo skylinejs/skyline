@@ -70,6 +70,11 @@ export interface StringParsingOptions extends ParsingOptions {
 
 export interface NumberParsingOptions extends ParsingOptions {
   /**
+   * Whether the number must be an integer.
+   */
+  numberIsInteger?: boolean;
+
+  /**
    * The minimum value of the number.
    */
   numberMinimum?: number;

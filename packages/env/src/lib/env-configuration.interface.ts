@@ -94,6 +94,11 @@ export interface EnvConfiguration<
   numberMaximum?: number;
 
   /**
+   * Whether the number must be an integer.
+   */
+  numberIsInteger: boolean;
+
+  /**
    * The minimum value of the number (exclusive).
    */
   numberExclusiveMinimum?: number;

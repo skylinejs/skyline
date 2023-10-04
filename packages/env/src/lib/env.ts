@@ -63,6 +63,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       // Number parsing
       numberMinimum: config?.numberMinimum,
       numberMaximum: config?.numberMaximum,
+      numberIsInteger: config?.numberIsInteger ?? false,
       numberExclusiveMinimum: config?.numberExclusiveMinimum,
       numberExclusiveMaximum: config?.numberExclusiveMaximum,
 

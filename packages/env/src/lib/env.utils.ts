@@ -135,6 +135,44 @@ export function parseNumberValue<
   return undefined;
 }
 
+export function validateNumberValue<
+  RuntimeEnvironment extends { [key: string]: string }
+>(
+  value: number,
+  config: Pick<
+    EnvConfiguration<RuntimeEnvironment>,
+    | 'numberMinimum'
+    | 'numberMaximum'
+    | 'numberIsInteger'
+    | 'numberExclusiveMinimum'
+    | 'numberExclusiveMaximum'
+  >
+): boolean {
+  if (config.numberMinimum !== undefined && value < config.numberMinimum) {
+    return false;
+  }
+
+  if (config.numberMaximum !== undefined && value > config.numberMaximum) {
+    return false;
+  }
+
+  if (
+    config.numberExclusiveMinimum !== undefined &&
+    value <= config.numberExclusiveMinimum
+  ) {
+    return false;
+  }
+
+  if (
+    config.numberExclusiveMaximum !== undefined &&
+    value >= config.numberExclusiveMaximum
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
 /**
  * Parses a value to an array of strings.
  * @param value The value to parse.
