@@ -211,6 +211,27 @@ export function validateStringValue<
   return true;
 }
 
+export function parseEnumValue<
+  TEnum extends { [key: string]: string },
+  RuntimeEnvironment extends { [key: string]: string }
+>(
+  enumType: TEnum,
+  value: unknown,
+  config: Pick<EnvConfiguration<RuntimeEnvironment>, 'enumIgnoreCasing'>
+): TEnum[keyof TEnum] | undefined {
+  if (typeof value !== 'string') return undefined;
+
+  const enumValue = Object.values(enumType).find((enumValue) => {
+    if (config.enumIgnoreCasing) {
+      return enumValue.toLowerCase() === value.toLowerCase();
+    } else {
+      return enumValue === value;
+    }
+  });
+
+  return enumValue as TEnum[keyof TEnum] | undefined;
+}
+
 /**
  * Parses a value to an array of strings.
  * @param value The value to parse.
@@ -267,14 +288,6 @@ export function validateArrayValue<
   }
 
   return true;
-}
-
-export function isEnumType<TEnum extends { [key: string]: string }>(
-  enumType: TEnum,
-  value: unknown
-): value is TEnum[keyof TEnum] {
-  if (typeof value !== 'string') return false;
-  return Object.values(enumType).includes(value);
 }
 
 export function isNotNullish<T>(el: T | null | undefined): el is T {

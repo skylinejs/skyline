@@ -82,6 +82,12 @@ export interface EnvConfiguration<
    */
   stringPattern?: RegExp | string;
 
+  // === Enum parsing ===
+  /**
+   * Whether to ignore the casing of the enum values.
+   */
+  enumIgnoreCasing: boolean;
+
   // === Number parsing ===
   /**
    * The minimum value of the number.

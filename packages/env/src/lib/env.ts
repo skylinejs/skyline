@@ -12,7 +12,7 @@ import {
   StringParsingOptions,
 } from './env.interface';
 import {
-  isEnumType,
+  parseEnumValue,
   isNotNullish,
   assignOptions,
   parseArrayValue,
@@ -68,6 +68,9 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       stringMinLength: config?.stringMinLength,
       stringMaxLength: config?.stringMaxLength,
       stringPattern: config?.stringPattern,
+
+      // Enum parsing
+      enumIgnoreCasing: config?.enumIgnoreCasing ?? false,
 
       // Number parsing
       numberMinimum: config?.numberMinimum,
@@ -138,7 +141,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   ): boolean | undefined {
     const config = assignOptions(this.config, options);
     const valueStr = parseEnvironmentVariable(variableName, config);
-    let value: boolean | undefined = parseBooleanValue(valueStr, this.config);
+    let value: boolean | undefined = parseBooleanValue(valueStr, config);
 
     // Environment variable is set but could not be parsed as boolean
     if (valueStr !== undefined && value === undefined) {
@@ -152,9 +155,9 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     }
 
     // Environment variable is not set, try to get default value for runtime
-    if (value === undefined && this.config?.runtime) {
+    if (value === undefined && config?.runtime) {
       const valueOrValueFunc = options
-        ? options[this.config.runtime] ?? options.default
+        ? options[config.runtime] ?? options.default
         : undefined;
 
       if (typeof valueOrValueFunc === 'function') {
@@ -454,14 +457,29 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
         default?: TEnum[keyof TEnum] | (() => TEnum[keyof TEnum]);
       }
   ): TEnum[keyof TEnum] | undefined {
-    const valueStr = parseEnvironmentVariable(variableName, this.config);
-    let value: TEnum[keyof TEnum] | undefined = isEnumType(enumType, valueStr)
-      ? valueStr
-      : undefined;
+    const config = assignOptions(this.config, options);
+    const valueStr = parseEnvironmentVariable(variableName, config);
+    let value: TEnum[keyof TEnum] | undefined = parseEnumValue(
+      enumType,
+      valueStr,
+      config
+    );
 
-    if (value === undefined && this.config?.runtime) {
+    // Environment variable is set but could not be parsed as enum
+    if (valueStr !== undefined && value === undefined) {
+      throw new EnvParsingError(
+        `[env.parseEnum] Could not parse value "${valueStr}" as enum for environment variable "${variableName}".`,
+        {
+          variableName,
+          value: valueStr,
+        }
+      );
+    }
+
+    // Environment variable is not set, try to get default value for runtime
+    if (value === undefined && config?.runtime) {
       const valueOrValueFunc = options
-        ? options[this.config.runtime] ?? options.default
+        ? options[config.runtime] ?? options.default
         : undefined;
 
       if (typeof valueOrValueFunc === 'function') {
@@ -470,6 +488,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
         value = valueOrValueFunc as TEnum[keyof TEnum] | undefined;
       }
     }
+
     return value;
   }
 
@@ -518,21 +537,65 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
         default?: Array<TEnum[keyof TEnum]> | (() => Array<TEnum[keyof TEnum]>);
       }
   ): Array<TEnum[keyof TEnum]> | undefined {
-    const valueStr = parseEnvironmentVariable(variableName, this.config);
-    let value: Array<TEnum[keyof TEnum]> | undefined = undefined;
+    const config = assignOptions(this.config, options);
+    const arrayStr = parseEnvironmentVariable(variableName, config);
+    const valuesStr = parseArrayValue(arrayStr, config);
 
-    if (value === undefined && this.config?.runtime) {
+    // Environment variable is set but could not be parsed as an array
+    if (arrayStr !== undefined && valuesStr === undefined) {
+      throw new EnvParsingError(
+        `[env.parseEnumArray] Could not parse value "${arrayStr}" as array for environment variable "${variableName}".`,
+        {
+          variableName,
+          value: arrayStr,
+        }
+      );
+    }
+
+    // Validate array value
+    const validationResult = validateArrayValue(valuesStr, config);
+    if (typeof validationResult === 'string') {
+      throw new EnvValidationError(
+        `[env.parseEnumArray] Invalid value "${arrayStr}" for environment variable "${variableName}". ${validationResult}`,
+        {
+          variableName,
+          value: arrayStr,
+        }
+      );
+    }
+
+    let values: TEnum[keyof TEnum][] | undefined = undefined;
+
+    if (valuesStr) {
+      values = valuesStr
+        .map((valueStr) => parseEnumValue(enumType, valueStr, config))
+        .filter(isNotNullish);
+
+      // Environment variable is set but could not be parsed as enum
+      if (valuesStr.length !== values.length) {
+        throw new EnvParsingError(
+          `[env.parseEnumArray] Could not parse value "${arrayStr}" as array of enums for environment variable "${variableName}".`,
+          {
+            variableName,
+            value: arrayStr,
+          }
+        );
+      }
+    }
+
+    if (values === undefined && config?.runtime) {
       const valueOrValueFunc = options
-        ? options[this.config.runtime] ?? options.default
+        ? options[config.runtime] ?? options.default
         : undefined;
 
       if (typeof valueOrValueFunc === 'function') {
-        value = valueOrValueFunc();
+        values = valueOrValueFunc();
       } else {
-        value = valueOrValueFunc as Array<TEnum[keyof TEnum]> | undefined;
+        values = valueOrValueFunc;
       }
     }
-    return value;
+
+    return values;
   }
 
   /**
