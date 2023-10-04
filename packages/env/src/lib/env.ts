@@ -596,6 +596,21 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
         values = valueOrValueFunc;
       }
     }
+
+    // Validate number values
+    values?.forEach((value) => {
+      const validationResult = validateNumberValue(value, config);
+      if (typeof validationResult === 'string') {
+        throw new EnvValidationError(
+          `[env.parseNumberArray] Invalid value "${value}" for environment variable "${variableName}". ${validationResult}`,
+          {
+            variableName,
+            value: arrayStr,
+          }
+        );
+      }
+    });
+
     return values;
   }
 
