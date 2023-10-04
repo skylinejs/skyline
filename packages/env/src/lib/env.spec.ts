@@ -768,4 +768,22 @@ describe('SkylineEnv', () => {
       parser.parseNumberArray('test6', { numberIsInteger: true })
     ).toThrow('integer');
   });
+
+  it('Parse string environment variable with default configuration', () => {
+    // Parse string environment variable
+    const parser = new SkylineEnv<typeof RuntimeEnvironment>({
+      processEnv: {
+        test1: '',
+        test2: ' ',
+        test3: 'string',
+        test4: ' string ',
+        test5: '1',
+        test6: 'true',
+        test7: 'Infinity',
+        test8: 'NaN',
+        test9: '%20',
+        test10: 'string1,string2',
+      },
+    });
+  });
 });
