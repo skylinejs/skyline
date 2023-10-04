@@ -173,6 +173,44 @@ export function validateNumberValue<
   return true;
 }
 
+export function validateStringValue<
+  RuntimeEnvironment extends { [key: string]: string }
+>(
+  value: string | undefined,
+  config: Pick<
+    EnvConfiguration<RuntimeEnvironment>,
+    'stringMinLength' | 'stringMaxLength' | 'stringPattern'
+  >
+): true | string {
+  if (value === undefined) return true;
+
+  // String min length
+  if (
+    config.stringMinLength !== undefined &&
+    value.length < config.stringMinLength
+  ) {
+    return `String must have at least ${config.stringMinLength} characters.`;
+  }
+
+  // String max length
+  if (
+    config.stringMaxLength !== undefined &&
+    value.length > config.stringMaxLength
+  ) {
+    return `String must have at most ${config.stringMaxLength} characters.`;
+  }
+
+  // String pattern
+  if (config.stringPattern !== undefined) {
+    const pattern = new RegExp(config.stringPattern);
+    if (!pattern.test(value)) {
+      return `String must match pattern "${config.stringPattern}".`;
+    }
+  }
+
+  return true;
+}
+
 /**
  * Parses a value to an array of strings.
  * @param value The value to parse.

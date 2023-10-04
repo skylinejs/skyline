@@ -20,6 +20,7 @@ import {
   parseNumberValue,
   validateNumberValue,
   validateArrayValue,
+  validateStringValue,
 } from './env.utils';
 
 export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
@@ -293,6 +294,19 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
         value = valueOrValueFunc;
       }
     }
+
+    // Validate string value
+    const validationResult = validateStringValue(value, config);
+    if (typeof validationResult === 'string') {
+      throw new EnvValidationError(
+        `[env.parseString] Invalid value "${value}" for environment variable "${variableName}". ${validationResult}`,
+        {
+          variableName,
+          value,
+        }
+      );
+    }
+
     return value;
   }
 
