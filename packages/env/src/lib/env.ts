@@ -453,6 +453,17 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       value = undefined;
     }
 
+    // Environment variable is set but could not be parsed as number
+    if (valueStr !== undefined && value === undefined) {
+      throw new EnvParsingError(
+        `[env.parseNumber] Could not parse value "${valueStr}" as number for environment variable "${variableName}".`,
+        {
+          variableName,
+          value: valueStr,
+        }
+      );
+    }
+
     if (value === undefined && this.config?.runtime) {
       const valueOrValueFunc = options
         ? options[this.config.runtime] ?? options.default

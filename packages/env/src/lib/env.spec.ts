@@ -329,10 +329,19 @@ describe('SkylineEnv', () => {
     });
 
     expect(() => parser.parseNumber('fail1')).toThrowError(EnvParsingError);
+    expect(() => parser.parseNumber('fail1')).toThrow('env.parseNumber');
+
     expect(() => parser.parseNumber('fail2')).toThrowError(EnvParsingError);
+    expect(() => parser.parseNumber('fail2')).toThrow('env.parseNumber');
+
     expect(() => parser.parseNumber('fail3')).toThrowError(EnvParsingError);
+    expect(() => parser.parseNumber('fail3')).toThrow('env.parseNumber');
+
     expect(() => parser.parseNumber('fail4')).toThrowError(EnvParsingError);
+    expect(() => parser.parseNumber('fail4')).toThrow('env.parseNumber');
+
     expect(() => parser.parseNumber('fail5')).toThrowError(EnvParsingError);
+    expect(() => parser.parseNumber('fail5')).toThrow('env.parseNumber');
   });
 
   /** === Refactor this ===*/
