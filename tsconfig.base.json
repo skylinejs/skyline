@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@skyline-js/cli": ["packages/cli/src/index.ts"],
+      "@skyline-js/translate": ["packages/translate/src/index.ts"],
       "@skylinejs/cache": ["packages/cache/src/index.ts"],
       "@skylinejs/env": ["packages/env/src/index.ts"]
     }
