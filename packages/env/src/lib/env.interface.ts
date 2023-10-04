@@ -68,6 +68,13 @@ export interface StringParsingOptions extends ParsingOptions {
   stringPattern?: RegExp | string;
 }
 
+export interface EnumParsingOptions extends ParsingOptions {
+  /**
+   * Whether to ignore the casing of the enum values.
+   */
+  enumIgnoreCasing?: boolean;
+}
+
 export interface NumberParsingOptions extends ParsingOptions {
   /**
    * Whether the number must be an integer.

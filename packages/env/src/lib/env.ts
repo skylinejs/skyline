@@ -7,6 +7,7 @@ import {
 import {
   ArrayParsingOptions,
   BooleanParsingptions,
+  EnumParsingOptions,
   NumberParsingOptions,
   StringParsingOptions,
 } from './env.interface';
@@ -424,7 +425,10 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]:
         | TEnum[keyof TEnum]
         | (() => TEnum[keyof TEnum]);
-    }> & { default: TEnum[keyof TEnum] | (() => TEnum[keyof TEnum]) }
+    }> &
+      EnumParsingOptions & {
+        default: TEnum[keyof TEnum] | (() => TEnum[keyof TEnum]);
+      }
   ): TEnum[keyof TEnum];
   parseEnum<TEnum extends { [key: string]: string }>(
     variableName: string,
@@ -433,7 +437,10 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]:
         | TEnum[keyof TEnum]
         | (() => TEnum[keyof TEnum]);
-    }> & { default?: TEnum[keyof TEnum] | (() => TEnum[keyof TEnum]) }
+    }> &
+      EnumParsingOptions & {
+        default?: TEnum[keyof TEnum] | (() => TEnum[keyof TEnum]);
+      }
   ): TEnum[keyof TEnum] | undefined;
   parseEnum<TEnum extends { [key: string]: string }>(
     variableName: string,
@@ -442,7 +449,10 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]:
         | TEnum[keyof TEnum]
         | (() => TEnum[keyof TEnum]);
-    }> & { default?: TEnum[keyof TEnum] | (() => TEnum[keyof TEnum]) }
+    }> &
+      EnumParsingOptions & {
+        default?: TEnum[keyof TEnum] | (() => TEnum[keyof TEnum]);
+      }
   ): TEnum[keyof TEnum] | undefined {
     const valueStr = parseEnvironmentVariable(variableName, this.config);
     let value: TEnum[keyof TEnum] | undefined = isEnumType(enumType, valueStr)
@@ -476,9 +486,11 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]:
         | Array<TEnum[keyof TEnum]>
         | (() => Array<TEnum[keyof TEnum]>);
-    }> & {
-      default: Array<TEnum[keyof TEnum]> | (() => Array<TEnum[keyof TEnum]>);
-    }
+    }> &
+      EnumParsingOptions &
+      ArrayParsingOptions & {
+        default: Array<TEnum[keyof TEnum]> | (() => Array<TEnum[keyof TEnum]>);
+      }
   ): Array<TEnum[keyof TEnum]>;
   parseEnumArray<TEnum extends { [key: string]: string }>(
     variableName: string,
@@ -487,9 +499,11 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]:
         | Array<TEnum[keyof TEnum]>
         | (() => Array<TEnum[keyof TEnum]>);
-    }> & {
-      default?: Array<TEnum[keyof TEnum]> | (() => Array<TEnum[keyof TEnum]>);
-    }
+    }> &
+      EnumParsingOptions &
+      ArrayParsingOptions & {
+        default?: Array<TEnum[keyof TEnum]> | (() => Array<TEnum[keyof TEnum]>);
+      }
   ): Array<TEnum[keyof TEnum]> | undefined;
   parseEnumArray<TEnum extends { [key: string]: string }>(
     variableName: string,
@@ -498,9 +512,11 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]:
         | Array<TEnum[keyof TEnum]>
         | (() => Array<TEnum[keyof TEnum]>);
-    }> & {
-      default?: Array<TEnum[keyof TEnum]> | (() => Array<TEnum[keyof TEnum]>);
-    }
+    }> &
+      EnumParsingOptions &
+      ArrayParsingOptions & {
+        default?: Array<TEnum[keyof TEnum]> | (() => Array<TEnum[keyof TEnum]>);
+      }
   ): Array<TEnum[keyof TEnum]> | undefined {
     const valueStr = parseEnvironmentVariable(variableName, this.config);
     let value: Array<TEnum[keyof TEnum]> | undefined = undefined;
