@@ -100,8 +100,8 @@ export function parseBooleanValue<
   }
 
   if (typeof value === 'string') {
-    if (config.booleanTrueValues.includes(value.trim())) return true;
-    if (config.booleanFalseValues.includes(value.trim())) return false;
+    if (config.booleanTrueValues.includes(value)) return true;
+    if (config.booleanFalseValues.includes(value)) return false;
     return undefined;
   }
 
@@ -148,7 +148,7 @@ export function parseArrayValue<
   config: Pick<EnvConfiguration<RuntimeEnvironment>, 'arraySeparator'>
 ): string[] | undefined {
   if (typeof value === 'string') {
-    return value.split(config.arraySeparator);
+    return value.split(config.arraySeparator).map((value) => value.trim());
   }
 
   if (Array.isArray(value)) {

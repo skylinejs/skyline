@@ -153,6 +153,69 @@ describe('SkylineEnv', () => {
     });
   });
 
+  it('Parse boolean environment variable with parsing options', () => {
+    // Parse boolean environment variable
+    const parser = new SkylineEnv<typeof RuntimeEnvironment>({
+      runtime: RuntimeEnvironment.DEV,
+      booleanTrueValues: [
+        'true',
+        '1',
+        'yes',
+        'y',
+        'on',
+        'enabled',
+        'enable',
+        'do it',
+      ],
+      processEnv: {
+        true1: ' true  ',
+        true2: Buffer.from('yes').toString('base64'),
+        true3: Buffer.from('1').toString('hex'),
+        true4: Buffer.from('on').toString('base64url'),
+        true5: encodeURI('do it'),
+
+        false1: '  false ',
+      },
+    });
+
+    const env = {
+      true1: parser.parseBoolean('true1', { valueTrim: true }),
+      true2: parser.parseBoolean('true2', { valueEncoding: 'base64' }),
+      true3: parser.parseBoolean('true3', { valueEncoding: 'hex' }),
+      true4: parser.parseBoolean('true4', { valueEncoding: 'base64url' }),
+      true5: parser.parseBoolean('true5', { valueEncoding: 'url' }),
+      true6: parser.parseBoolean('true6', { valueEncoding: 'base64' }),
+
+      false1: parser.parseBoolean('false1', { valueTrim: true }),
+    };
+
+    expect(env).toEqual({
+      true1: true,
+      true2: true,
+      true3: true,
+      true4: true,
+      true5: true,
+      true6: undefined,
+
+      false1: false,
+    });
+
+    expect(() => parser.parseBoolean('true1')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('true1')).toThrow('env.parseBoolean');
+
+    expect(() => parser.parseBoolean('true2')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('true2')).toThrow('env.parseBoolean');
+
+    expect(() => parser.parseBoolean('true3')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('true3')).toThrow('env.parseBoolean');
+
+    expect(() => parser.parseBoolean('true4')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('true4')).toThrow('env.parseBoolean');
+
+    expect(() => parser.parseBoolean('true5')).toThrowError(EnvParsingError);
+    expect(() => parser.parseBoolean('true5')).toThrow('env.parseBoolean');
+  });
+
   it('Parse boolean environment variable with custom configuration', () => {
     // Parse boolean environment variable
     const parser = new SkylineEnv<typeof RuntimeEnvironment>({
