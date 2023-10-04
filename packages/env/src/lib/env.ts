@@ -306,19 +306,22 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     variableName: string,
     options?: Partial<{
       [key in keyof RuntimeEnvironment]: string[] | (() => string[]);
-    }> & { default: string[] | (() => string[]) } & StringParsingOptions
+    }> & { default: string[] | (() => string[]) } & StringParsingOptions &
+      ArrayParsingOptions
   ): string[];
   parseStringArray(
     variableName: string,
     options?: Partial<{
       [key in keyof RuntimeEnvironment]: string[] | (() => string[]);
-    }> & { default?: string[] | (() => string[]) } & StringParsingOptions
+    }> & { default?: string[] | (() => string[]) } & StringParsingOptions &
+      ArrayParsingOptions
   ): string[] | undefined;
   parseStringArray(
     variableName: string,
     options?: Partial<{
       [key in keyof RuntimeEnvironment]: string[] | (() => string[]);
-    }> & { default?: string[] | (() => string[]) } & StringParsingOptions
+    }> & { default?: string[] | (() => string[]) } & StringParsingOptions &
+      ArrayParsingOptions
   ): string[] | undefined {
     const config = assignOptions(this.config, options);
     const valueStr = parseEnvironmentVariable(variableName, config);
