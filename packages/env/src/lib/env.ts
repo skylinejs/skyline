@@ -338,20 +338,76 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       ArrayParsingOptions
   ): string[] | undefined {
     const config = assignOptions(this.config, options);
-    const valueStr = parseEnvironmentVariable(variableName, config);
-    let value: string[] | undefined = valueStr?.split(',') ?? undefined;
-    if (value === undefined && config?.runtime) {
+    const arrayStr = parseEnvironmentVariable(variableName, config);
+    const valuesStr = parseArrayValue(arrayStr, config);
+
+    // Environment variable is set but could not be parsed as an array
+    if (arrayStr !== undefined && valuesStr === undefined) {
+      throw new EnvParsingError(
+        `[env.parseStringArray] Could not parse value "${arrayStr}" as array for environment variable "${variableName}".`,
+        {
+          variableName,
+          value: arrayStr,
+        }
+      );
+    }
+
+    // Validate array value
+    const validationResult = validateArrayValue(valuesStr, config);
+    if (typeof validationResult === 'string') {
+      throw new EnvValidationError(
+        `[env.parseStringArray] Invalid value "${arrayStr}" for environment variable "${variableName}". ${validationResult}`,
+        {
+          variableName,
+          value: arrayStr,
+        }
+      );
+    }
+
+    let values: string[] | undefined = undefined;
+
+    if (valuesStr) {
+      values = valuesStr.filter(isNotNullish);
+
+      // Environment variable is set but could not be parsed as string
+      if (valuesStr.length !== values.length) {
+        throw new EnvParsingError(
+          `[env.parseStringArray] Could not parse value "${arrayStr}" as array of strings for environment variable "${variableName}".`,
+          {
+            variableName,
+            value: arrayStr,
+          }
+        );
+      }
+    }
+
+    if (values === undefined && config?.runtime) {
       const valueOrValueFunc = options
         ? options[config.runtime] ?? options.default
         : undefined;
 
       if (typeof valueOrValueFunc === 'function') {
-        value = valueOrValueFunc();
+        values = valueOrValueFunc();
       } else {
-        value = valueOrValueFunc;
+        values = valueOrValueFunc;
       }
     }
-    return value;
+
+    // Validate string values
+    values?.forEach((value) => {
+      const validationResult = validateStringValue(value, config);
+      if (typeof validationResult === 'string') {
+        throw new EnvValidationError(
+          `[env.parseStringArray] Invalid value "${value}" for environment variable "${variableName}". ${validationResult}`,
+          {
+            variableName,
+            value: arrayStr,
+          }
+        );
+      }
+    });
+
+    return values;
   }
 
   /**
