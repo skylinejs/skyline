@@ -58,6 +58,7 @@ To demonstrate the implementation of the principles above, we take a look at a b
 
 ```ts
 import { SkylineEnv } from '@skyline-js/env';
+
 const parser = new SkylineEnv();
 
 const env = {
@@ -96,7 +97,64 @@ api.listen({
 });
 ```
 
+This minimal example only follows principle 1 by keeping the environment variable parsing in a single place. Prinicple 2 is partially covered as the type of each environment variable is validated (string, number, boolean). Let's rewrite the example above:
+
+```ts
+import { SkylineEnv } from '@skyline-js/env';
+
+export enum RuntimeEnvironment {
+  DEV = 'DEV',
+  CI = 'CI',
+  PRD = 'PRD',
+}
+
+const parser = new SkylineEnv({
+  runtime: process.env.NODE_ENV,
+  runtimes: RuntimeEnvironment,
+  valueTrim: true,
+});
+
+const env = {
+  api: {
+    host: parser.parseString('SERVER_API_HOST', {
+      default: 'http://localhost',
+      CI: 'http://skyline_ci_database',
+      PRD: 'https://skyline_prd_database',
+      stringPattern: /https?:\/\/.+/,
+    }),
+    port: parser.parseNumber('SERVER_API_PORT', {
+      default: 3000,
+      numberIsInteger: true,
+    }),
+    cors: parser.parseBoolean('SERVER_CORS_ENABLED', {
+      default: false,
+      PRD: true,
+    }),
+  },
+  database: {
+    host: parser.parseString('SERVER_DATABASE_HOST', {
+      default: 'localhost',
+      CI: 'skyline_ci_database',
+      PRD: 'skyline_prd_database',
+    }),
+    port: parser.parseString('SERVER_DATABASE_PORT', {
+      default: 5432,
+      numberIsInteger: true,
+    }),
+    password: parser.parseString('SERVER_DATABASE_PASSWORD', {
+      default: 'password123',
+      minLength: 6,
+      valueRemoveAfterParse: true,
+    }),
+  },
+};
+
+export { env };
+```
+
 <!--
+Example "email" and "file upload" that are lazy initialized and if not validated at application start can cause issues later on when they get used.
+
 ## Derived state
 
 The environment is not the time to derive any state/ configs.
