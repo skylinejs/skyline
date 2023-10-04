@@ -5,6 +5,7 @@ import {
   EnvValidationError,
 } from './env-error';
 import {
+  ArrayParsingOptions,
   BooleanParsingptions,
   NumberParsingOptions,
   StringParsingOptions,
@@ -174,19 +175,22 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     variableName: string,
     options?: Partial<{
       [key in keyof RuntimeEnvironment]: boolean[] | (() => boolean[]);
-    }> & { default: boolean[] | (() => boolean[]) } & BooleanParsingptions
+    }> & { default: boolean[] | (() => boolean[]) } & BooleanParsingptions &
+      ArrayParsingOptions
   ): boolean[];
   parseBooleanArray(
     variableName: string,
     options?: Partial<{
       [key in keyof RuntimeEnvironment]: boolean[] | (() => boolean[]);
-    }> & { default?: boolean[] | (() => boolean[]) } & BooleanParsingptions
+    }> & { default?: boolean[] | (() => boolean[]) } & BooleanParsingptions &
+      ArrayParsingOptions
   ): boolean[] | undefined;
   parseBooleanArray(
     variableName: string,
     options?: Partial<{
       [key in keyof RuntimeEnvironment]: boolean[] | (() => boolean[]);
-    }> & { default?: boolean[] | (() => boolean[]) } & BooleanParsingptions
+    }> & { default?: boolean[] | (() => boolean[]) } & BooleanParsingptions &
+      ArrayParsingOptions
   ): boolean[] | undefined {
     const config = assignOptions(this.config, options);
     const arrayStr = parseEnvironmentVariable(variableName, config);

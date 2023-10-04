@@ -347,6 +347,50 @@ describe('SkylineEnv', () => {
     );
   });
 
+  it('Parse boolean array environment variable with validation constraints', () => {
+    // Parse boolean array environment variable
+    const parser = new SkylineEnv<typeof RuntimeEnvironment>({
+      processEnv: {
+        test1: 'true',
+        test2: 'true,1',
+        test3: 'yes,false, yes',
+      },
+    });
+
+    const env = {
+      true1: parser.parseBooleanArray('test1', { arrayMinLength: 1 }),
+      true2: parser.parseBooleanArray('test2', { arrayMaxLength: 2 }),
+      true3: parser.parseBooleanArray('test3', { arrayUniqueItems: false }),
+    };
+
+    expect(env).toEqual({
+      true1: [true],
+      true2: [true, true],
+      true3: [true, false, true],
+    });
+
+    expect(() =>
+      parser.parseBooleanArray('test1', { arrayMinLength: 2 })
+    ).toThrowError(EnvValidationError);
+    expect(() =>
+      parser.parseBooleanArray('test1', { arrayMinLength: 2 })
+    ).toThrow('at least');
+
+    expect(() =>
+      parser.parseBooleanArray('test2', { arrayMaxLength: 1 })
+    ).toThrowError(EnvValidationError);
+    expect(() =>
+      parser.parseBooleanArray('test2', { arrayMaxLength: 1 })
+    ).toThrow('at most');
+
+    expect(() =>
+      parser.parseBooleanArray('test3', { arrayUniqueItems: true })
+    ).toThrowError(EnvValidationError);
+    expect(() =>
+      parser.parseBooleanArray('test3', { arrayUniqueItems: true })
+    ).toThrow('unique');
+  });
+
   it('Parse boolean array environment variable with custom configuration', () => {
     // Parse boolean array environment variable
     const parser = new SkylineEnv<typeof RuntimeEnvironment>({
