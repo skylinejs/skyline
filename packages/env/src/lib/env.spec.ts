@@ -588,7 +588,7 @@ describe('SkylineEnv', () => {
     ).toThrowError('less than');
   });
 
-  it('Parse number array environment variable with custom configuration', () => {
+  it('Parse number array environment variable with default configuration', () => {
     // Parse number array environment variable
     const parser = new SkylineEnv<typeof RuntimeEnvironment>({
       processEnv: {
@@ -690,6 +690,83 @@ describe('SkylineEnv', () => {
     expect(() => parser.parseNumberArray('fail6')).toThrow(
       'env.parseNumberArray'
     );
+  });
+
+  it('Parse number array environment variable with validation constraints', () => {
+    // Parse number array environment variable
+    const parser = new SkylineEnv<typeof RuntimeEnvironment>({
+      processEnv: {
+        test1: '10',
+        test2: '100, 13',
+        test3: '1.2, 1, 2, 1.2',
+        test4: '5, 4, 3, 2, 1',
+        test5: '10,11,12,13,14',
+        test6: '1,2,3,1.2,5',
+        test7: '10e3,12e12',
+      },
+    });
+
+    const env = {
+      test1: parser.parseNumberArray('test1', { arrayMinLength: 1 }),
+      test2: parser.parseNumberArray('test2', { arrayMaxLength: 2 }),
+      test3: parser.parseNumberArray('test3', { arrayUniqueItems: false }),
+      test4: parser.parseNumberArray('test4', { numberMinimum: 1 }),
+      test5: parser.parseNumberArray('test5', { numberMaximum: 14 }),
+      test6: parser.parseNumberArray('test6', { numberIsInteger: false }),
+      test7: parser.parseNumberArray('test7', {}),
+    };
+
+    expect(env).toEqual({
+      test1: [10],
+      test2: [100, 13],
+      test3: [1.2, 1, 2, 1.2],
+      test4: [5, 4, 3, 2, 1],
+      test5: [10, 11, 12, 13, 14],
+      test6: [1, 2, 3, 1.2, 5],
+      test7: [10000, 12000000000000],
+    });
+
+    expect(() =>
+      parser.parseNumberArray('test1', { arrayMinLength: 2 })
+    ).toThrowError(EnvValidationError);
+    expect(() =>
+      parser.parseNumberArray('test1', { arrayMinLength: 2 })
+    ).toThrow('at least');
+
+    expect(() =>
+      parser.parseNumberArray('test2', { arrayMaxLength: 1 })
+    ).toThrowError(EnvValidationError);
+    expect(() =>
+      parser.parseNumberArray('test2', { arrayMaxLength: 1 })
+    ).toThrow('at most');
+
+    expect(() =>
+      parser.parseNumberArray('test3', { arrayUniqueItems: true })
+    ).toThrowError(EnvValidationError);
+    expect(() =>
+      parser.parseNumberArray('test3', { arrayUniqueItems: true })
+    ).toThrow('unique');
+
+    expect(() =>
+      parser.parseNumberArray('test4', { numberMinimum: 2 })
+    ).toThrowError(EnvValidationError);
+    expect(() =>
+      parser.parseNumberArray('test4', { numberMinimum: 2 })
+    ).toThrow('greater than or equal');
+
+    expect(() =>
+      parser.parseNumberArray('test5', { numberMaximum: 13 })
+    ).toThrowError(EnvValidationError);
+    expect(() =>
+      parser.parseNumberArray('test5', { numberMaximum: 13 })
+    ).toThrow('less than or equal');
+
+    expect(() =>
+      parser.parseNumberArray('test6', { numberIsInteger: true })
+    ).toThrowError(EnvValidationError);
+    expect(() =>
+      parser.parseNumberArray('test6', { numberIsInteger: true })
+    ).toThrow('integer');
   });
 
   /** === Refactor this ===*/

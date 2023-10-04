@@ -522,19 +522,22 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     variableName: string,
     options?: Partial<{
       [key in keyof RuntimeEnvironment]: number[] | (() => number[]);
-    }> & { default: number[] | (() => number[]) } & NumberParsingOptions
+    }> & { default: number[] | (() => number[]) } & NumberParsingOptions &
+      ArrayParsingOptions
   ): number[];
   parseNumberArray(
     variableName: string,
     options?: Partial<{
       [key in keyof RuntimeEnvironment]: number[] | (() => number[]);
-    }> & { default?: number[] | (() => number[]) } & NumberParsingOptions
+    }> & { default?: number[] | (() => number[]) } & NumberParsingOptions &
+      ArrayParsingOptions
   ): number[] | undefined;
   parseNumberArray(
     variableName: string,
     options?: Partial<{
       [key in keyof RuntimeEnvironment]: number[] | (() => number[]);
-    }> & { default?: number[] | (() => number[]) } & NumberParsingOptions
+    }> & { default?: number[] | (() => number[]) } & NumberParsingOptions &
+      ArrayParsingOptions
   ): number[] | undefined {
     const config = assignOptions(this.config, options);
     const arrayStr = parseEnvironmentVariable(variableName, config);
@@ -544,6 +547,18 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     if (arrayStr !== undefined && valuesStr === undefined) {
       throw new EnvParsingError(
         `[env.parseNumberArray] Could not parse value "${arrayStr}" as array for environment variable "${variableName}".`,
+        {
+          variableName,
+          value: arrayStr,
+        }
+      );
+    }
+
+    // Validate array value
+    const validationResult = validateArrayValue(valuesStr, config);
+    if (typeof validationResult === 'string') {
+      throw new EnvValidationError(
+        `[env.parseNumberArray] Invalid value "${arrayStr}" for environment variable "${variableName}". ${validationResult}`,
         {
           variableName,
           value: arrayStr,
