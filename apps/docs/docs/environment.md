@@ -52,7 +52,7 @@ To avoid these issues, your environment variable management should be based on t
 
 4. Error handling should be as strict as possible. Each unexpected environment state should lead to a failure of the application. This way you can rollback the application update immediately and prevent it from causing issues in production later on.
 
-# Example code walkthrough
+## Example code walkthrough
 
 To demonstrate the implementation of the principles above, we take a look at a basic environment variable parsing using the `@skyline-js/env` package:
 

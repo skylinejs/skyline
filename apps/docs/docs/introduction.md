@@ -45,6 +45,8 @@ CTA: Get started or check out the architecture primer
 
 Each Skyline library can be used on its own. However, all libraries play nicely together because they adhere to the same guiding principles. This coherence makes it easy for a developer to pick up a new Skyline library and use the same patterns to integrate the library into their own codebase. Below is a short introduction into the guiding principles.
 
+## Complexity is very bad
+
 ## Framework versus library
 
 If you are one of those developers that uses the words "Framework" and "Library" interchangeably, stop now. A framework operates under the Hollywood principle: "Don't call us - we call you". The framework takes over the flow of the application and calls your code as needed. NestJS is an example of an excellent framework that does all the heavy lifting to create an environment you can easily develop a web server in.

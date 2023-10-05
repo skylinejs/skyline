@@ -27,7 +27,7 @@ Do NOT copile mjml to html at runtime. This process is very compute intensive, c
 So you want to compile this and then use the result for sending emails.
 
 How to we prevent tokens not being filled?
-Everyone received such an email i nthe past" Hello {{username}}". How do we garantuee that this does not happen?
+Everyone received such an email i nthe past" Hello {{username}}". How do we guarantuee that this does not happen?
 
 The email package compiles the mjml to html. Then it parses the template syntax e.g., handlebars and transforms the html to a functoin that takes those as parameters. THis way we achieve type-safety.
 
