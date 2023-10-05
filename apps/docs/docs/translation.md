@@ -30,12 +30,50 @@ As usual, we do things a little different around here. First, we vehemently reje
 - Lazy loading is only possible on a language basis, not on a feature basis
 - No guarantuee that your translation keys are present in every translation file
 - No compiler or IDE support for misspelling translation keys
-- Developer needs to jump around the codebase for finding or adding translation strings
+- Developer needs to jump around the codebase to find or add translation strings
 - Changing the application language is sluggish because the new (huge) translation file needs to be loaded first
-- If the file is not present or loading it fails due to some other reason, your application is broken.
+- If the file is not present or loading it fails due to some reason, your application is broken.
+
+Instead, we have small translation files for each feature that are imported like any other code, so they are part of the regular compilation process.
+
+A translation file looks like this:
+
+```ts
+import { SkylineTranslation } from '@skyline-js/translate';
+
+export const RegistraionEmail = new SkylineTranslation({
+  EN: {
+    subject: 'Please confirm your email address',
+    body: 'Thanks for signing up. Confirm your email address here: {{ link }}',
+  },
+  DE: {
+    subject: 'Bitte bestätige deine E-Mail Adresse',
+    body: 'Danke für deine Anmeldung. Bestätige deine E-Mail Adressse hier: {{ link }}',
+  },
+});
+```
+
+```ts
+import { randomUUID } from 'crypto';
+import { RegistrationEmail } from './registration-email.translation';
+
+// ...
+
+const lang = 'EN';
+const token = randomUUID();
+const link = `https://skylinejs.com/signup?auth=${token}`;
+
+await email.send({
+  subject: RegistrationEmail.translate(lang, RegistrationEmail.key.subject),
+  body: RegistrationEmail.translate(lang, RegistrationEmail.key.text, { link }),
+});
+
+// ...
+```
 
 <!-- Locality of Behaviour (LoB) -->
 
+<!--
 ## How we get to 0% translation runtime errors
 
 Translation code is notorious for two error sources:
@@ -48,3 +86,5 @@ Due to a lack of type-safety, both classes of errors go undetected until a custo
 ```ts
 
 ```
+
+-->
