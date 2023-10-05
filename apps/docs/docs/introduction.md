@@ -45,7 +45,13 @@ CTA: Get started or check out the architecture primer
 
 Each Skyline library can be used on its own. However, all libraries play nicely together because they adhere to the same guiding principles. This coherence makes it easy for a developer to pick up a new Skyline library and use the same patterns to integrate the library into their own codebase. Below is a short introduction into the guiding principles.
 
-## Complexity is very bad
+## Complexity bad, very bad
+
+<!-- Graphic with curve meme on developer complexity -->
+
+If you are fresh out of university, just compiled your own version of the Arch Linux kernel and are ready to take on the world, just let me say: I understand. I used to be you and there are no words of wisdom that could have kept me from implementing abstract interfaces with 10 generics, write my own API endpoint description language for auto-generating CRUD endpoints or monkey patch npm packages at runtime to modify internal behavior I did not like (yes I know).
+
+However, after years and years of building and maintaining a codebase that is required to create real value to real customers in the real world, I eventually learned a thing or two about code. First and foremost, code does not have an end in itself. The only raison d'être for your code is that it solves a problem for someone else. If this does not apply to your situation, you can safely close this browser tab and move on.
 
 ## Framework versus library
 

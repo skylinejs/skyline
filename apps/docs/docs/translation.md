@@ -30,13 +30,14 @@ As usual, we do things a little different around here. First, we vehemently reje
 - Lazy loading is only possible on a language basis, not on a feature basis
 - No guarantuee that your translation keys are present in every translation file
 - No compiler or IDE support for misspelling translation keys
+- No compiler or IDE support for misspelling translation template parameters
 - Developer needs to jump around the codebase to find or add translation strings
 - Changing the application language is sluggish because the new (huge) translation file needs to be loaded first
 - If the file is not present or loading it fails due to some reason, your application is broken.
 
-Instead, we have small translation files for each feature that are imported like any other code, so they are part of the regular compilation process.
+Instead, we have small translation objects for each feature that are imported like any other code, so they are part of the regular compilation process.
 
-A translation file looks like this:
+A translation object looks like this:
 
 ```ts
 import { SkylineTranslation } from '@skyline-js/translate';
@@ -53,6 +54,8 @@ export const RegistraionEmail = new SkylineTranslation({
 });
 ```
 
+The translation object can be used like this:
+
 ```ts
 import { randomUUID } from 'crypto';
 import { RegistrationEmail } from './registration-email.translation';
@@ -65,7 +68,7 @@ const link = `https://skylinejs.com/signup?auth=${token}`;
 
 await email.send({
   subject: RegistrationEmail.translate(lang, RegistrationEmail.key.subject),
-  body: RegistrationEmail.translate(lang, RegistrationEmail.key.text, { link }),
+  body: RegistrationEmail.translate(lang, RegistrationEmail.key.body, { link }),
 });
 
 // ...
@@ -86,5 +89,8 @@ Due to a lack of type-safety, both classes of errors go undetected until a custo
 ```ts
 
 ```
+
+Concern: "This adds huge bundle size to application!"
+Answer: Well having an additional translation file side-by-side to the rest of the code of that feature does not make a difference. If you have a lot of features you need to lazy load their code anyways, one more file hardly makes the difference. on the contrary, you do not need 2 lazy loading mechanisms but only one because the translation file is now the same as the rest of the feature's code.
 
 -->
