@@ -27,6 +27,8 @@ Instead of building these on your own, SkylineJS provides you with libraries tha
 
 Your current situation might look like this:
 
+<!-- TODO: replace with rage comic -->
+
 ```mermaid
 journey
 title Your situation
@@ -45,8 +47,8 @@ title Your situation
 
 This is an undesirable state of existence. SkylineJS was created to guide you out of this chaos in two simple steps:
 
-1. Education: an in-depth explanation of why you should do something a certain way.
-2. Code: provide you with the necessary code to act on the knowledge you just gained.
+1. **Education**: an in-depth explanation of why you should do something a certain way.
+2. **Code**: provide you with the necessary code to act on the knowledge you just gained.
 
 Ideally, your framework + SkylineJS should take care of all the basic scaffolding your application needs, everything else is domain-specific functionality that depends on the particular features you would like to build (e.g., remote controlling your toaster via a REST API).
 
@@ -56,11 +58,13 @@ Each Skyline library can be used on its own. However, all libraries play nicely 
 
 ## Complexity bad, very bad
 
-<!-- Graphic with curve meme on developer complexity -->
+<!-- TODO: Graphic with curve meme on developer complexity -->
 
 If you are fresh out of university, just compiled your own version of the Arch Linux kernel and are ready to take on the world, just let me say: I understand. I used to be you and there are no words of wisdom that could have kept me from implementing abstract interfaces with 10 generics, write my own API endpoint description language for auto-generating CRUD endpoints or monkey patch npm packages at runtime to modify internal behavior I did not like (yes I know).
 
 However, after years and years of building and maintaining a codebase that is required to create real value to real customers in the real world, I eventually learned a thing or two about code. First and foremost, code does not have an end in itself. The only raison d'être for your code is that it solves a problem for someone else. If this does not apply to your situation, you can safely close this browser tab and move on.
+
+I recommend a strong bias towards simple and repetitive code and against re-usable but complex code. Complexity is created through dependencies and fexibility. With abstractions you create both: The abstraction needs to support multiple use-cases (flexibility) and is used by multiple consumers (dependencies). Just you _can_ create an abstraction for something does not mean you _should_.
 
 ## Framework versus library
 
