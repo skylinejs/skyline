@@ -46,7 +46,7 @@ To avoid these issues, your environment variable management should be based on t
 
 1. Environment variables are parsed and validated by a single module of your codebase. Nobody else touches `process.env`. Everyone else gets their environment variables from this module.
 
-2. Every environment variable is tested for syntactical correctness during parsing. This ensures that the type and shape of the environment variable is garantueed to the rest of the application during runtime.
+2. Every environment variable is tested for syntactical correctness during parsing. This ensures that the type and shape of the environment variable is guaranteed to the rest of the application during runtime.
 
 3. All non-sensitive environment variables are declared and maintained inside the codebase. There is no value in scattering your different environment configs across multiple `.env` files and inside your deployment scripts.
 
@@ -95,7 +95,7 @@ api.listen({
 });
 ```
 
-This minimal example only follows principle 1 by keeping the environment variable parsing in a single place. Prinicple 2 is partially covered as the type of each environment variable is validated (string, number, boolean). Let's rewrite the example above:
+This minimal example only follows principle 1 by keeping the environment variable parsing in a single place. Principle 2 is partially covered as the type of each environment variable is validated (string, number, boolean). Let's rewrite the example above:
 
 ```ts
 import { SkylineEnv } from '@skyline-js/env';

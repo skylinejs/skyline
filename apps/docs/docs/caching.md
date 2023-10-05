@@ -57,7 +57,7 @@ Server 1 wants to read `user:1` from the cache. As the user is not cached yet, h
 
 The diagram shows how an unfortunate timing of these operations can result in an inconsistent cache. Timing dependent bugs are hard to observe and reproduce and are therfore well suited to destroy the morale and sanity of one or more developers.
 
-How can we protect ourselves against this scenario? A solution could be to only write to the cache if no value exists for the key. This would prevent the write operation from Server 1 to write an old value for `user:1` to the cache. However, what if the write operation of Server 1 is faster than the write operation of Server 2? In this case, a value for `user:1` would alreay exist in the cache and therefore the write operation of Server 2 would be discarded, producing an inconsistent cache again.
+How can we protect ourselves against this scenario? A solution could be to only write to the cache if no value exists for the key. This would prevent the write operation from Server 1 to write an old value for `user:1` to the cache. However, what if the write operation of Server 1 is faster than the write operation of Server 2? In this case, a value for `user:1` would already exist in the cache and therefore the write operation of Server 2 would be discarded, producing an inconsistent cache again.
 
 To solve this problem, we could always write to the cache after we perform an update operation, regardless of whether a value exists in the cache or not. Sounds good, but this just produces more problems. Consider this diagram where two servers update the same user in parallel:
 
@@ -90,7 +90,7 @@ The skyline caching strategy is based on the following rules:
 
 1. Writing a value to a cache key only happens if the cache key is not set yet.
 1. Writing a value to a cache key only happens if the value is not stale.
-1. Invalidating a cache key sets the value to "blocked" for a certain amount of time.
+1. Invalidating a cache key sets the value to `blocked` for a certain amount of time.
 1. A value retrieved for a cache key has to be validated regarding its structure.
 
 Following these rules, no cache inconsistencies can occurr due to timing issues. However, the cache invalidation itself still needs to be done by the developer whenever a value changes. As this is very easy to forget, we furthermore need a process in place to deal with cache inconsistencies due to missing invalidations:
@@ -167,11 +167,11 @@ sequenceDiagram
 
 This one is easy. The cache just gets invalidated twice, so it is obviously not inconsistent. However, an important detail here is that the second invalidation has to reset the TTL (time-to-live) of the `blocked` value for `user:1` to its configured value, otherwise the cache key's `blocked` value could expire to soon and a late write operation as depicted in the first diagram could mess up our cache afterall.
 
-To summarize, we leverage the asymmetry of a cache key being read (a lot) and a cache key being invalidated (not so often) by blocking a cache key for some time on invalidation. While we loose using the cache during this time, we gain the garantuee of a consistent cache for the rest of cache value's lifetime. Quite a bargain if you ask me! If a cache key gets invalidated frequently, we would not be able to use the cache. However, in this case caching might be the wrong approach anyways as caching is most useful for values that do not change too often.
+To summarize, we leverage the asymmetry of a cache key being read (a lot) and a cache key being invalidated (not so often) by blocking a cache key for some time on invalidation. While we loose using the cache during this time, we gain the guarantee of a consistent cache for the rest of cache value's lifetime. Quite a bargain if you ask me! If a cache key gets invalidated frequently, we would not be able to use the cache. However, in this case caching might be the wrong approach anyways as caching is most useful for values that do not change too often.
 
 ## Code example walkthrough
 
-I will demonstrate the Skyline caching strategy based on the following scenario: Yout want to build a NestJS web application server that stores its data in a relational database and uses Redis for caching. Your application has a dedicated data-access layer, which abstracts away the communication with the database. This is done via repositories, which offer methods to perform SQL operations on a specific database table (or multiple depending on the use-case). The database schema and therefore the SQL query structure is hidden from the consumer of the repository. The repository implements a read-through caching strategy:
+I will demonstrate the Skyline caching strategy based on the following scenario: You want to build a NestJS web application server that stores its data in a relational database and uses Redis for caching. Your application has a dedicated data-access layer, which abstracts away the communication with the database. This is done via repositories, which offer methods to perform SQL operations on a specific database table (or multiple depending on the use-case). The database schema and therefore the SQL query structure is hidden from the consumer of the repository. The repository implements a read-through caching strategy:
 
 1. Retrieve the requested value from the cache.
 2. If the value could be retrieved from the cache, return it.
