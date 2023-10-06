@@ -53,12 +53,13 @@ function HomepageHeader() {
           className="hero__title"
           style={{
             color: '#fff',
-            fontFamily: 'neon-led-light',
+            fontFamily: 'Neon Led Light, inter',
             letterSpacing: '4px',
             textTransform: 'uppercase',
             fontSize: 'min(64px, 10vw)',
             fontWeight: 900,
             paddingBottom: '16px',
+            fontStyle: 'normal',
           }}
         >
           {siteConfig.title}
@@ -67,7 +68,7 @@ function HomepageHeader() {
           className="hero__subtitle"
           style={{
             color: '#fff',
-            fontFamily: 'miami-beat',
+            fontFamily: 'Miami Beat, inter',
             letterSpacing: '4px',
             textTransform: 'uppercase',
             fontSize: 'min(26px, 5vw)',
@@ -80,10 +81,13 @@ function HomepageHeader() {
         >
           <span
             style={{
+              fontWeight: 600,
               backgroundColor: 'rgba(0,0,0, 0.85)',
               lineHeight: '36px',
               color: 'rgbb  (186, 44, 115)',
-              padding: '6px 4px 0px 4px',
+              padding: '2px 0px 0px 4px',
+              letterSpacing: '3px',
+              fontStyle: 'normal',
             }}
           >
             {siteConfig.tagline}

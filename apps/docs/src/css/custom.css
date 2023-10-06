@@ -5,45 +5,43 @@
  */
 
 @font-face {
-  font-family: neon-led-light;
-  font-style: normal;
-  font-weight: 400;
-  src: url('/static/font/neon-led-light.otf');
-}
-
-@font-face {
-  font-family: miami-beat;
-  font-style: normal;
-  font-weight: 400;
-  src: url('/static/font/miami-beat.woff2');
-}
-
-@font-face {
-  font-family: inter;
+  font-family: 'inter';
   font-style: normal;
   font-weight: 400;
   src: url('/static/font/inter-regular.ttf');
 }
 
 @font-face {
-  font-family: inter;
+  font-family: 'inter';
   font-style: normal;
   font-weight: 500;
   src: url('/static/font/inter-medium.ttf');
 }
 
 @font-face {
-  font-family: inter;
+  font-family: 'inter';
   font-style: normal;
   font-weight: 700;
   src: url('/static/font/inter-bold.ttf');
 }
 
 @font-face {
-  font-family: inter;
+  font-family: 'inter';
   font-style: normal;
   font-weight: 800;
   src: url('/static/font/inter-black.ttf');
+}
+
+@font-face {
+  font-family: 'Neon Led Light';
+  font-style: normal;
+  src: url('/static/font/neon-led-light.otf');
+}
+
+@font-face {
+  font-family: 'Miami Beat';
+  font-style: normal;
+  src: url('/static/font/miami-beat.ttf');
 }
 
 /* You can override the default Infima variables here. */
