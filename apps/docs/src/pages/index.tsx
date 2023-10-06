@@ -93,21 +93,25 @@ function HomepageHeader() {
             {siteConfig.tagline}
           </span>
         </p>
-        <div className={styles.buttons}>
+        <div>
           <Link
-            className="button button--secondary button--lg"
+            className={
+              'button button--secondary button--lg .docuLink ' + styles.docuLink
+            }
+            draggable={false}
             to="/docs/introduction"
             style={{
               marginTop: '24px',
               borderRadius: '12px',
-              background: '#000000',
               color: '#FFFFFF',
               outline: 'none',
               fontWeight: 700,
-              border: '1px solid #FFFFFF',
+              border: 'none',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              boxShadow:
+                'rgba(255, 255, 255, 1) 0px 0px 8px, rgba(255, 255, 255, 1) 0px 0px 0px 1px inset',
             }}
           >
             <TerminalSquareIcon

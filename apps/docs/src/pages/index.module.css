@@ -16,8 +16,21 @@
   }
 }
 
-.buttons {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.docuLink {
+  background: #000000;
+  transition: all 0.22s ease-in-out;
+  box-shadow: rgba(255, 255, 255, 1) 0px 0px 8px,
+    rgba(255, 255, 255, 1) 0px 0px 0px 1px inset;
+}
+
+.docuLink:hover {
+  background: #282828;
+}
+
+.docuLink:focus-visible {
+  background: #282828;
+}
+
+.docuLink:active {
+  background: #383838;
 }

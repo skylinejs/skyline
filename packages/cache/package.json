@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "Fast, reliable and zero dependency cache with built-in cache inconsistency observability and reporting. Supports any storage engine, in-memory and Redis come out of the box.",
   "homepage": "https://skylinejs.com",
-  "license": "MIT",
   "keywords": [
     "cache",
     "caching",
