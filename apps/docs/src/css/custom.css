@@ -5,6 +5,20 @@
  */
 
 @font-face {
+  font-family: neon-led-light;
+  font-style: normal;
+  font-weight: 400;
+  src: url('/static/font/neon-led-light.otf');
+}
+
+@font-face {
+  font-family: miami-beat;
+  font-style: normal;
+  font-weight: 400;
+  src: url('/static/font/miami-beat.woff2');
+}
+
+@font-face {
   font-family: inter;
   font-style: normal;
   font-weight: 400;
@@ -62,7 +76,7 @@
   --ifm-breadcrumb-item-background-active: rgba(0, 0, 0, 0.04);
 
   /** Navbar */
-  --ifm-navbar-height: 100px;
+  --ifm-navbar-height: 70px;
   --ifm-navbar-link-color: #fff;
   --ifm-navbar-background-color: rgb(0, 0, 0); /** 186, 44, 115 */
   --ifm-navbar-link-hover-color: rgb(186, 44, 115);
@@ -82,13 +96,13 @@ section,
 }
 
 .navbar__logo {
-  min-height: 80px;
-  height: 80px;
-  max-height: 80px;
+  min-height: 60px;
+  height: 60px;
+  max-height: 60px;
 
-  min-width: 80px;
-  width: 80px;
-  max-width: 80px;
+  min-width: 60px;
+  width: 60px;
+  max-width: 60px;
 }
 
 .navbar__toggle {

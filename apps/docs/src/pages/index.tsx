@@ -10,7 +10,7 @@ import styles from './index.module.css';
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
 
-  const backgroundId = Math.floor(Math.random() * 4) + 1;
+  const backgroundId = 8; // Math.floor(Math.random() * 4) + 1;
   return (
     <header
       style={{
@@ -39,20 +39,54 @@ function HomepageHeader() {
         className="container"
         style={{
           position: 'relative',
-          padding: '3vw 24px 24px 24px ',
+          padding: '16px 24px 24px 24px ',
           zIndex: 1,
           alignSelf: 'flex-start',
           color: '#fff',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
-        <h1 className="hero__title" style={{ color: '#fff' }}>
+        <h1
+          className="hero__title"
+          style={{
+            color: '#fff',
+            fontFamily: 'neon-led-light',
+            letterSpacing: '4px',
+            textTransform: 'uppercase',
+            fontSize: 'min(64px, 10vw)',
+            fontWeight: 900,
+            paddingBottom: '16px',
+          }}
+        >
           {siteConfig.title}
         </h1>
         <p
           className="hero__subtitle"
-          style={{ fontWeight: 500, color: 'white' }}
+          style={{
+            color: '#fff',
+            fontFamily: 'miami-beat',
+            letterSpacing: '4px',
+            textTransform: 'uppercase',
+            fontSize: 'min(26px, 5vw)',
+            fontWeight: 900,
+            maxWidth: '700px',
+            textAlign: 'center',
+            alignSelf: 'center',
+          }}
         >
-          {siteConfig.tagline}
+          <span
+            style={{
+              backgroundColor: 'rgba(0,0,0, 0.85)',
+              lineHeight: '36px',
+              color: 'rgbb  (186, 44, 115)',
+              padding: '6px 4px 0px 4px',
+            }}
+          >
+            {siteConfig.tagline}
+          </span>
         </p>
         <div className={styles.buttons}>
           <Link
