@@ -4,6 +4,7 @@ import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
+import TerminalSquareIcon from '@site/static/icon/terminal-square.svg';
 
 import styles from './index.module.css';
 
@@ -99,8 +100,19 @@ function HomepageHeader() {
             style={{
               marginTop: '24px',
               borderRadius: '12px',
+              background: '#000000',
+              color: '#FFFFFF',
+              outline: 'none',
+              fontWeight: 700,
+              border: '1px solid #FFFFFF',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
+            <TerminalSquareIcon
+              style={{ width: '20px', height: '20px', marginRight: '8px' }}
+            />
             Documentation
           </Link>
         </div>
