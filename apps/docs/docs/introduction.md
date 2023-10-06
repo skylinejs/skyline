@@ -56,7 +56,7 @@ CTA: Get started or check out the architecture primer
 
 Each Skyline library can be used on its own. However, all libraries play nicely together because they adhere to the same guiding principles. This coherence makes it easy for a developer to pick up a new Skyline library and use the same patterns to integrate the library into their own codebase. Below is a short introduction into the guiding principles.
 
-## Complexity bad, very bad
+## Avoid complexity
 
 <!-- TODO: Graphic with curve meme on developer complexity -->
 
