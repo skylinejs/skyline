@@ -68,11 +68,8 @@ function HomepageHeader() {
           className="hero__subtitle"
           style={{
             color: '#fff',
-            fontFamily: 'Miami Beat, inter',
             letterSpacing: '4px',
             textTransform: 'uppercase',
-            fontSize: 'min(26px, 5vw)',
-            fontWeight: 900,
             maxWidth: '700px',
             textAlign: 'center',
             alignSelf: 'center',
@@ -81,12 +78,14 @@ function HomepageHeader() {
         >
           <span
             style={{
-              fontWeight: 600,
+              fontWeight: 400,
+              fontFamily: 'Miami Beat, inter',
               backgroundColor: 'rgba(0,0,0, 0.85)',
+              fontSize: 'min(28px, 5vw)',
               lineHeight: '36px',
               color: 'rgbb  (186, 44, 115)',
               padding: '2px 0px 0px 4px',
-              letterSpacing: '3px',
+              letterSpacing: '2px',
               fontStyle: 'normal',
             }}
           >
