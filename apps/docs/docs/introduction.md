@@ -27,28 +27,16 @@ Instead of building these on your own, SkylineJS provides you with libraries tha
 
 Your current situation might look like this:
 
-<!-- TODO: replace with rage comic -->
-
-```mermaid
-journey
-title Your situation
-    section Random server problem that keeps you from building features
-      Read random blog posts: 7
-      Read random StackOverflow posts: 5
-      Decide to hack the solution together: 4
-      Find random npm library: 3
-
-    section Get random 10 year old npm library to work
-      Solve JS module ESM issue: 2
-      Install @types to get TypeScript support: 1
-      Try to promisify the callback API: 1
-      Refactor, fix bugs, write unit tests: 0
-```
+![Your current situation](/img/le-situation.png)
 
 This is an undesirable state of existence. SkylineJS was created to guide you out of this chaos in two simple steps:
 
 1. **Education**: an in-depth explanation of why you should do something a certain way.
 2. **Code**: provide you with the necessary code to act on the knowledge you just gained.
+
+Have a look at how this might change your situation to the better:
+
+![Your new situation](/img/le-new-situation.png)
 
 Ideally, your framework + SkylineJS should take care of all the basic scaffolding your application needs, everything else is domain-specific functionality that depends on the particular features you would like to build (e.g., remote controlling your toaster via a REST API).
 
