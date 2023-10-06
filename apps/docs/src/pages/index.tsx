@@ -75,6 +75,7 @@ function HomepageHeader() {
             maxWidth: '700px',
             textAlign: 'center',
             alignSelf: 'center',
+            padding: '0px 14px',
           }}
         >
           <span
