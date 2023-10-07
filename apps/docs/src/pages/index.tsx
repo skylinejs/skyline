@@ -139,7 +139,6 @@ export default function Home(): JSX.Element {
           imgSrc="profile/skylinejs-silvio.png"
           imgAlt="SkylineJS Mr. Silvio"
         />
-
         <HomepageSection
           ltr={false}
           title="Focus on delivering value"
@@ -147,7 +146,6 @@ export default function Home(): JSX.Element {
           imgSrc="profile/skylinejs-tony.png"
           imgAlt="SkylineJS Mr. Tony"
         />
-
         <HomepageSection
           ltr={true}
           title="Deploy to production with confidence"
@@ -155,7 +153,6 @@ export default function Home(): JSX.Element {
           imgSrc="profile/skylinejs-big-papa.png"
           imgAlt="SkylineJS Mr. Big Papa"
         />
-
         <HomepageSection
           ltr={false}
           isLast={true}
@@ -165,6 +162,54 @@ export default function Home(): JSX.Element {
           imgAlt="SkylineJS Mr. Jordan"
         />
       </main>
+
+      <section
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: '120px 0px',
+          flexDirection: 'column',
+        }}
+      >
+        <div
+          style={{
+            width: 'fit-content',
+          }}
+        >
+          <div
+            style={{
+              fontSize: 'min(32px, 5vw)',
+              fontWeight: 500,
+              whiteSpace: 'nowrap',
+              wordBreak: 'keep-all',
+              color: 'rgb(31, 31, 31)',
+              marginBottom: '16px',
+            }}
+          >
+            Are you ready to start building?
+          </div>
+
+          <a
+            href="/docs/introduction"
+            style={{
+              width: '100%',
+              display: 'flex',
+              borderRadius: '8px',
+              color: 'rgb(31, 31, 31)',
+              padding: '9px 15px',
+              background: 'rgb(248, 249, 250)',
+              border: '1px solid rgb(230, 232, 235)',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              textDecoration: 'none',
+            }}
+          >
+            <span style={{ pointerEvents: 'none' }}>Go to docs</span>
+          </a>
+        </div>
+      </section>
     </Layout>
   );
 }

@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import clsx from 'clsx';
-import styles from './styles.module.css';
 const Chart = require('chart.js/auto');
 
 export default class CachingChart extends Component {
