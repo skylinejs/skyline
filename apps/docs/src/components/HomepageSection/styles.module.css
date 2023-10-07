@@ -1,6 +1,6 @@
 .section {
-  padding: 0px 10vw;
-  height: 600px;
+  padding: 0px 10vw 200px 10vw;
+  height: 650px;
   align-items: center;
   justify-content: space-between;
 }
@@ -12,10 +12,16 @@
   color: rgb(237, 237, 239);
 }
 
+.sectionDescription {
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 400;
+  color: rgb(126, 125, 134);
+}
+
 /* Responsive styles */
 @media (max-width: 1300px) {
   .section {
-    padding: 0px 10vw 200px 10vw;
     align-items: center;
     justify-content: center;
     height: fit-content;
@@ -23,9 +29,14 @@
   }
 }
 
-@media (max-width: 850px) {
+@media (max-width: 700px) {
   .sectionTitle {
     font-size: 24px;
     line-height: 32px;
+  }
+
+  .sectionDescription {
+    font-size: 16px;
+    line-height: 24px;
   }
 }

@@ -137,7 +137,7 @@ export default function Home(): JSX.Element {
           title="For modern Node.js applications"
           description="TypeScript native, fast, and simple. Use the latest technologies to build your next application."
           imgSrc="profile/skylinejs-silvio.png"
-          imgAlt="Silvio"
+          imgAlt="SkylineJS Mr. Silvio"
         />
 
         <HomepageSection
@@ -145,7 +145,7 @@ export default function Home(): JSX.Element {
           title="Focus on delivering value"
           description="Don't get bogged down by implementing the basics. SkylineJS provides you with everything you need to build your application so that you can focus on delivering value to your users."
           imgSrc="profile/skylinejs-tony.png"
-          imgAlt="Tony"
+          imgAlt="SkylineJS Mr. Tony"
         />
 
         <HomepageSection
@@ -153,15 +153,16 @@ export default function Home(): JSX.Element {
           title="Deploy to production with confidence"
           description="You are in good company. Each SkylineJS library was internally developed and used in production for years before being open sourced."
           imgSrc="profile/skylinejs-big-papa.png"
-          imgAlt="Big Papa"
+          imgAlt="SkylineJS Mr. Big Papa"
         />
 
         <HomepageSection
           ltr={false}
+          isLast={true}
           title="A strong foundation"
           description="Insane test coverage, typed, and well documented. SkylineJS libraries are a rock solid foundation for your next project."
           imgSrc="profile/skylinejs-jordan.png"
-          imgAlt="Jordan"
+          imgAlt="SkylineJS Mr. Jordan"
         />
       </main>
     </Layout>

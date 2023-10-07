@@ -7,6 +7,7 @@ export function HomepageSection(props: {
   imgSrc: string;
   imgAlt: string;
   ltr?: boolean;
+  isLast?: boolean;
 }): JSX.Element {
   return (
     <section
@@ -17,6 +18,8 @@ export function HomepageSection(props: {
         display: 'flex',
         flexWrap: 'wrap',
         flexDirection: props.ltr ? 'row' : 'row-reverse',
+        paddingBottom: props.isLast ? '0px' : undefined,
+        height: props.isLast ? 'fit-content' : undefined,
       }}
     >
       {/* Text element */}
@@ -34,17 +37,7 @@ export function HomepageSection(props: {
       >
         <h2 className={styles.sectionTitle}>{props.title}</h2>
 
-        <div
-          style={{
-            color: 'rgb(126, 125, 134)',
-            fontSize: '18px',
-            lineHeight: '28px',
-            fontWeight: 400,
-            display: 'inline',
-          }}
-        >
-          {props.description}
-        </div>
+        <div className={styles.sectionDescription}>{props.description}</div>
       </div>
 
       {/* Image element */}
