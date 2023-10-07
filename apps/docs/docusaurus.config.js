@@ -8,7 +8,7 @@ const config = {
   title: 'SkylineJS',
   tagline:
     'Toolkit for building efficient, reliable and scalable server-side applications.',
-  favicon: 'img/logo-skyline.png',
+  favicon: 'logo/favicon-skyline.jpeg',
   url: 'https://skylinejs.com',
   baseUrl: '/',
 
@@ -69,7 +69,7 @@ const config = {
         title: 'SkylineJS',
         logo: {
           alt: '',
-          src: 'img/logo-skyline.png',
+          src: 'logo/logo-skyline.jpeg',
         },
         items: [
           {
