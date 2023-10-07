@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
-import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import TerminalSquareIcon from '@site/static/icon/terminal-square.svg';
 
 import styles from './index.module.css';
@@ -11,15 +10,15 @@ import styles from './index.module.css';
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
 
-  const backgroundId = 8; // Math.floor(Math.random() * 4) + 1;
   return (
     <header
       style={{
         position: 'relative',
         padding: '0',
-        height: '75vh',
+        height: '95vh',
         background: '#080d12',
         color: '#fff',
+        zIndex: 0,
       }}
       className={clsx('hero hero--primary', styles.heroBanner)}
     >
@@ -33,7 +32,7 @@ function HomepageHeader() {
           zIndex: 0,
           overflow: 'hidden',
         }}
-        src={'img/background-skyline-' + backgroundId + '.png'}
+        src={'img/skylinejs-background.png'}
       />
 
       <div
@@ -58,6 +57,7 @@ function HomepageHeader() {
             letterSpacing: '4px',
             textTransform: 'uppercase',
             fontSize: 'min(64px, 10vw)',
+            lineHeight: '80px',
             fontWeight: 900,
             paddingBottom: '16px',
             fontStyle: 'normal',
@@ -125,6 +125,319 @@ function HomepageHeader() {
   );
 }
 
+function HomepageFirstSection(): JSX.Element {
+  return (
+    <div
+      style={{
+        background: 'black',
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        zIndex: 1,
+        overflow: 'hidden',
+        justifyContent: 'space-between',
+      }}
+    >
+      {/* Left graphic */}
+      <div>
+        <img
+          src={'profile/skylinejs-jordan.png'}
+          alt="Jordan"
+          style={{
+            width: '100%',
+            maxWidth: '400px',
+            height: '100%',
+            objectFit: 'contain',
+            objectPosition: '0% 0%',
+          }}
+        />
+      </div>
+
+      {/* Right text */}
+      <div
+        style={{
+          padding: '0px 24px',
+          display: 'flex',
+          flexDirection: 'column',
+          flex: 1,
+          minWidth: '0px',
+          maxWidth: '500px',
+          justifyContent: 'top',
+          alignItems: 'right',
+        }}
+      >
+        <h2 style={{ width: 'fit-content' }}>
+          <span
+            style={{
+              color: 'rgba(237,237,239,1)',
+              fontSize: '32px',
+              lineHeight: '44px',
+              fontWeight: 500,
+              fontFamily: ' inter',
+              display: 'inline',
+            }}
+          >
+            A strong foundation
+          </span>
+        </h2>
+
+        <div
+          style={{
+            color: 'rgb(126, 125, 134)',
+            fontSize: '18px',
+            lineHeight: '28px',
+            fontWeight: 400,
+            fontFamily: ' inter',
+            display: 'inline',
+          }}
+        >
+          Insane test coverage, typed, and well documented. SkylineJS libraries
+          are a rock solid foundation for your next project.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HomepageSecondSection(): JSX.Element {
+  return (
+    <div
+      style={{
+        background: 'black',
+        height: '80vh',
+        zIndex: 1,
+        overflow: 'hidden',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+        }}
+      >
+        {/* Right text */}
+        <div
+          style={{
+            padding: '0px 24px',
+            display: 'flex',
+            height: 'fit-content',
+            flexDirection: 'column',
+            flex: 1,
+            minWidth: '0px',
+            maxWidth: '500px',
+            justifyContent: 'top',
+            alignItems: 'right',
+          }}
+        >
+          <h2 style={{ width: 'fit-content' }}>
+            <span
+              style={{
+                color: 'rgba(237,237,239,1)',
+                fontSize: '32px',
+                lineHeight: '44px',
+                fontWeight: 500,
+                fontFamily: ' inter',
+                display: 'inline',
+              }}
+            >
+              For modern Node.js applications
+            </span>
+          </h2>
+
+          <div
+            style={{
+              color: 'rgb(126, 125, 134)',
+              fontSize: '18px',
+              lineHeight: '28px',
+              fontWeight: 400,
+              fontFamily: ' inter',
+              display: 'inline',
+            }}
+          >
+            TypeScript native, fast, and simple. Use the latest technologies to
+            build your next application.
+          </div>
+        </div>
+
+        {/* Left graphic */}
+        <div>
+          <img
+            src={'profile/skylinejs-silvio.png'}
+            alt="Silvio"
+            style={{
+              width: '100%',
+              maxWidth: '400px',
+              height: 'fit-content',
+              objectFit: 'contain',
+              objectPosition: '0% 0%',
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HomepageThirdSection(): JSX.Element {
+  return (
+    <div
+      style={{
+        background: 'black',
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        zIndex: 1,
+        overflow: 'hidden',
+        justifyContent: 'space-between',
+      }}
+    >
+      {/* Left graphic */}
+      <div>
+        <img
+          src={'profile/skylinejs-tony.png'}
+          alt="Tony"
+          style={{
+            width: '100%',
+            maxWidth: '400px',
+            height: '100%',
+            objectFit: 'contain',
+            objectPosition: '0% 0%',
+          }}
+        />
+      </div>
+
+      {/* Right text */}
+      <div
+        style={{
+          padding: '0px 24px',
+          display: 'flex',
+          flexDirection: 'column',
+          flex: 1,
+          minWidth: '0px',
+          maxWidth: '500px',
+          justifyContent: 'top',
+          alignItems: 'right',
+        }}
+      >
+        <h2 style={{ width: 'fit-content' }}>
+          <span
+            style={{
+              color: 'rgba(237,237,239,1)',
+              fontSize: '32px',
+              lineHeight: '44px',
+              fontWeight: 500,
+              fontFamily: ' inter',
+              display: 'inline',
+            }}
+          >
+            Focus on delivering value
+          </span>
+        </h2>
+
+        <div
+          style={{
+            color: 'rgb(126, 125, 134)',
+            fontSize: '18px',
+            lineHeight: '28px',
+            fontWeight: 400,
+            fontFamily: ' inter',
+            display: 'inline',
+          }}
+        >
+          Don't get bogged down by implementing the basics. SkylineJS provides
+          you with everything you need to build your application so that you can
+          focus on delivering value to your users.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HomepageFourthSection(): JSX.Element {
+  return (
+    <div
+      style={{
+        background: 'black',
+        height: '80vh',
+        zIndex: 1,
+        overflow: 'hidden',
+        paddingTop: '46px',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+        }}
+      >
+        {/* Right text */}
+        <div
+          style={{
+            padding: '0px 24px',
+            display: 'flex',
+            height: 'fit-content',
+            flexDirection: 'column',
+            flex: 1,
+            minWidth: '0px',
+            maxWidth: '500px',
+            justifyContent: 'top',
+            alignItems: 'right',
+          }}
+        >
+          <h2 style={{ width: 'fit-content' }}>
+            <span
+              style={{
+                color: 'rgba(237,237,239,1)',
+                fontSize: '32px',
+                lineHeight: '44px',
+                fontWeight: 500,
+                fontFamily: ' inter',
+                display: 'inline',
+              }}
+            >
+              Deploy to production with confidence
+            </span>
+          </h2>
+
+          <div
+            style={{
+              color: 'rgb(126, 125, 134)',
+              fontSize: '18px',
+              lineHeight: '28px',
+              fontWeight: 400,
+              fontFamily: ' inter',
+              display: 'inline',
+            }}
+          >
+            You are in good company. Each SkylineJS library was internally
+            developed and used in production for years before being open
+            sourced.
+          </div>
+        </div>
+
+        {/* Left graphic */}
+        <div>
+          <img
+            src={'profile/skylinejs-big-papa.png'}
+            alt="Big Papa"
+            style={{
+              width: '100%',
+              maxWidth: '400px',
+              height: 'fit-content',
+              objectFit: 'contain',
+              objectPosition: '0% 0%',
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
   return (
@@ -133,7 +446,11 @@ export default function Home(): JSX.Element {
       description={`${siteConfig.title} - ${siteConfig.tagline}`}
     >
       <HomepageHeader />
-      <main></main>
+
+      <HomepageSecondSection />
+      <HomepageThirdSection />
+      <HomepageFourthSection />
+      <HomepageFirstSection />
     </Layout>
   );
 }

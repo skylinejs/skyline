@@ -1,17 +1,14 @@
-endi:
-  name: Endilie Yacop Sucipto
-  title: Maintainer of Docusaurus
-  url: https://github.com/endiliey
-  image_url: https://github.com/endiliey.png
+john:
+  name: Monolith John
+  title: Loves monoliths and monorepos
+  image_url: /author-profile/skyline-profile-1.png
 
-yangshun:
-  name: Yangshun Tay
-  title: Front End Engineer @ Facebook
-  url: https://github.com/yangshun
-  image_url: https://github.com/yangshun.png
+lucy:
+  name: Typesafe Lucy
+  title: Interfaces are the best thing since sliced bread
+  image_url: /author-profile/skyline-profile-8.png
 
-slorber:
-  name: Sébastien Lorber
-  title: Docusaurus maintainer
-  url: https://sebastienlorber.com
-  image_url: https://github.com/slorber.png
+william:
+  name: William WET
+  title: Enjoys typing more than fixing bugs
+  image_url: /author-profile/skyline-profile-2.png

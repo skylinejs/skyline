@@ -4,13 +4,13 @@ slug: /introduction
 title: Introduction
 ---
 
+import SkylineAdmonition from '@site/src/components/Admonition';
+
 # SkylineJS
 
-:::info
-
+<SkylineAdmonition type="info">
 This documentation is highly opinionated and might be upsetting to some developers. Proceed with caution and a sense of humor.
-
-:::
+</SkylineAdmonition>
 
 ## Introduction
 
