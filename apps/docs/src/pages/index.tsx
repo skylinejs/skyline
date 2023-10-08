@@ -187,7 +187,7 @@ export default function Home(): JSX.Element {
               marginBottom: '16px',
             }}
           >
-            Are you ready to start building?
+            Ready to start building?
           </div>
 
           <a

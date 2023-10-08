@@ -1,6 +1,27 @@
 {
   "name": "@skyline-js/translate",
   "version": "0.0.1",
+  "description": "A simple, fast, and intuitive library for translating text.",
+  "homepage": "https://skylinejs.com",
+  "keywords": [
+    "translate",
+    "translation",
+    "i18n",
+    "internationalization",
+    "localization",
+    "language",
+    "locale"
+  ],
+  "bugs": {
+    "url": "https://github.com/skylinejs/skyline/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skylinejs/skyline/tree/main/packages/translate"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "tslib": "^2.3.0"
   },

@@ -1,11 +1,8 @@
-# translate
+<p align="center">
+  <a href="https://skylinejs.com/docs/translation" target="blank"><img src="https://raw.githubusercontent.com/skylinejs/skyline/main/apps/docs/static/img/skylinejs-social.png" width="100%" alt="Skyline" /></a>
+</p>
 
-This library was generated with [Nx](https://nx.dev).
+<p align="center">
 
-## Building
-
-Run `nx build translate` to build the library.
-
-## Running unit tests
-
-Run `nx test translate` to execute the unit tests via [Jest](https://jestjs.io).
+</p>
+<br />

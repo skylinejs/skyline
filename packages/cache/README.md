@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://skylinejs.com/" target="blank"><img src="https://raw.githubusercontent.com/skylinejs/skylinejs.github.io/main/img/logo-skyline-wide.png" width="100%" alt="Skyline" /></a>
+  <a href="https://skylinejs.com/docs/caching" target="blank"><img src="https://raw.githubusercontent.com/skylinejs/skyline/main/apps/docs/static/img/skylinejs-social.png" width="100%" alt="Skyline" /></a>
 </p>
 
 <p align="center">
