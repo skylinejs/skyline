@@ -103,3 +103,7 @@ async function getUserById(userId: number): User | undefined {
 This example shows a simple yet powerful control flow.
 
 <!-- As you can see, Skyline is not your usual cache with simple `cache.set` and `cache.get` functions. This is intentional - let's get the ball rolling. -->
+
+# API Reference
+
+<!-- include="apps/docs/docs/api-reference/env.md" -->
