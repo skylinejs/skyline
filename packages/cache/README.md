@@ -20,9 +20,9 @@ The validation probability parameter allows for a gradual rollout of a newly cac
 
 <br />
 
-# Getting Started
+# Getting started
 
-Install `@skyline-js/cache` using your favorite package manager:
+Install `@skyline-js/cache` using your preferred package manager:
 
 ```sh
 npm install @skyline-js/cache
