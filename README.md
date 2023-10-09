@@ -15,30 +15,30 @@ SkylineJS brings two essential elements to the table:
 
 # Getting started
 
-Depending on what you want to solve:
+Please check out the documentation for the SkylineJS library that you want to get started with:
 
-```sh
-npm install @skyline-js/env
-npm install @skyline-js/cache
-npm install @skyline-js/translate
-```
+- [@skylinejs/env](https://skylinejs.com/docs/environment)
+- [@skylinejs/cache](https://skylinejs.com/docs/caching)
+- [@skylinejs/translate](https://skylinejs.com/docs/translation)
 
 # Repository structure
 
 The SkylineJS collection of libraries is developed inside this monorepo. The `packages/` directory contains all SkylineJS libraries:
 
-- `packages/env`: `@skyline-js/env`
-- `packages/cli`: `@skyline-js/cli`
-- `packages/cache`: `@skyline-js/cache`
-- `packages/translate`: `@skyline-js/translate`
+- `packages/env`: The source code of the `@skyline-js/env` library.
+- `packages/cli`: The source code of the `@skyline-js/cli` library.
+- `packages/cache`: The source code of the `@skyline-js/cache` library.
+- `packages/translate`: The source code of the `@skyline-js/translate` library.
 
-The `apps/` directory contains applications that are complimentary to the packages, such as:
+The `apps/` directory contains applications that are complimentary to the libraries, such as:
 
 - `apps/docs`: Docusaurus application that powers the documentation at https://skylinejs.com
 - `apps/dev-cli`: CLI application that is used to facilitate the handling and development of the SkylineJS monorepo.
 - `apps/cache-e2e`: End-to-end testing application for the `@skyline-js/cache` package to test the Redis storage engine with a real Redis instance.
 - `apps/cache-example-nestjs-minimal`: Minimal usage example for the `@skyline-js/cache` package with NestJS and TypeORM.
 - `apps/cache-example-nestjs-minimal-e2e`: End-to-end testing application for the `apps/cache-example-nestjs-minimal` application.
+
+The `tools/` directory contains some scripts to facilitate local development inside a Docker container. You can simply execute `./start-development` to spin up a local setup.
 
 # Issues
 
