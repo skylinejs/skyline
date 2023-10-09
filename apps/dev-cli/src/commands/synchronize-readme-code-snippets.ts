@@ -20,13 +20,13 @@ export class SynchronizeReadmeCodeSnippetsCommand extends SkylineCliCommand {
       const replacements: { source: string; target: string }[] = [];
 
       while (index < content.length) {
-        const nextIndex = content.indexOf('<!-- include="', index);
+        const nextIndex = content.indexOf('<!-- <Include path="', index);
         if (nextIndex === -1) {
           break;
         }
 
         const start = nextIndex;
-        let end = content.indexOf('-->', start);
+        let end = content.indexOf('<!-- </Include> -->', start);
 
         if (!end) {
           throw new Error(`Could not find end of code block in ${filepath}`);
@@ -37,19 +37,17 @@ export class SynchronizeReadmeCodeSnippetsCommand extends SkylineCliCommand {
         let pathProperty = content
           .substring(start, end)
           .match(/include="([^"]+)"/)?.[1];
-        if (!pathProperty.endsWith('/')) {
-          pathProperty += '/';
-        }
 
-        const includeContent = readFileSync(
-          `/repo/packages/${pathProperty}`,
-          'utf-8'
+        const includeContent = readFileSync(`/repo/${pathProperty}`, 'utf-8');
+
+        const firstLine = content.substring(
+          start,
+          start + content.substring(start).indexOf('\n')
         );
 
         replacements.push({
           source: content.slice(start, end),
-          target:
-            `${content.slice(start, end)}\n` + includeContent + '\n</Tabs>',
+          target: `${firstLine}\n` + includeContent + '\n<!-- </Include> -->',
         });
 
         // Increment index
@@ -59,6 +57,7 @@ export class SynchronizeReadmeCodeSnippetsCommand extends SkylineCliCommand {
       let newContent = content;
       for (const { source, target } of replacements) {
         newContent = newContent.replace(source, target);
+        console.log(`Replaced include in ${filepath}`);
       }
       writeFileSync(filepath, newContent);
     }

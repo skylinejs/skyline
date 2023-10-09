@@ -106,4 +106,6 @@ This example shows a simple yet powerful control flow.
 
 # API Reference
 
-<!-- include="apps/docs/docs/api-reference/env.md" -->
+<!-- <Include path="apps/docs/docs/api-reference/env.md"> -->
+
+<!-- </Include> -->
