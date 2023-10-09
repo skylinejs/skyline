@@ -23,9 +23,30 @@ npm install @skyline-js/cache
 npm install @skyline-js/translate
 ```
 
+# Repository structure
+
+The SkylineJS collection of libraries is developed inside this monorepo. The `packages/` directory contains all SkylineJS libraries:
+
+- `packages/env`: `@skyline-js/env`
+- `packages/cli`: `@skyline-js/cli`
+- `packages/cache`: `@skyline-js/cache`
+- `packages/translate`: `@skyline-js/translate`
+
+The `apps/` directory contains applications that are complimentary to the packages, such as:
+
+- `apps/docs`: Docusaurus application that powers the documentation at https://skylinejs.com
+- `apps/dev-cli`: CLI application that is used to facilitate the handling and development of the SkylineJS monorepo.
+- `apps/cache-e2e`: End-to-end testing application for the `@skyline-js/cache` package to test the Redis storage engine with a real Redis instance.
+- `apps/cache-example-nestjs-minimal`: Minimal usage example for the `@skyline-js/cache` package with NestJS and TypeORM.
+- `apps/cache-example-nestjs-minimal-e2e`: End-to-end testing application for the `apps/cache-example-nestjs-minimal` application.
+
 # Issues
 
+Please submit bugs, feature requests and other issues to this GitHub repository: https://github.com/skylinejs/skyline/issues
+
 # Support
+
+If you find value in the SkylineJS library collection, feel free to reach out!
 
 <!--
 ## Publishable library
