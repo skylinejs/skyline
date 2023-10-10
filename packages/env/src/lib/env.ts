@@ -4,10 +4,12 @@ import {
   EnvParsingError,
   EnvValidationError,
 } from './env-error';
+import { EnvLogger } from './env-logger';
 import {
   ArrayParsingOptions,
   BooleanParsingptions,
   EnumParsingOptions,
+  EnvLogLevel,
   JsonParsingOptions,
   NumberParsingOptions,
   StringParsingOptions,
@@ -27,8 +29,19 @@ import {
 
 export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   private readonly config: EnvConfiguration<RuntimeEnvironment>;
-  constructor(config?: Partial<EnvConfiguration<RuntimeEnvironment>>) {
+  private readonly logger: EnvLogger;
+
+  constructor(
+    config?: Partial<EnvConfiguration<RuntimeEnvironment>> & {
+      logger?: EnvLogger;
+    }
+  ) {
+    // Assemble configuration
     this.config = {
+      // Logging
+      debug: config?.debug ?? false,
+      logLevels: config?.logLevels ?? Object.values(EnvLogLevel),
+
       // Runtime environment
       runtime: config?.runtime as RuntimeEnvironment[keyof RuntimeEnvironment],
       runtimes: config?.runtimes,
@@ -92,6 +105,9 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       arrayMaxLength: config?.arrayMaxLength,
       arrayUniqueItems: config?.arrayUniqueItems ?? false,
     };
+
+    // Logging
+    this.logger = config?.logger ?? new EnvLogger(config);
 
     // Validate runtime if possible
     if (this.config?.runtime?.trim() === '') {

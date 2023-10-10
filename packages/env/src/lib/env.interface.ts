@@ -1,5 +1,12 @@
 export type ValueEncodingType = 'base64' | 'base64url' | 'hex' | 'url';
 
+export enum EnvLogLevel {
+  DEBUG = 'debug',
+  LOG = 'log',
+  WARN = 'warn',
+  ERROR = 'error',
+}
+
 export interface ParsingOptions {
   // ===  Variable name ===
   /**

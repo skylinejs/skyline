@@ -1,8 +1,16 @@
-import { ValueEncodingType } from './env.interface';
+import { EnvLogLevel, ValueEncodingType } from './env.interface';
 
 export interface EnvConfiguration<
   RuntimeEnvironment extends { [key: string]: string } = {}
 > {
+  // === Logging ===
+
+  /** Whether to enable logging. */
+  debug: boolean;
+
+  /** The log levels that are enabled. */
+  logLevels: EnvLogLevel[];
+
   // ===  Runtime environment ===
   /** The runtime of your application */
   runtime?: RuntimeEnvironment[keyof RuntimeEnvironment] | string;
