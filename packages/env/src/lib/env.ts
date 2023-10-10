@@ -46,6 +46,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       runtime: config?.runtime as RuntimeEnvironment[keyof RuntimeEnvironment],
       runtimes: config?.runtimes,
       processEnv: config?.processEnv ?? process.env ?? {},
+      throwOnMissingRuntime: config?.throwOnMissingRuntime ?? false,
 
       // Variable name
       variableNamePrefix: config?.variableNamePrefix ?? '',
@@ -130,6 +131,13 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
           { value: this.config.runtime, parameter: 'runtime' }
         );
       }
+    }
+
+    if (this.config.throwOnMissingRuntime && !this.config.runtime) {
+      throw new EnvInputValidationError(
+        `[env.constructor] No runtime was provided but "throwOnMissingRuntime" is set to "true".`,
+        { value: this.config.runtime, parameter: 'runtime' }
+      );
     }
   }
 

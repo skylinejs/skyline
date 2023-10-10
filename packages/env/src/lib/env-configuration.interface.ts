@@ -26,6 +26,12 @@ export interface EnvConfiguration<
    */
   processEnv: NodeJS.ProcessEnv;
 
+  /** Whether to throw an error if the runtime is missing.\
+   * Provide this option if you want to throw an error if the runtime is missing.
+   * @default false
+   */
+  throwOnMissingRuntime: boolean;
+
   // ===  Variable name ===
   /**
    * The prefix of your environment variables.\
