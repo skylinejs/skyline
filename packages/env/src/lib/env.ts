@@ -134,6 +134,16 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
   }
 
   /**
+   * Get the runtime environment.
+   * @returns The runtime environment or "undefined" if no runtime environment is set.
+   */
+  get runtime(): RuntimeEnvironment[keyof RuntimeEnvironment] | undefined {
+    return this.config.runtime as
+      | RuntimeEnvironment[keyof RuntimeEnvironment]
+      | undefined;
+  }
+
+  /**
    * Parse an environment variable as a boolean.
    * @param variableName Name of the environment variable to parse
    * @param options Optional parsing options
