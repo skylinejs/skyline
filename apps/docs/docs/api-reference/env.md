@@ -118,6 +118,12 @@ interface EnvConfiguration<
    */
   stringPattern?: RegExp | string;
 
+  // === Enum parsing ===
+  /**
+   * Whether to ignore the casing of the enum values.
+   */
+  enumIgnoreCasing: boolean;
+
   // === Number parsing ===
   /**
    * The minimum value of the number.
@@ -128,6 +134,11 @@ interface EnvConfiguration<
    * The maximum value of the number.
    */
   numberMaximum?: number;
+
+  /**
+   * Whether the number must be an integer.
+   */
+  numberIsInteger: boolean;
 
   /**
    * The minimum value of the number (exclusive).
@@ -141,6 +152,11 @@ interface EnvConfiguration<
 
   // === JSON parsing ===
   /**
+   * The required properties of the JSON object.
+   */
+  jsonRequired: string[];
+
+  /**
    * The minimum number of properties of the JSON object.
    */
   jsonMinProperties?: number;
@@ -151,9 +167,9 @@ interface EnvConfiguration<
   jsonMaxProperties?: number;
 
   /**
-   * The required properties of the JSON object.
+   * Whether to allow additional properties of the JSON object.
    */
-  jsonRequired?: string[];
+  jsonAdditionalProperties: boolean;
 
   // === Array parsing ===
   /**

@@ -32,13 +32,26 @@ export class SynchronizeReadmeCodeSnippetsCommand extends SkylineCliCommand {
           throw new Error(`Could not find end of code block in ${filepath}`);
         }
 
-        end += '-->'.length;
+        end += '<!-- </Include> -->'.length;
 
         let pathProperty = content
           .substring(start, end)
           .match(/path="([^"]+)"/)?.[1];
 
-        const includeContent = readFileSync(`/repo/${pathProperty}`, 'utf-8');
+        let skipLines = 0;
+        const skipLinesMatch = content
+          .substring(start, end)
+          .match(/skipLines="(\d+)"/);
+        if (skipLinesMatch) {
+          skipLines = parseInt(skipLinesMatch[1]);
+        }
+
+        let includeContent = readFileSync(`/repo/${pathProperty}`, 'utf-8');
+
+        if (skipLines) {
+          const lines = includeContent.split('\n');
+          includeContent = lines.slice(skipLines).join('\n');
+        }
 
         const firstLine = content.substring(
           start,
@@ -59,6 +72,7 @@ export class SynchronizeReadmeCodeSnippetsCommand extends SkylineCliCommand {
         newContent = newContent.replace(source, target);
         console.log(`Replaced include in ${filepath}`);
       }
+
       writeFileSync(filepath, newContent);
     }
 

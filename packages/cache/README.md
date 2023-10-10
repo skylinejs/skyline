@@ -106,187 +106,356 @@ This example shows a simple yet powerful control flow.
 
 # API Reference
 
-<!-- <Include path="apps/docs/docs/api-reference/env.md"> -->
----
-sidebar_position: 1
-label: env
-slug: env
----
-
-# `@skyline-js/env`
-
-:::info
-
-This is the API reference for the `@skyline-js/env` package. <br />
-The guiding principles of the Skyline environment approach can be found here: [Environment Primer](/docs/environment).
-
-:::
-
-<!-- TODO: use monaco editor here with index.d.ts loaded to demonstrate type-safety of package -->
-
-## SkylineEnv
-
-Installation
+<!-- <Include path="apps/docs/docs/api-reference/cache.md" skipLines="18"> -->
 
 ```sh
-npm install @skyline-js/env
+npm install @skyline-js/cache
 ```
 
 ```ts
-import { SkylineEnv } from '@skyline-js/env';
+import { SkylineCache } from '@skyline-js/cache';
 
-const env = new SkylineEnv();
+const cache = new SkylineCache();
+```
+
+### cache.get
+
+Get a value from the cache.
+
+```ts
+  get<T>(
+    namespace: string,
+    key: CacheKey,
+    validator: (input: unknown) => asserts input is T,
+    opts: { skip?: number } = {}
+  ): Promise<{ value: T | undefined; skipped: boolean }>
+```
+
+| Parameter   |                                                                                                                                                                                                                                                                 |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `namespace` | The namespace of the cached value (e.g. "user").                                                                                                                                                                                                                |
+| `key`       | The key of the cached value (e.g. the user ID: "123")                                                                                                                                                                                                           |
+| `validator` | A validator function to validate the cached value.                                                                                                                                                                                                              |
+| `opts.skip` | A probability between 0 and 1 whether the cache read should be skipped. This is used to detect cache inconsistencies. If the cache read is skipped, the function artifically returns "undefined" (= cache miss). Defaults to 0 (0% of cache reads are skipped). |
+| returns     | The cached value if it exists and is valid, "undefined" otherwise.                                                                                                                                                                                              |
+
+### cache.getMany
+
+Get multiple values from the cache.
+
+```ts
+getMany<T>(
+    namespace: string,
+    keys: ReadonlyArray<CacheKey>,
+    validator: (input: unknown) => asserts input is T,
+    opts: { skip?: number } = {}
+  ): Promise<{ values: Array<T | undefined>; skipped: boolean }>
+```
+
+| Parameter   |                                                                                                                                                                                                                                                                 |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `namespace` | The namespace of the cached values (e.g. "user").                                                                                                                                                                                                               |
+| `keys`      | The keys of the cached values (e.g. the user IDs: ["123", "456"])                                                                                                                                                                                               |
+| `validator` | A validator function to validate each cached value.                                                                                                                                                                                                             |
+| `opts.skip` | A probability between 0 and 1 whether the cache read should be skipped. This is used to detect cache inconsistencies. If the cache read is skipped, the function artifically returns "undefined" (= cache miss). Defaults to 0 (0% of cache reads are skipped). |
+| returns     | An array containing the cached values if they exist and are valid, "undefined" otherwise. The order of the array is the same as the order of the input keys. The length of the array is the same as the length of the input keys.                               |
+
+### cache.setIfNotExist
+
+Set a cache value in the cache if it does not already exist. This operation does nothing if the value already exists or is blocked.
+
+```ts
+setIfNotExist<T>(
+    namespace: string,
+    keyFunc: (input: T) => CacheKey,
+    value: T,
+    opts: { fetchedAt: number; expiresIn?: number; validate?: boolean }
+  ): Promise<void>
+```
+
+| Parameter        |                                                                                                                                                                                      |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `namespace`      | The namespace of the cached value (e.g. "user").                                                                                                                                     |
+| `keyFunc`        | A function to calculate the key of the cached value (e.g. the user ID: "123").                                                                                                       |
+| `value`          | The value to cache.                                                                                                                                                                  |
+| `opts.fetchedAt` | The timestamp when the value was fetched from the source. Used to determine if the value is stale (time difference is above the stale threshold). Timestamp is in UNIX milliseconds. |
+| `opts.expiresIn` | The expiration of the cached value in milliseconds.                                                                                                                                  |
+| `opts.validate`  | Whether the cache value should be validated. This is used to detect cache inconsistencies. Defaults to false (no cache values are validated).                                        |
+
+### cache.setManyIfNotExist
+
+Set multiple cache values in the cache if they do not already exist.
+
+```ts
+setManyIfNotExist<T>(
+    namespace: string,
+    keyFunc: (input: T) => CacheKey,
+    values: T[],
+    opts: { fetchedAt: number; expiresIn?: number; validate?: boolean }
+  ): Promise<void>
+```
+
+| Parameter        |                                                                                                                                                                                      |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `namespace`      | The namespace of the cached values (e.g. "user").                                                                                                                                    |
+| `keyFunc`        | A function to calculate the key of the cached value (e.g. the user ID: "123").                                                                                                       |
+| `value`          | The values to cache.                                                                                                                                                                 |
+| `opts.fetchedAt` | The timestamp when the value was fetched from the source. Used to determine if the value is stale (time difference is above the stale threshold). Timestamp is in UNIX milliseconds. |
+| `opts.expiresIn` | The expiration of the cached value in milliseconds.                                                                                                                                  |
+| `opts.validate`  | Whether the cache value should be validated. This is used to detect cache inconsistencies. Defaults to false (no cache values are validated).                                        |
+
+### cache.invalidate
+
+Invalidate a cache value in the cache. Blocks the key for a short period of time to avoid timing bugs.
+
+```ts
+invalidate(
+    namespace: string,
+    key: CacheKey,
+    opts: { expiresIn?: number } = {}
+  ): Promise<void>
+```
+
+| Parameter        |                                                        |
+| ---------------- | ------------------------------------------------------ |
+| `namespace`      | The namespace of the cached value (e.g. "user").       |
+| `key`            | The key of the cached value (e.g. the user ID: "123"). |
+| `opts.expiresIn` | The expiration of the blocked state in milliseconds.   |
+
+### cache.invalidateMany
+
+Invalidate multiple cache values in the cache. Blocks each key for a short period of time to avoid timing bugs.
+
+```ts
+invalidateMany(
+    keys: ReadonlyArray<{ namespace: string; key: CacheKey }>,
+    opts: { expiresIn?: number } = {}
+  ): Promise<void>
+```
+
+| Parameter        |                                                      |
+| ---------------- | ---------------------------------------------------- |
+| `keys`           | Array of namespace and key pairs to invalidate.      |
+| `opts.expiresIn` | The expiration of the blocked state in milliseconds. |
+
+### cache.getStatistics
+
+Get caching statistics.
+
+```ts
+getStatistics(): CacheStatistics
+```
+
+### cache.resetStatistics
+
+Reset caching statistics.
+
+```ts
+resetStatistics(): void
+```
+
+### cache.enableCacheSkipping
+
+Enables the cache skipping feature. This restore the default behavior of cache skips.
+This function only needs to be called if cache skips have been disabled in the first place.
+
+```ts
+enableCacheSkipping(): void
+```
+
+### cache.disableCacheSkipping
+
+Disable the cache skipping feature.
+This is useful for local development to see how the application behaves with full cache hits.
+This is equivalent to setting skip: 0 for all cache read operations.
+This option takes precedence over forceCacheSkips.
+
+```ts
+disableCacheSkipping(): void
+```
+
+### cache.synchronizeDisabledNamespaces
+
+Synchronize the disabled namespaces.
+This function is periodically called to synchronize the disabled namespaces from storage.
+
+```ts
+synchronizeDisabledNamespaces(): Promise<void>
+```
+
+### cache.getDisabledNamespaces
+
+Get the disabled namespaces.
+The namespaces are periodically synchronized from storage.
+Therefore, only the namespaces that have been synchronized are returned.
+
+```ts
+getDisabledNamespaces(): string[]
+```
+
+### cache.setDisabledNamespaces
+
+Set disabled namespaces.
+Use this method if you want to manually handle namespace disabling.
+
+```ts
+setDisabledNamespaces(...namespaces: string[]): void
+```
+
+| Parameter    |                            |
+| ------------ | -------------------------- |
+| `namespaces` | The namespaces to disable. |
+
+### cache.clearDisabledNamespaces
+
+Remove all disabled namespaces.
+Use this method if you want to manually handle namespace disabling.
+
+```ts
+clearDisabledNamespaces(): void
 ```
 
 <br />
 
 ## Interfaces
 
-### EnvConfiguration
+### CacheConfiguration
 
-```ts path="packages/env/src/lib/env-configuration.interface.ts" skipLines="2" remove="export "
-interface EnvConfiguration<
-  RuntimeEnvironment extends { [key: string]: string } = {}
-> {
-  // ===  Runtime environment ===
-  /** The runtime of your application */
-  runtime?: RuntimeEnvironment[keyof RuntimeEnvironment] | string;
-
-  /** The possible runtimes of your application.
-   * Provide this option if you want to validate that the runtime is one of the provided runtimes.
-   */
-  runtimes?: RuntimeEnvironment;
-
-  /** The process environment (probably only useful for testing).
-   * Provide this option if you want to use a custom process environment.
-   * @default process.env
-   */
-  processEnv: NodeJS.ProcessEnv;
-
-  // ===  Variable name ===
+```ts path="packages/cache/src/lib/interface/cache-configuration.interface.ts" skipLines="2" remove="export "
+interface CacheConfiguration {
   /**
-   * The prefix of your environment variables.
-   * Provide this option if you want to validate that the environment variable name starts with the provided prefix.
+   * The prefix for all keys of this cache instance.
+   * Defaults to "cache"
    */
-  variableNamePrefix: string;
+  cachePrefix: string;
 
   /**
-   * Whether to ignore the casing of your environment variable names.
-   * @default false
+   * Optional version for the cache. This can be used to invalidate the cache when the data structure has changed.
+   * Defaults to "undefined"
    */
-  variableNameIgnoreCasing: boolean;
-
-  // ===  Variable value ===
-  /**
-   * Whether to trim the value of your environment variables.
-   * @default false
-   */
-  valueTrim: boolean;
+  cacheVersion?: string;
 
   /**
-   * The encoding of your environment variables.
-   * Provide this option if you want to decode the value of your environment variables.
-   * Possible values are 'base64', 'base64url', 'hex' and 'url'.
+   * Whether to force cache skips. This is useful for local development and CI environments to validate every cache.
+   * Defaults to "false"
    */
-  valueEncoding?: ValueEncodingType;
+  forceCacheSkips: boolean;
 
   /**
-   * Whether to remove the value of your environment variables after parsing.
-   * Provide this option if you want to remove the value of your environment variables after parsing.
-   * This can improve the security of your application.
-   * @default false
+   * Default expiration time in ms for cache entries.
+   * Defaults to 24 hours
    */
-  valueRemoveAfterParse: boolean;
-
-  // === Boolean parsing ===
-  /**
-   * The values (strings) that are considered as true.
-   * @default true, 1, yes, y, on, enabled, enable, ok, okay
-   */
-  booleanTrueValues: string[];
+  defaultCacheExpirationMs: number;
 
   /**
-   * The values (strings) that are considered as false.
-   * @default false, 0, no, n, off, disabled, disable
+   * Threshold in ms to consider data stale, causing the data to be discarded instead of writing it to the cache.
+   * Defaults to 2 seconds
    */
-  booleanFalseValues: string[];
+  staleThresholdMs: number;
 
-  // === String parsing ===
+  // Disabling namespaces
   /**
-   * The minimum length of the string.
+   * Whether to disable namespaces on cache inconsistency.
+   * Defaults to "false"
    */
-  stringMinLength?: number;
-
-  /**
-   * The maximum length of the string.
-   */
-  stringMaxLength?: number;
+  disableNamespaces: boolean;
 
   /**
-   * The pattern of the string.
+   * The prefix for the key to store disabled namespaces information in storage.
+   * Defaults to "disabled-namespaces"
    */
-  stringPattern?: RegExp | string;
-
-  // === Number parsing ===
-  /**
-   * The minimum value of the number.
-   */
-  numberMinimum?: number;
+  disabledNamespacesKeyPrefix: string;
 
   /**
-   * The maximum value of the number.
+   * The interval in ms to check synchronize disabled namespaces from storage.
+   * Defaults to 30 seconds
    */
-  numberMaximum?: number;
+  disabledNamespacesSyncIntervalMs: number;
 
   /**
-   * The minimum value of the number (exclusive).
+   * The expiration time in ms for disabling a namespace.
+   * Defaults to 24 hours
    */
-  numberExclusiveMinimum?: number;
+  disabledNamespaceExpirationMs: number;
+
+  // Blocking keys
+  /**
+   * The value written to a key to block it.
+   * Defaults to "blocked"
+   */
+  cacheKeyBlockedValue: string;
 
   /**
-   * The maximum value of the number (exclusive).
+   * The expiration time in ms for blocking a key.
+   * Defaults to 10 seconds
    */
-  numberExclusiveMaximum?: number;
+  blockedKeyExpirationMs: number;
 
-  // === JSON parsing ===
+  // Error handling
   /**
-   * The minimum number of properties of the JSON object.
+   * Whether to throw if an error occurrs.
+   * Defaults to "false"
    */
-  jsonMinProperties?: number;
+  throwOnError: boolean;
 
+  // Logging
   /**
-   * The maximum number of properties of the JSON object.
+   * Whether logging is enabled.
+   * Defaults to "true"
    */
-  jsonMaxProperties?: number;
-
-  /**
-   * The required properties of the JSON object.
-   */
-  jsonRequired?: string[];
-
-  // === Array parsing ===
-  /**
-   * The separator of the array.
-   * @default ,
-   */
-  arraySeparator: string;
+  loggingEnabled: boolean;
 
   /**
-   * The minimum length of the array.
+   * The log levels to log.
+   * Defaults to all available log levels
    */
-  arrayMinLength?: number;
+  logLevels: CacheLogLevel[];
 
+  // Random
   /**
-   * The maximum length of the array.
+   * The seed for the random number generator
+   * Defaults to "cache-rnd-seed"
    */
-  arrayMaxLength?: number;
-
-  /**
-   * Whether to ensure that the array has unique items.
-   * @default false
-   */
-  arrayUniqueItems: boolean;
+  randomGeneratorSeed: string;
 }
 ```
 
-<!-- </Include> -->- </Include> -->
+### CacheStatistics
+
+```ts path="packages/cache/src/lib/interface/cache-statistics.interface.ts" remove="export "
+interface CacheStatistics {
+  /** Number of cache hits */
+  numCacheHits: number;
+
+  /** Number of cache misses */
+  numCacheMisses: number;
+
+  /** Number of cache skips */
+  numCacheSkips: number;
+
+  /** Number of cache skips due to disabled namespaces */
+  numCacheDisabledNamespaceSkips: number;
+
+  /** Number of cache invalidations */
+  numCacheInvalidations: number;
+
+  /** Number of cache consistency checks */
+  numCacheConsistencyChecks: number;
+
+  /** Number of cache inconsistencies */
+  numCacheInconsistencies: number;
+
+  /** Number of unknown cache errors */
+  numCacheErrors: number;
+}
+```
+
+### CacheKey
+
+The type a cache key can have. `undefined` and `null` are explicitly excluded.
+
+```ts path="packages/cache/src/lib/interface/cache-key.type.ts" remove="export "
+type CacheKey = string | number | BigInt | boolean;
+```
+
+<!-- </Include> -->
