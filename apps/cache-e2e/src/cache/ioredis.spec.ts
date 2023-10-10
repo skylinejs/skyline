@@ -4,9 +4,8 @@ import {
   CacheMessageInfoType,
   RedisCacheStorageEngine,
   SkylineCache,
-} from '@skylinejs/cache';
+} from '@skyline-js/cache';
 import Redis from 'ioredis';
-import { join } from 'path';
 import { MockCacheLogger } from '../util/mock-cache-logger';
 
 const USER_CACHE_NAMESPACE = 'user';

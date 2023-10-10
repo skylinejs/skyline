@@ -428,7 +428,7 @@ export class UserController {
 
 ```ts
 import { Injectable } from '@nestjs/common';
-import { RedisCacheStorageEngine, SkylineCache } from '@skylinejs/cache';
+import { RedisCacheStorageEngine, SkylineCache } from '@skyline-js/cache';
 import { createClient } from 'redis';
 
 @Injectable()

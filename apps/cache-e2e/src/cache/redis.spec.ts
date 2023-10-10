@@ -4,7 +4,7 @@ import {
   CacheMessageInfoType,
   RedisCacheStorageEngine,
   SkylineCache,
-} from '@skylinejs/cache';
+} from '@skyline-js/cache';
 import { join } from 'path';
 import { createClient } from 'redis';
 import { MockCacheLogger } from '../util/mock-cache-logger';

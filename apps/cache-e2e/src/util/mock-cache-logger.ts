@@ -1,4 +1,4 @@
-import { CacheLogger, CacheMessageInfoUnion } from '@skylinejs/cache';
+import { CacheLogger, CacheMessageInfoUnion } from '@skyline-js/cache';
 
 export class MockCacheLogger extends CacheLogger {
   logs: { message: string; info: CacheMessageInfoUnion }[] = [];

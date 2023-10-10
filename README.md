@@ -17,9 +17,9 @@ SkylineJS brings two essential elements to the table:
 
 Please check out the documentation for the SkylineJS library that you want to get started with:
 
-- [@skylinejs/env](https://skylinejs.com/docs/environment)
-- [@skylinejs/cache](https://skylinejs.com/docs/caching)
-- [@skylinejs/translate](https://skylinejs.com/docs/translation)
+- [@skyline-js/env](https://skylinejs.com/docs/environment)
+- [@skyline-js/cache](https://skylinejs.com/docs/caching)
+- [@skyline-js/translate](https://skylinejs.com/docs/translation)
 
 # Repository structure
 
