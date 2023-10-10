@@ -36,7 +36,7 @@ export class SynchronizeReadmeCodeSnippetsCommand extends SkylineCliCommand {
 
         let pathProperty = content
           .substring(start, end)
-          .match(/include="([^"]+)"/)?.[1];
+          .match(/path="([^"]+)"/)?.[1];
 
         const includeContent = readFileSync(`/repo/${pathProperty}`, 'utf-8');
 
