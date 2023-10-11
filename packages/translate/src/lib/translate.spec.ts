@@ -108,6 +108,40 @@ describe('SkylineTranslate', () => {
     ).toBe('Hallo John!');
   });
 
+  it('Custom interpolation', () => {
+    const Registration = new SkylineTranslate({
+      en: {
+        subject: 'Hello [[ username ]]!',
+      },
+      de: {
+        subject: 'Hallo [[ username ]]!',
+      },
+    });
+
+    expect(
+      Registration.translate(Registration.key.subject, {
+        language: 'en',
+        params: { username: 'John' },
+      }),
+    ).toBe('Hello [[ username ]]!');
+
+    expect(
+      Registration.translate(Registration.key.subject, {
+        language: 'en',
+        interpolation: /\[\[([^}]+)\]\]/g,
+        params: { username: 'John' },
+      }),
+    ).toBe('Hello John!');
+
+    expect(
+      Registration.translate(Registration.key.subject, {
+        language: 'en',
+        interpolation: { prefix: '[[', suffix: ']]' },
+        params: { username: 'Johnny' },
+      }),
+    ).toBe('Hello Johnny!');
+  });
+
   it('configureSkylineTranslate', () => {
     const SkylineTranslate = configureSkylineTranslate({});
 
