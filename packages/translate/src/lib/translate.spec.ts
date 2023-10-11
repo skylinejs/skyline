@@ -1,8 +1,9 @@
-import { SkylineTranslation } from './translate';
+import { SkylineTranslation, configureSkylineTranslation } from './translate';
 
 enum Language {
   EN = 'EN',
   DE = 'DE',
+  ES = 'ES',
 }
 
 describe('translate', () => {
@@ -24,7 +25,8 @@ describe('translate', () => {
       },
     });
 
-    expect(Registration.translate(Language.EN, Registration.key.headline)).toBe(
+    const language: Language = Language.EN;
+    expect(Registration.translate(language, Registration.key.headline)).toBe(
       'Register'
     );
     expect(Registration.translate(Language.DE, Registration.key.headline)).toBe(
@@ -60,5 +62,27 @@ describe('translate', () => {
     expect(
       Registration.translate(Language.DE, Registration.key.nested.one)
     ).toBe('Eins');
+  });
+
+  it('configureSkylineTranslation', () => {
+    const SkylineTranslation = configureSkylineTranslation({
+      throwOnMissing: true,
+    });
+    const Registration = new SkylineTranslation({
+      [Language.EN]: {
+        headline: 'Register',
+        greeting: 'Hello {{ username }}!',
+        nested: {
+          one: 'One',
+        },
+      },
+      [Language.DE]: {
+        headline: 'Registrieren',
+        greeting: 'Hallo {{ username }}!',
+        nested: {
+          one: 'Eins',
+        },
+      },
+    });
   });
 });

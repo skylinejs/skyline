@@ -5,23 +5,23 @@ import {
 } from './translate.interface';
 
 export function translationKeyObjFromLang(
-  langObj: RecursiveStringObject,
+  translation: RecursiveStringObject,
   parentPaths: string[] = []
 ): any {
-  const objCopy: { [key: string]: any } = {};
+  const translationKeys: { [key: string]: any } = {};
 
-  Object.keys(langObj).forEach((key) => {
-    if (typeof langObj[key] === 'string') {
-      objCopy[key] = [...parentPaths, key].join('.');
+  Object.keys(translation).forEach((key) => {
+    if (typeof translation[key] === 'string') {
+      translationKeys[key] = [...parentPaths, key].join('.');
     } else {
-      objCopy[key] = translationKeyObjFromLang(
-        langObj[key] as RecursiveStringObject,
+      translationKeys[key] = translationKeyObjFromLang(
+        translation[key] as RecursiveStringObject,
         [...parentPaths, key]
       );
     }
   });
 
-  return objCopy as any;
+  return translationKeys as any;
 }
 
 export function substituteHandlebars(
