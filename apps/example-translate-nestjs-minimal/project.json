@@ -1,0 +1,74 @@
+{
+  "name": "example-translate-nestjs-minimal",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/example-translate-nestjs-minimal/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/example-translate-nestjs-minimal",
+        "main": "apps/example-translate-nestjs-minimal/src/main.ts",
+        "tsConfig": "apps/example-translate-nestjs-minimal/tsconfig.app.json",
+        "assets": [
+          "apps/example-translate-nestjs-minimal/src/assets"
+        ],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/example-translate-nestjs-minimal/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "example-translate-nestjs-minimal:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "example-translate-nestjs-minimal:build:development"
+        },
+        "production": {
+          "buildTarget": "example-translate-nestjs-minimal:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "apps/example-translate-nestjs-minimal/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "options": {
+        "jestConfig": "apps/example-translate-nestjs-minimal/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}
