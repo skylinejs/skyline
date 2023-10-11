@@ -15,7 +15,5 @@ export interface RecursiveStringObject {
 }
 
 export type CastToTranslationKeys<O> = {
-  [P in keyof O]: O[P] extends string
-    ? TranslationKey
-    : CastToTranslationKeys<O[P]>;
+  [P in keyof O]: O[P] extends string ? TranslationKey : CastToTranslationKeys<O[P]>;
 };

@@ -14,7 +14,7 @@ import {
  */
 export function assignPartialObject<T extends object>(
   target: T,
-  source: Partial<T> | undefined | null
+  source: Partial<T> | undefined | null,
 ): T {
   const result: T = { ...target };
 
@@ -39,11 +39,11 @@ export function assignPartialObject<T extends object>(
  * @param parentPaths The parent paths (used for recursion)
  * @returns The translation keys object
  */
-export function getTranslationKeys<
-  Translations extends Record<string, RecursiveStringObject>
+export function getTranslationKeysObject<
+  Translations extends Record<string, RecursiveStringObject>,
 >(
   translation: RecursiveStringObject,
-  parentPaths: string[] = []
+  parentPaths: string[] = [],
 ): CastToTranslationKeys<Translations[keyof Translations]> {
   const translationKeys: { [key: string]: any } = {};
 
@@ -51,22 +51,17 @@ export function getTranslationKeys<
     if (typeof translation[key] === 'string') {
       translationKeys[key] = [...parentPaths, key].join('.');
     } else {
-      translationKeys[key] = getTranslationKeys(
-        translation[key] as RecursiveStringObject,
-        [...parentPaths, key]
-      );
+      translationKeys[key] = getTranslationKeysObject(translation[key] as RecursiveStringObject, [
+        ...parentPaths,
+        key,
+      ]);
     }
   });
 
-  return translationKeys as CastToTranslationKeys<
-    Translations[keyof Translations]
-  >;
+  return translationKeys as CastToTranslationKeys<Translations[keyof Translations]>;
 }
 
-export function substituteInterpolations(
-  str: string,
-  params?: TranslationParams
-): string {
+export function substituteInterpolations(str: string, params?: TranslationParams): string {
   // If not parameters are provided, return the string
   if (!params) {
     return str;
@@ -92,7 +87,7 @@ export function substituteInterpolations(
 export function getTranslationTemplate(
   fullPath: TranslationKey,
   translations: any,
-  language: string | number | symbol
+  language: string | number | symbol,
 ): string | undefined {
   if (!translations || !fullPath) {
     return undefined;
@@ -147,4 +142,35 @@ export function translate({
 
   // Substitute variables
   return substituteInterpolations(template, config?.params ?? {});
+}
+
+export function isBrowser() {
+  return typeof window !== 'undefined';
+}
+
+export function getBrowserLanguage(): string | undefined {
+  const cultureLanguage = getBrowserCultureLanguage();
+  if (!cultureLanguage || !isBrowser()) {
+    return undefined;
+  }
+
+  let language = cultureLanguage;
+  if (language.indexOf('-') !== -1) {
+    language = language.split('-')[0];
+  }
+
+  if (language.indexOf('_') !== -1) {
+    language = language.split('_')[0];
+  }
+
+  return language;
+}
+
+export function getBrowserCultureLanguage(): string | undefined {
+  if (!isBrowser()) {
+    return undefined;
+  }
+
+  const navigator = window?.navigator;
+  return navigator?.languages?.[0] ?? navigator?.language;
 }

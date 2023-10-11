@@ -26,51 +26,49 @@ describe('translate', () => {
     });
 
     const language: Language = Language.EN;
-    expect(
-      Registration.translate(Registration.key.headline, { language })
-    ).toBe('Register');
+    expect(Registration.translate(Registration.key.headline, { language })).toBe('Register');
     expect(
       Registration.translate(Registration.key.headline, {
         language: Language.DE,
-      })
+      }),
     ).toBe('Registrieren');
 
     expect(
       Registration.translate(Registration.key.greeting, {
         language: Language.EN,
-      })
+      }),
     ).toBe('Hello {{ username }}!');
 
     expect(
       Registration.translate(Registration.key.greeting, {
         language: Language.EN,
         params: { username: 'John' },
-      })
+      }),
     ).toBe('Hello John!');
 
     expect(
       Registration.translate(Registration.key.greeting, {
         language: Language.DE,
-      })
+      }),
     ).toBe('Hallo {{ username }}!');
 
     expect(
       Registration.translate(Registration.key.greeting, {
         language: Language.DE,
         params: { username: 'Johnny' },
-      })
+      }),
     ).toBe('Hallo Johnny!');
 
     expect(
       Registration.translate(Registration.key.nested.one, {
         language: Language.EN,
-      })
+      }),
     ).toBe('One');
 
     expect(
       Registration.translate(Registration.key.nested.one, {
         language: Language.DE,
-      })
+      }),
     ).toBe('Eins');
   });
 
