@@ -31,7 +31,7 @@ export interface CacheConfiguration {
    */
   staleThresholdMs: number;
 
-  // Disabling namespaces
+  // === Disabling namespaces ===
   /**
    * Whether to disable namespaces on cache inconsistency.\
    * Defaults to "false"
@@ -56,7 +56,7 @@ export interface CacheConfiguration {
    */
   disabledNamespaceExpirationMs: number;
 
-  // Blocking keys
+  // === Blocking keys ===
   /**
    * The value written to a key to block it.\
    * Defaults to "blocked"
@@ -69,14 +69,14 @@ export interface CacheConfiguration {
    */
   blockedKeyExpirationMs: number;
 
-  // Error handling
+  // === Error handling ===
   /**
    * Whether to throw if an error occurrs.\
    * Defaults to "false"
    */
   throwOnError: boolean;
 
-  // Logging
+  // === Logging ===
   /**
    * Whether logging is enabled.\
    * Defaults to "true"
@@ -89,7 +89,7 @@ export interface CacheConfiguration {
    */
   logLevels: CacheLogLevel[];
 
-  // Random
+  // === Random ===
   /**
    * The seed for the random number generator
    * Defaults to "cache-rnd-seed"

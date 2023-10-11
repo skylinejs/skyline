@@ -6,6 +6,13 @@ export type TranslationKey = string & {
 
 export type TranslationParameter = string | number | BigInt | undefined;
 
+export enum TranslateLogLevel {
+  DEBUG = 'DEBUG',
+  LOG = 'LOG',
+  WARN = 'WARN',
+  ERROR = 'ERROR',
+}
+
 export interface TranslationParametereters {
   [key: string]: TranslationParametereters | TranslationParameter;
 }

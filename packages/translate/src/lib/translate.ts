@@ -32,7 +32,8 @@ export class SkylineTranslation<Translations extends Record<string, RecursiveStr
       handleMissingTranslation: config?.handleMissingTranslation ?? 'keep',
 
       // === Logging ===
-      logMissingTranslations: config?.logMissingTranslations ?? true,
+      loggingEnabled: config?.loggingEnabled ?? false,
+      logLevels: config?.logLevels ?? [],
     };
   }
 

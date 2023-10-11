@@ -31,6 +31,15 @@ export interface TranslateConfiguration {
   handleMissingTranslation: 'keep' | 'remove' | 'throw';
 
   // === Logging ===
-  /** Whether to log missing translations */
-  logMissingTranslations: boolean;
+  /**
+   * Whether logging is enabled.\
+   * Defaults to "true"
+   */
+  loggingEnabled: boolean;
+
+  /**
+   * The log levels to log.\
+   * Defaults to all available log levels
+   */
+  logLevels: any[];
 }

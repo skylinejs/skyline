@@ -1,5 +1,6 @@
 export * from './lib/translate';
 export * from './lib/translate-configuration.interface';
+export * from './lib/translate-logger';
 export {
   TranslationKey,
   TranslationParameter,
