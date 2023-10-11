@@ -40,9 +40,9 @@ Instead, we have small translation objects for each feature that are imported li
 A translation object looks like this:
 
 ```ts
-import { SkylineTranslation } from '@skyline-js/translate';
+import { SkylineTranslate } from '@skyline-js/translate';
 
-export const RegistraionEmail = new SkylineTranslation({
+export const RegistraionEmail = new SkylineTranslate({
   EN: {
     subject: 'Please confirm your email address',
     body: 'Thanks for signing up. Confirm your email address here: {{ link }}',

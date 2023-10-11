@@ -1,4 +1,4 @@
-import { SkylineTranslation, configureSkylineTranslation } from './translate';
+import { SkylineTranslate, configureSkylineTranslate } from './translate';
 
 enum Language {
   EN = 'EN',
@@ -6,9 +6,9 @@ enum Language {
   ES = 'ES',
 }
 
-describe('translate', () => {
-  it('should work', () => {
-    const Registration = new SkylineTranslation({
+describe('SkylineTranslate', () => {
+  it('Simple translation', () => {
+    const Registration = new SkylineTranslate({
       [Language.EN]: {
         headline: 'Register',
         greeting: 'Hello {{ username }}!',
@@ -36,6 +36,7 @@ describe('translate', () => {
     expect(
       Registration.translate(Registration.key.greeting, {
         language: Language.EN,
+        handleMissingParam: 'keep',
       }),
     ).toBe('Hello {{ username }}!');
 
@@ -72,11 +73,45 @@ describe('translate', () => {
     ).toBe('Eins');
   });
 
-  it('configureSkylineTranslation', () => {
-    const SkylineTranslation = configureSkylineTranslation({
-      throwOnMissingTranslation: true,
+  it('Translate with parameters', () => {
+    const Registration = new SkylineTranslate({
+      en: {
+        subject: 'Hello {{ username }}!',
+      },
+      de: {
+        subject: 'Hallo {{ username }}!',
+      },
     });
-    const Registration = new SkylineTranslation({
+
+    expect(Registration.translate(Registration.key.subject)).toBe('');
+
+    expect(
+      Registration.translate(Registration.key.subject, {
+        language: 'en',
+        params: { username: 'John' },
+      }),
+    ).toBe('Hello John!');
+
+    expect(
+      Registration.translate(Registration.key.subject, {
+        fallbackLanguage: 'en',
+        params: { username: 'John' },
+      }),
+    ).toBe('Hello John!');
+
+    expect(
+      Registration.translate(Registration.key.subject, {
+        language: 'de',
+        fallbackLanguage: 'en',
+        params: { username: 'John' },
+      }),
+    ).toBe('Hallo John!');
+  });
+
+  it('configureSkylineTranslate', () => {
+    const SkylineTranslate = configureSkylineTranslate({});
+
+    const Registration = new SkylineTranslate({
       [Language.EN]: {
         headline: 'Register',
         greeting: 'Hello {{ username }}!',

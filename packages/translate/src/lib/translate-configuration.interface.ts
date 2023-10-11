@@ -1,4 +1,4 @@
-import { TranslationParametereters } from './translate.interface';
+import { TranslateLogLevel, TranslationParametereters } from './translate.interface';
 
 export interface TranslateConfiguration {
   // === Language ===
@@ -41,5 +41,5 @@ export interface TranslateConfiguration {
    * The log levels to log.\
    * Defaults to all available log levels
    */
-  logLevels: any[];
+  logLevels: TranslateLogLevel[];
 }

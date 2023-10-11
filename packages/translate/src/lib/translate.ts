@@ -8,9 +8,9 @@ import { assignPartialObject } from './util/helper.utils';
 import { getTranslationKeysObject, translate } from './util/translate.utils';
 
 /**
- * The SkylineTranslation class
+ * The SkylineTranslate class
  */
-export class SkylineTranslation<Translations extends Record<string, RecursiveStringObject>> {
+export class SkylineTranslate<Translations extends Record<string, RecursiveStringObject>> {
   private readonly config: TranslateConfiguration;
   private keys!: CastToTranslationKeys<Translations[keyof Translations]>;
 
@@ -74,22 +74,22 @@ export class SkylineTranslation<Translations extends Record<string, RecursiveStr
 }
 
 /**
- * Create a SkylineTranslation class with default configuration
+ * Create a SkylineTranslate class with default configuration
  * @param defaultConfig The default configuration
- * @returns The SkylineTranslation class with default configuration
+ * @returns The SkylineTranslate class with default configuration
  */
-export function configureSkylineTranslation(
+export function configureSkylineTranslate(
   defaultConfig: Partial<TranslateConfiguration>,
-): typeof SkylineTranslation {
-  // Define custom SkylineTranslation class with default config
-  class SkylineTranslationWithDefaultConfig<
+): typeof SkylineTranslate {
+  // Define custom SkylineTranslate class with default config
+  class SkylineTranslateWithDefaultConfig<
     Translations extends Record<string, RecursiveStringObject>,
-  > extends SkylineTranslation<Translations> {
+  > extends SkylineTranslate<Translations> {
     constructor(translations: Translations, config?: Partial<TranslateConfiguration>) {
       // Merge default config with provided config
       super(translations, assignPartialObject(defaultConfig, config));
     }
   }
 
-  return SkylineTranslationWithDefaultConfig;
+  return SkylineTranslateWithDefaultConfig;
 }
