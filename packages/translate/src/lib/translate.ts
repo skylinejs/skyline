@@ -4,7 +4,8 @@ import {
   RecursiveStringObject,
   TranslationKey,
 } from './translate.interface';
-import { getTranslationKeysObject, translate, assignPartialObject } from './translate.utils';
+import { assignPartialObject } from './util/helper.utils';
+import { getTranslationKeysObject, translate } from './util/translate.utils';
 
 /**
  *
