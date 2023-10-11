@@ -1,26 +1,22 @@
 {
   "name": "cache-example-nestjs-minimal",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/cache-example-nestjs-minimal/src",
+  "sourceRoot": "apps/example-cache-nestjs-minimal/src",
   "projectType": "application",
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "target": "node",
         "compiler": "tsc",
-        "outputPath": "dist/apps/cache-example-nestjs-minimal",
-        "main": "apps/cache-example-nestjs-minimal/src/main.ts",
-        "tsConfig": "apps/cache-example-nestjs-minimal/tsconfig.app.json",
-        "assets": [
-          "apps/cache-example-nestjs-minimal/src/assets"
-        ],
+        "outputPath": "dist/apps/example-cache-nestjs-minimal",
+        "main": "apps/example-cache-nestjs-minimal/src/main.ts",
+        "tsConfig": "apps/example-cache-nestjs-minimal/tsconfig.app.json",
+        "assets": ["apps/example-cache-nestjs-minimal/src/assets"],
         "isolatedConfig": true,
-        "webpackConfig": "apps/cache-example-nestjs-minimal/webpack.config.js"
+        "webpackConfig": "apps/example-cache-nestjs-minimal/webpack.config.js"
       },
       "configurations": {
         "development": {},
@@ -44,22 +40,16 @@
     },
     "lint": {
       "executor": "@nx/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "apps/cache-example-nestjs-minimal/**/*.ts"
-        ]
+        "lintFilePatterns": ["apps/example-cache-nestjs-minimal/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/{projectRoot}"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "apps/cache-example-nestjs-minimal/jest.config.ts",
+        "jestConfig": "apps/example-cache-nestjs-minimal/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {

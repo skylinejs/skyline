@@ -3,23 +3,17 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, EntityNotFoundError } from 'typeorm';
 import { DatabaseCacheService } from './database-cache.service';
 import { UserEntity } from './user.entity';
-import {
-  CreateUserInputValobj,
-  UpdateUserInputValobj,
-  UserValobj,
-} from './user.interface';
+import { CreateUserInputValobj, UpdateUserInputValobj, UserValobj } from './user.interface';
 import { isUserRowOrThrow, isUserRowsOrThrow } from './user.utils';
 
 @Injectable()
 export class UserRepository {
   constructor(
     private readonly cache: DatabaseCacheService,
-    @InjectDataSource() private readonly dataSource: DataSource
+    @InjectDataSource() private readonly dataSource: DataSource,
   ) {}
 
-  async getUsersByIds(
-    userIds: number[]
-  ): Promise<Array<UserValobj | undefined>> {
+  async getUsersByIds(userIds: number[]): Promise<Array<UserValobj | undefined>> {
     if (!userIds.length) return [];
 
     // Check cache
@@ -27,11 +21,11 @@ export class UserRepository {
       'user',
       userIds,
       isUserRowOrThrow,
-      { skip: 0.5 }
+      { skip: 0.5 },
     );
 
     const missingUserIds = userIds.filter(
-      (userId) => !cachedUserRows.some((row) => row?.id === userId)
+      (userId) => !cachedUserRows.some((row) => row?.id === userId),
     );
 
     // Query database for missing userIds
@@ -64,11 +58,7 @@ export class UserRepository {
 
   async getUsersByIdOrFail(userId: number): Promise<UserValobj> {
     const user = await this.getUsersById(userId);
-    if (!user)
-      throw new EntityNotFoundError(
-        UserEntity,
-        `User with ID ${userId} not found`
-      );
+    if (!user) throw new EntityNotFoundError(UserEntity, `User with ID ${userId} not found`);
 
     return user;
   }

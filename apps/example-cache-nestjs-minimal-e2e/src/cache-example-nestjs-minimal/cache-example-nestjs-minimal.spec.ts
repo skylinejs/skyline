@@ -16,9 +16,7 @@ describe('GET /api', () => {
     });
     expect(creationResult).toMatchObject({ user: { name: 'John Doe' } });
 
-    const { data: getResult } = await axios.get(
-      `/api/user/${creationResult.user.id}`
-    );
+    const { data: getResult } = await axios.get(`/api/user/${creationResult.user.id}`);
     expect(getResult.user).toEqual(creationResult.user);
   });
 
@@ -31,23 +29,17 @@ describe('GET /api', () => {
 
     // Get user - this fills the cache
     {
-      const { data: getResult } = await axios.get(
-        `/api/user/${creationResult.user.id}`
-      );
+      const { data: getResult } = await axios.get(`/api/user/${creationResult.user.id}`);
       expect(getResult.user).toEqual(creationResult.user);
     }
 
     // Delete user
-    const { data: deleteResult } = await axios.delete(
-      `/api/user/${creationResult.user.id}`
-    );
+    const { data: deleteResult } = await axios.delete(`/api/user/${creationResult.user.id}`);
     expect(deleteResult.id).toEqual(creationResult.user.id);
 
     {
       // Retrieve user - expect cache to be invalidated
-      const { data: getResult } = await axios.get(
-        `/api/user/${creationResult.user.id}`
-      );
+      const { data: getResult } = await axios.get(`/api/user/${creationResult.user.id}`);
       expect(getResult).toEqual({ user: undefined });
     }
   });
