@@ -1,11 +1,9 @@
 import { TranslateConfiguration } from '../translate-configuration.interface';
 import {
-  TranslationKey,
-  RecursiveStringObject,
-  TranslationParameters,
   CastToTranslationKeys,
+  RecursiveStringObject,
+  TranslationKey,
 } from '../translate.interface';
-import { substituteInterpolations } from './interpolation.utils';
 
 /**
  * Create a translation keys object with the same structure as the translation object, but with the values replaced by the translation keys
@@ -35,37 +33,7 @@ export function getTranslationKeysObject<
   return translationKeys as CastToTranslationKeys<Translations[keyof Translations]>;
 }
 
-function getTranslationTemplate(
-  fullPath: TranslationKey,
-  translations: any,
-  language: string | number | symbol,
-): string | undefined {
-  if (!translations || !fullPath) {
-    return undefined;
-  }
-
-  // Start recursion with full language object
-  let recursionObj = translations[language];
-
-  for (const key of fullPath.split('.')) {
-    // Check if wrong path was provided
-    if (typeof recursionObj !== 'object') {
-      return undefined;
-    }
-
-    // Recurse into the language object
-    recursionObj = recursionObj[key];
-  }
-
-  if (typeof recursionObj !== 'string') {
-    return undefined;
-  }
-
-  const template = recursionObj;
-  return template;
-}
-
-export function translate({
+export function getTranslationTemplate({
   key,
   config,
   translations,
@@ -83,14 +51,23 @@ export function translate({
     return undefined;
   }
 
-  // Get template for TranslationKey
-  const template = getTranslationTemplate(key, translations, language);
+  // Start recursion with full language object
+  let recursionObj = translations[language];
 
-  // Check if template could be found
-  if (!template) {
+  for (const fragment of key.split('.')) {
+    // Check if wrong path was provided
+    if (typeof recursionObj !== 'object') {
+      return undefined;
+    }
+
+    // Recurse into the language object
+    recursionObj = recursionObj[fragment];
+  }
+
+  if (typeof recursionObj !== 'string') {
     return undefined;
   }
 
-  // Substitute variables
-  return substituteInterpolations({ template, config });
+  const template = recursionObj;
+  return template;
 }

@@ -1,10 +1,6 @@
-function isBrowser() {
-  return typeof window !== 'undefined';
-}
-
 export function getBrowserLanguage(): string | undefined {
   const cultureLanguage = getBrowserCultureLanguage();
-  if (!cultureLanguage || !isBrowser()) {
+  if (!cultureLanguage || typeof window !== 'object') {
     return undefined;
   }
 
@@ -21,7 +17,7 @@ export function getBrowserLanguage(): string | undefined {
 }
 
 export function getBrowserCultureLanguage(): string | undefined {
-  if (!isBrowser()) {
+  if (typeof window !== 'object') {
     return undefined;
   }
 

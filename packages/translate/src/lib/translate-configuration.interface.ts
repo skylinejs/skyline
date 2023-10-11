@@ -15,7 +15,7 @@ export interface TranslateConfiguration {
   /** The interpolation pattern, can be a RegExp or an object with prefix and suffix (e.g. { prefix: '{{', suffix: '}}' }) */
   interpolation: RegExp | { prefix: string; suffix: string };
 
-  /** The parameters to use for interpolation. Can */
+  /** The parameters to use for interpolation. */
   params?: TranslationParameters;
 
   /**

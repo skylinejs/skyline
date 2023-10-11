@@ -4,12 +4,12 @@ export function substituteInterpolations({
   template,
   config,
 }: {
-  template: string;
+  template: string | undefined;
   config: TranslateConfiguration;
-}): string {
+}): string | undefined {
   const params = config.params ?? {};
   // If not parameters are provided, return the string
-  if (!params) {
+  if (!params || !template) {
     return template;
   }
 

@@ -5,7 +5,8 @@ import {
   TranslationKey,
 } from './translate.interface';
 import { assignPartialObject } from './util/helper.utils';
-import { getTranslationKeysObject, translate } from './util/translate.utils';
+import { substituteInterpolations } from './util/interpolation.utils';
+import { getTranslationKeysObject, getTranslationTemplate } from './util/translate.utils';
 
 /**
  * The SkylineTranslate class
@@ -25,8 +26,9 @@ export class SkylineTranslate<Translations extends Record<string, RecursiveStrin
       fallbackLanguage: config?.fallbackLanguage,
 
       // === Parameter interpolation ===
-      interpolation: config?.interpolation ?? /\{\{([^}]+)\}\}/g,
+      params: config?.params,
       handleMissingParam: config?.handleMissingParam ?? 'keep',
+      interpolation: config?.interpolation ?? /\{\{([^}]+)\}\}/g,
 
       // === Translation keys ===
       handleMissingTranslation: config?.handleMissingTranslation ?? 'keep',
@@ -63,11 +65,13 @@ export class SkylineTranslate<Translations extends Record<string, RecursiveStrin
     options?: Partial<TranslateConfiguration>,
   ): string {
     const config = assignPartialObject(this.config, options);
-    const result = translate({
+    const template = getTranslationTemplate({
       key,
       config,
       translations: this.translations,
     });
+
+    const result = substituteInterpolations({ template, config });
 
     return result || '';
   }
