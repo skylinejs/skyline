@@ -118,21 +118,42 @@ describe('SkylineTranslate', () => {
   });
 
   it('Interpolation with object params', () => {
-    const Registration = new SkylineTranslate({
-      en: {
-        subject: 'Hello {{ user.name }}!',
-      },
-      de: {
-        subject: 'Hallo {{ user.name }}!',
-      },
-    });
+    {
+      const Registration = new SkylineTranslate({
+        en: {
+          subject: 'Hello {{ user.name }}!',
+        },
+        de: {
+          subject: 'Hallo {{ user.name }}!',
+        },
+      });
 
-    expect(
-      Registration.translate(Registration.key.subject, {
-        language: 'en',
-        params: { user: { name: 'John' } },
-      }),
-    ).toBe('Hello John!');
+      expect(
+        Registration.translate(Registration.key.subject, {
+          language: 'en',
+          params: { user: { name: 'John' } },
+        }),
+      ).toBe('Hello John!');
+    }
+
+    {
+      const Registration = new SkylineTranslate({
+        en: {
+          subject: 'Hello {{ user:name }}!',
+        },
+        de: {
+          subject: 'Hallo {{ user:name }}!',
+        },
+      });
+
+      expect(
+        Registration.translate(Registration.key.subject, {
+          language: 'en',
+          paramSeparator: ':',
+          params: { user: { name: 'John' } },
+        }),
+      ).toBe('Hello John!');
+    }
   });
 
   it('Custom interpolation', () => {
