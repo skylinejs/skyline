@@ -34,7 +34,7 @@ export function substituteInterpolations({
 
     // Get the value
     let obj: any = params;
-    const fragments = key.split(config.paramSeparator);
+    const fragments = key.split(config.paramKeySeparator);
     for (const fragment of fragments) {
       if (typeof obj !== 'object') {
         break;

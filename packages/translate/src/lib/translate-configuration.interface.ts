@@ -19,7 +19,7 @@ export interface TranslateConfiguration {
   params?: TranslationParameters;
 
   /** The separator to specify the path to a parameter (e.g. 'user.name' for { user: { name: 'John' } }) */
-  paramSeparator: string;
+  paramKeySeparator: string;
 
   /**
    * How to handle missing parameters: 'keep' (keep the handlebars), 'remove' (remove the handlebars), 'throw' (throw an error)

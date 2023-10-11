@@ -149,7 +149,7 @@ describe('SkylineTranslate', () => {
       expect(
         Registration.translate(Registration.key.subject, {
           language: 'en',
-          paramSeparator: ':',
+          paramKeySeparator: ':',
           params: { user: { name: 'John' } },
         }),
       ).toBe('Hello John!');
