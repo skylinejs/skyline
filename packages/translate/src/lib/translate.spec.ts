@@ -66,7 +66,7 @@ describe('translate', () => {
 
   it('configureSkylineTranslation', () => {
     const SkylineTranslation = configureSkylineTranslation({
-      throwOnMissing: true,
+      throwOnMissingTranslation: true,
     });
     const Registration = new SkylineTranslation({
       [Language.EN]: {
@@ -84,5 +84,9 @@ describe('translate', () => {
         },
       },
     });
+
+    expect(() =>
+      Registration.translate(Language.EN, Registration.key.greeting)
+    ).toThrowError('Translation for key "greeting" in language "EN" not found');
   });
 });

@@ -5,7 +5,11 @@ import {
   TranslationKey,
   TranslationString,
 } from './translate.interface';
-import { translationKeyObjFromLang, translate } from './translate.utils';
+import {
+  translationKeyObjFromLang,
+  translate,
+  assignOptions,
+} from './translate.utils';
 
 /**
  *
@@ -21,7 +25,12 @@ export class SkylineTranslation<
     config?: Partial<TranslateConfiguration>
   ) {
     this.config = {
-      throwOnMissing: config?.throwOnMissing ?? false,
+      languages: config?.languages,
+      defaultLanguage: config?.defaultLanguage,
+
+      interpolationRegex: config?.interpolationRegex ?? /\{\{([^}]+)\}\}/g,
+      throwOnMissingParam: config?.throwOnMissingParam ?? false,
+      throwOnMissingTranslation: config?.throwOnMissingTranslation ?? false,
     };
   }
 
@@ -48,57 +57,45 @@ export class SkylineTranslation<
       | undefined
       | null
       | { language?: keyof Translations | undefined | null },
-    key: TranslationString | TranslationKey | undefined | null
+    key: TranslationString | TranslationKey | undefined | null,
+    options?: Partial<TranslateConfiguration>
   ): string {
-    if (!language) {
-      return '';
-    }
-
-    if (typeof language === 'object') {
-      const lang = language.language;
-      if (!lang) {
-        return '';
-      }
-
-      return translate(key, this.translations, lang as any) || '';
-    }
-
-    return translate(key, this.translations, language as any) || '';
-  }
-
-  translateOrFallback(
-    language:
-      | string
-      | undefined
-      | null
-      | { language?: string | undefined | null },
-    key: TranslationString | TranslationKey | undefined | null
-  ): string {
-    // Check if language exists in translations
+    const config = assignOptions(this.config, options);
     let _language =
-      !!language && typeof language === 'object' ? language.language : language;
+      language && typeof language === 'object' ? language.language : language;
 
-    if (!this.translations[_language as keyof Translations]) {
-      _language = Object.keys(this.translations)[0];
+    // Fallback to default language
+    if (!_language) {
+      _language = config.defaultLanguage;
     }
 
-    return this.translate(language, key);
+    const result = translate(key, this.translations, _language);
+
+    if (!result && config.throwOnMissingTranslation) {
+      throw new Error(
+        `Translation for key "${key}" in language "${String(
+          _language
+        )}" not found`
+      );
+    }
+
+    return result || '';
   }
 }
 
 export function configureSkylineTranslation(
-  defaultConfig: TranslateConfiguration
+  defaultConfig: Partial<TranslateConfiguration>
 ): typeof SkylineTranslation {
-  class CustomSkylineTranslation<
+  class SkylineTranslationWithDefaultConfig<
     Translations extends Record<string, RecursiveStringObject>
   > extends SkylineTranslation<Translations> {
     constructor(
       translations: Translations,
       config?: Partial<TranslateConfiguration>
     ) {
-      super(translations, config ?? defaultConfig);
+      super(translations, assignOptions(defaultConfig, config));
     }
   }
 
-  return CustomSkylineTranslation;
+  return SkylineTranslationWithDefaultConfig;
 }

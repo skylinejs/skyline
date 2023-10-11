@@ -1,3 +1,8 @@
 export interface TranslateConfiguration {
-  throwOnMissing?: boolean;
+  languages?: { [key: string]: string } | string[];
+  defaultLanguage?: string;
+
+  interpolationRegex: RegExp;
+  throwOnMissingParam: boolean;
+  throwOnMissingTranslation: boolean;
 }

@@ -4,6 +4,22 @@ import {
   RecursiveStringObject,
 } from './translate.interface';
 
+export function assignOptions<T extends object>(config: T, options: any): T {
+  const result: any = { ...config };
+
+  if (!options || typeof options !== 'object') {
+    return result;
+  }
+
+  Object.keys(options).forEach((key) => {
+    const value = options[key];
+    if (value !== undefined) {
+      result[key] = value;
+    }
+  });
+  return result;
+}
+
 export function translationKeyObjFromLang(
   translation: RecursiveStringObject,
   parentPaths: string[] = []
@@ -50,19 +66,17 @@ export function substituteHandlebars(
   });
 }
 
-export function getTranslationTemplate<
-  Language extends { [key: string]: string }
->(
+export function getTranslationTemplate(
   fullPath: TranslationKey,
-  languagesDict: { [key in Language[keyof Language]]: any } | undefined,
-  language: Language[keyof Language]
+  translations: any,
+  language: string | number | symbol
 ): string | undefined {
-  if (!languagesDict || !fullPath) {
+  if (!translations || !fullPath) {
     return undefined;
   }
 
   // Start recursion with full language object
-  let recursionObj: any = languagesDict[language];
+  let recursionObj = translations[language];
 
   for (const key of fullPath.split('.')) {
     // Check if wrong path was provided
@@ -82,24 +96,25 @@ export function getTranslationTemplate<
   return template;
 }
 
-export function translate<Language extends { [key: string]: string }>(
-  translationInput: TranslationString | TranslationKey | undefined | null,
-  languagesDict: any,
-  language: Language[keyof Language]
+export function translate(
+  input: TranslationString | TranslationKey | undefined | null,
+  translations: any,
+  language: string | number | symbol | null | undefined
 ): string | undefined {
-  if (translationInput === undefined || translationInput === null) {
+  if (
+    input === undefined ||
+    input === null ||
+    language === undefined ||
+    language === null
+  ) {
     return undefined;
   }
 
-  const fullPath =
-    typeof translationInput === 'string'
-      ? translationInput
-      : translationInput.key;
-  const params =
-    typeof translationInput === 'string' ? undefined : translationInput.params;
+  const fullPath = typeof input === 'string' ? input : input.key;
+  const params = typeof input === 'string' ? undefined : input.params;
 
   // Get template for TranslationKey
-  const template = getTranslationTemplate(fullPath, languagesDict, language);
+  const template = getTranslationTemplate(fullPath, translations, language);
 
   // Check if template could be found
   if (!template) {
