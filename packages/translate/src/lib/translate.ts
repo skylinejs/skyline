@@ -5,7 +5,7 @@ import {
   TranslationKey,
 } from './translate.interface';
 import {
-  translationKeyObjFromLang,
+  getTranslationKeys,
   translate,
   assignPartialObject,
 } from './translate.utils';
@@ -37,7 +37,8 @@ export class SkylineTranslation<
     // Lazy initialization of translation keys object
     if (!this.keys) {
       const firstLang: keyof Translations = Object.keys(this.translations)[0];
-      this.keys = translationKeyObjFromLang(this.translations[firstLang]);
+      const translation = this.translations[firstLang];
+      this.keys = getTranslationKeys(translation);
     }
 
     // Return the translation keys object
@@ -46,8 +47,8 @@ export class SkylineTranslation<
 
   /**
    * Translate
-   * @param language The language to translate to
    * @param key The translation key
+   * @param options The translation options
    * @returns The translated string
    */
   translate(
@@ -60,6 +61,7 @@ export class SkylineTranslation<
       config,
       translations: this.translations,
     });
+
     return result || '';
   }
 }

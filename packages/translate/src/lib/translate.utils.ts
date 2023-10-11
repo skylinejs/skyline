@@ -3,6 +3,7 @@ import {
   TranslationKey,
   RecursiveStringObject,
   TranslationParams,
+  CastToTranslationKeys,
 } from './translate.interface';
 
 /**
@@ -32,24 +33,34 @@ export function assignPartialObject<T extends object>(
   return result;
 }
 
-export function translationKeyObjFromLang(
+/**
+ * Create a translation keys object with the same structure as the translation object, but with the values replaced by the translation keys
+ * @param translation The translation object
+ * @param parentPaths The parent paths (used for recursion)
+ * @returns The translation keys object
+ */
+export function getTranslationKeys<
+  Translations extends Record<string, RecursiveStringObject>
+>(
   translation: RecursiveStringObject,
   parentPaths: string[] = []
-): any {
+): CastToTranslationKeys<Translations[keyof Translations]> {
   const translationKeys: { [key: string]: any } = {};
 
   Object.keys(translation).forEach((key) => {
     if (typeof translation[key] === 'string') {
       translationKeys[key] = [...parentPaths, key].join('.');
     } else {
-      translationKeys[key] = translationKeyObjFromLang(
+      translationKeys[key] = getTranslationKeys(
         translation[key] as RecursiveStringObject,
         [...parentPaths, key]
       );
     }
   });
 
-  return translationKeys as any;
+  return translationKeys as CastToTranslationKeys<
+    Translations[keyof Translations]
+  >;
 }
 
 export function substituteInterpolations(
