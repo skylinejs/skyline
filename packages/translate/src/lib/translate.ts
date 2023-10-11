@@ -19,12 +19,20 @@ export class SkylineTranslation<Translations extends Record<string, RecursiveStr
     config?: Partial<TranslateConfiguration>,
   ) {
     this.config = {
+      // === Language ===
+      language: config?.language,
       languages: config?.languages,
-      defaultLanguage: config?.defaultLanguage,
+      fallbackLanguage: config?.fallbackLanguage,
 
+      // === Parameter interpolation ===
       interpolation: config?.interpolation ?? /\{\{([^}]+)\}\}/g,
-      throwOnMissingParam: config?.throwOnMissingParam ?? false,
-      throwOnMissingTranslation: config?.throwOnMissingTranslation ?? false,
+      handleMissingParam: config?.handleMissingParam ?? 'keep',
+
+      // === Translation keys ===
+      handleMissingTranslation: config?.handleMissingTranslation ?? 'keep',
+
+      // === Logging ===
+      logMissingTranslations: config?.logMissingTranslations ?? true,
     };
   }
 

@@ -2,7 +2,7 @@ import { TranslateConfiguration } from '../translate-configuration.interface';
 import {
   TranslationKey,
   RecursiveStringObject,
-  TranslationParams,
+  TranslationParametereters,
   CastToTranslationKeys,
 } from '../translate.interface';
 import { substituteInterpolations } from './interpolation.utils';
@@ -78,7 +78,7 @@ export function translate({
     return undefined;
   }
 
-  const language = config?.language ?? config.defaultLanguage;
+  const language = config?.language ?? config.fallbackLanguage;
   if (!language) {
     return undefined;
   }
