@@ -27,6 +27,7 @@ export class SkylineTranslate<Translations extends Record<string, RecursiveStrin
 
       // === Parameter interpolation ===
       params: config?.params,
+      paramSeparator: config?.paramSeparator ?? '.',
       handleMissingParam: config?.handleMissingParam ?? 'keep',
       interpolation: config?.interpolation ?? /\{\{([^{}]+)\}\}/g,
 

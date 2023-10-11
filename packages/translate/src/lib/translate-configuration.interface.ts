@@ -18,6 +18,9 @@ export interface TranslateConfiguration {
   /** The parameters to use for interpolation. */
   params?: TranslationParameters;
 
+  /** The separator to specify the path to a parameter (e.g. 'user.name' for { user: { name: 'John' } }) */
+  paramSeparator: string;
+
   /**
    * How to handle missing parameters: 'keep' (keep the handlebars), 'remove' (remove the handlebars), 'throw' (throw an error)
    * @default 'keep'

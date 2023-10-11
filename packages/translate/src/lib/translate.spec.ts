@@ -19,7 +19,7 @@ describe('SkylineTranslate', () => {
       },
       [Language.DE]: {
         headline: 'Registrieren',
-        greeting: 'Hallo {{username}}!',
+        greeting: 'Hallo {{ username }}!',
         greeting2: 'Hallo {{{ username }}}!',
         nested: {
           one: 'Eins',
@@ -115,6 +115,24 @@ describe('SkylineTranslate', () => {
         params: { username: 'John' },
       }),
     ).toBe('Hallo John!');
+  });
+
+  it('Interpolation with object params', () => {
+    const Registration = new SkylineTranslate({
+      en: {
+        subject: 'Hello {{ user.name }}!',
+      },
+      de: {
+        subject: 'Hallo {{ user.name }}!',
+      },
+    });
+
+    expect(
+      Registration.translate(Registration.key.subject, {
+        language: 'en',
+        params: { user: { name: 'John' } },
+      }),
+    ).toBe('Hello John!');
   });
 
   it('Custom interpolation', () => {

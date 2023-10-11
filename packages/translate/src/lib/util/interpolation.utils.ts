@@ -33,7 +33,16 @@ export function substituteInterpolations({
     const key = (firstMatchingGroup ?? '').trim();
 
     // Get the value
-    const val = params[key];
+    let obj: any = params;
+    const fragments = key.split(config.paramSeparator);
+    for (const fragment of fragments) {
+      if (typeof obj !== 'object') {
+        break;
+      }
+      obj = obj[fragment];
+    }
+
+    const val = obj;
 
     // Replace
     if (val === undefined || val === null) {
