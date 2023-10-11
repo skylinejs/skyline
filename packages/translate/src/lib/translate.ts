@@ -3,7 +3,6 @@ import {
   CastToTranslationKeys,
   RecursiveStringObject,
   TranslationKey,
-  TranslationString,
 } from './translate.interface';
 import {
   translationKeyObjFromLang,
@@ -52,33 +51,15 @@ export class SkylineTranslation<
    * @returns The translated string
    */
   translate(
-    language:
-      | keyof Translations
-      | undefined
-      | null
-      | { language?: keyof Translations | undefined | null },
-    key: TranslationString | TranslationKey | undefined | null,
+    key: TranslationKey | undefined | null,
     options?: Partial<TranslateConfiguration>
   ): string {
     const config = assignPartialObject(this.config, options);
-    let _language =
-      language && typeof language === 'object' ? language.language : language;
-
-    // Fallback to default language
-    if (!_language) {
-      _language = config.defaultLanguage;
-    }
-
-    const result = translate(key, this.translations, _language);
-
-    if (!result && config.throwOnMissingTranslation) {
-      throw new Error(
-        `Translation for key "${key}" in language "${String(
-          _language
-        )}" not found`
-      );
-    }
-
+    const result = translate({
+      key,
+      config,
+      translations: this.translations,
+    });
     return result || '';
   }
 }

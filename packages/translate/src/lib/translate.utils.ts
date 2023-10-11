@@ -1,8 +1,8 @@
 import { TranslateConfiguration } from './translate-configuration.interface';
 import {
   TranslationKey,
-  TranslationString,
   RecursiveStringObject,
+  TranslationParams,
 } from './translate.interface';
 
 /**
@@ -52,9 +52,9 @@ export function translationKeyObjFromLang(
   return translationKeys as any;
 }
 
-export function substituteHandlebars(
+export function substituteInterpolations(
   str: string,
-  params?: { [key: string]: string | number | undefined }
+  params?: TranslationParams
 ): string {
   // If not parameters are provided, return the string
   if (!params) {
@@ -109,30 +109,25 @@ export function getTranslationTemplate(
 }
 
 export function translate({
-  input,
-  translations,
-  language,
+  key,
   config,
+  translations,
 }: {
   translations: any;
   config: TranslateConfiguration;
-  language: string | number | symbol | null | undefined;
-  input: TranslationString | TranslationKey | undefined | null;
+  key: TranslationKey | undefined | null;
 }): string | undefined {
-  if (
-    input === undefined ||
-    input === null ||
-    language === undefined ||
-    language === null
-  ) {
+  if (!key) {
     return undefined;
   }
 
-  const fullPath = typeof input === 'string' ? input : input.key;
-  const params = typeof input === 'string' ? undefined : input.params;
+  const language = config?.language ?? config.defaultLanguage;
+  if (!language) {
+    return undefined;
+  }
 
   // Get template for TranslationKey
-  const template = getTranslationTemplate(fullPath, translations, language);
+  const template = getTranslationTemplate(key, translations, language);
 
   // Check if template could be found
   if (!template) {
@@ -140,5 +135,5 @@ export function translate({
   }
 
   // Substitute variables
-  return substituteHandlebars(template, params);
+  return substituteInterpolations(template, config?.params ?? {});
 }

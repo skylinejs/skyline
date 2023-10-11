@@ -4,13 +4,10 @@ export type TranslationKey = string & {
   [isTranslationKey]: true;
 };
 
-export interface TranslationParams {
-  [key: string]: string | number | undefined;
-}
+export type TranslationParam = string | number | BigInt | undefined;
 
-export interface TranslationString {
-  key: TranslationKey;
-  params?: TranslationParams;
+export interface TranslationParams {
+  [key: string]: TranslationParams | TranslationParam;
 }
 
 export interface RecursiveStringObject {

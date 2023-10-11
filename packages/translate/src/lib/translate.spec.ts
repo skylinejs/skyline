@@ -26,41 +26,51 @@ describe('translate', () => {
     });
 
     const language: Language = Language.EN;
-    expect(Registration.translate(language, Registration.key.headline)).toBe(
-      'Register'
-    );
-    expect(Registration.translate(Language.DE, Registration.key.headline)).toBe(
-      'Registrieren'
-    );
-
-    expect(Registration.translate(Language.EN, Registration.key.greeting)).toBe(
-      'Hello {{ username }}!'
-    );
+    expect(
+      Registration.translate(Registration.key.headline, { language })
+    ).toBe('Register');
+    expect(
+      Registration.translate(Registration.key.headline, {
+        language: Language.DE,
+      })
+    ).toBe('Registrieren');
 
     expect(
-      Registration.translate(Language.EN, {
-        key: Registration.key.greeting,
+      Registration.translate(Registration.key.greeting, {
+        language: Language.EN,
+      })
+    ).toBe('Hello {{ username }}!');
+
+    expect(
+      Registration.translate(Registration.key.greeting, {
+        language: Language.EN,
         params: { username: 'John' },
       })
     ).toBe('Hello John!');
 
-    expect(Registration.translate(Language.DE, Registration.key.greeting)).toBe(
-      'Hallo {{ username }}!'
-    );
+    expect(
+      Registration.translate(Registration.key.greeting, {
+        language: Language.DE,
+      })
+    ).toBe('Hallo {{ username }}!');
 
     expect(
-      Registration.translate(Language.DE, {
-        key: Registration.key.greeting,
+      Registration.translate(Registration.key.greeting, {
+        language: Language.DE,
         params: { username: 'Johnny' },
       })
     ).toBe('Hallo Johnny!');
 
     expect(
-      Registration.translate(Language.EN, Registration.key.nested.one)
+      Registration.translate(Registration.key.nested.one, {
+        language: Language.EN,
+      })
     ).toBe('One');
 
     expect(
-      Registration.translate(Language.DE, Registration.key.nested.one)
+      Registration.translate(Registration.key.nested.one, {
+        language: Language.DE,
+      })
     ).toBe('Eins');
   });
 
@@ -84,9 +94,5 @@ describe('translate', () => {
         },
       },
     });
-
-    expect(() =>
-      Registration.translate(Language.EN, Registration.key.greeting)
-    ).toThrowError('Translation for key "greeting" in language "EN" not found');
   });
 });
