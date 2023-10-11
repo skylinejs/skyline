@@ -251,7 +251,7 @@ export class SkylineCache {
       return { value, skipped: false };
     } catch (error: unknown) {
       this.handleError(error, {
-        location: 'cache.get',
+        location: 'SkylineCache.get',
         identifier: `${namespace}:${key}`,
       });
     }
@@ -369,7 +369,7 @@ export class SkylineCache {
         } catch (error: unknown) {
           const key = keys[index];
           this.handleError(error, {
-            location: 'cache.getMany',
+            location: 'SkylineCache.getMany',
             identifier: `${namespace}:${key}`,
           });
         }
@@ -383,7 +383,7 @@ export class SkylineCache {
       return { values, skipped: false };
     } catch (error: unknown) {
       this.handleError(error, {
-        location: 'cache.getMany',
+        location: 'SkylineCache.getMany',
         identifier: keys.map((key) => `${namespace}:${key}`),
       });
     }
@@ -468,7 +468,7 @@ export class SkylineCache {
       );
     } catch (error: unknown) {
       this.handleError(error, {
-        location: 'cache.setIfNotExist',
+        location: 'SkylineCache.setIfNotExist',
         identifier: `${namespace}:${key}`,
       });
     }
@@ -555,7 +555,7 @@ export class SkylineCache {
       );
     } catch (error: unknown) {
       this.handleError(error, {
-        location: 'cache.setManyIfNotExist',
+        location: 'SkylineCache.setManyIfNotExist',
         identifier: keys.map((key) => `${namespace}:${key}`),
       });
     }
@@ -586,7 +586,7 @@ export class SkylineCache {
       this.statistics.numCacheInvalidations++;
     } catch (error: unknown) {
       this.handleError(error, {
-        location: 'cache.invalidate',
+        location: 'SkylineCache.invalidate',
         identifier: `${namespace}:${key}`,
       });
     }
@@ -621,7 +621,7 @@ export class SkylineCache {
       this.statistics.numCacheInvalidations += keys.length;
     } catch (error: unknown) {
       this.handleError(error, {
-        location: 'cache.invalidateMany',
+        location: 'SkylineCache.invalidateMany',
         identifier: keys.map(({ namespace, key }) => `${namespace}:${key}`),
       });
     }
@@ -820,7 +820,7 @@ export class SkylineCache {
       this.disabledNamespaces = keys.map((key) => key.slice(prefix.length));
     } catch (error: unknown) {
       this.handleError(error, {
-        location: 'cache.synchronizeDisabledNamespaces',
+        location: 'SkylineCache.synchronizeDisabledNamespaces',
         identifier: 'disabled-namespaces',
       });
     }

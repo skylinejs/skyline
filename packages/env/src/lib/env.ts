@@ -113,7 +113,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     // Validate runtime if possible
     if (this.config?.runtime?.trim() === '') {
       throw new EnvInputValidationError(
-        `[env.constructor] Runtime was provided but is empty string.`,
+        `[SkylineEnv.constructor] Runtime was provided but is empty string.`,
         { value: this.config.runtime, parameter: 'runtime' }
       );
     }
@@ -122,7 +122,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       if (!this.config.runtimes[this.config.runtime]) {
         throw new EnvInputValidationError(
           [
-            `[env.constructor] Invalid runtime: "`,
+            `[SkylineEnv.constructor] Invalid runtime: "`,
             this.config.runtime,
             '". Valid runtimes are: "',
             Object.keys(this.config.runtimes).join('", "'),
@@ -135,7 +135,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
 
     if (this.config.throwOnMissingRuntime && !this.config.runtime) {
       throw new EnvInputValidationError(
-        `[env.constructor] No runtime was provided but "throwOnMissingRuntime" is set to "true".`,
+        `[SkylineEnv.constructor] No runtime was provided but "throwOnMissingRuntime" is set to "true".`,
         { value: this.config.runtime, parameter: 'runtime' }
       );
     }
@@ -182,7 +182,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     // Environment variable is set but could not be parsed as boolean
     if (valueStr !== undefined && value === undefined) {
       throw new EnvParsingError(
-        `[env.parseBoolean] Could not parse value "${valueStr}" as boolean for environment variable "${variableName}".`,
+        `[SkylineEnv.parseBoolean] Could not parse value "${valueStr}" as boolean for environment variable "${variableName}".`,
         {
           variableName,
           value: valueStr,
@@ -240,7 +240,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     // Environment variable is set but could not be parsed as an array
     if (arrayStr !== undefined && valuesStr === undefined) {
       throw new EnvParsingError(
-        `[env.parseBooleanArray] Could not parse value "${arrayStr}" as array for environment variable "${variableName}".`,
+        `[SkylineEnv.parseBooleanArray] Could not parse value "${arrayStr}" as array for environment variable "${variableName}".`,
         {
           variableName,
           value: arrayStr,
@@ -252,7 +252,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     const validationResult = validateArrayValue(valuesStr, config);
     if (typeof validationResult === 'string') {
       throw new EnvValidationError(
-        `[env.parseBooleanArray] Invalid value "${arrayStr}" for environment variable "${variableName}". ${validationResult}`,
+        `[SkylineEnv.parseBooleanArray] Invalid value "${arrayStr}" for environment variable "${variableName}". ${validationResult}`,
         {
           variableName,
           value: arrayStr,
@@ -270,7 +270,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       // Environment variable is set but could not be parsed as boolean
       if (valuesStr.length !== values.length) {
         throw new EnvParsingError(
-          `[env.parseBooleanArray] Could not parse value "${arrayStr}" as array of booleans for environment variable "${variableName}".`,
+          `[SkylineEnv.parseBooleanArray] Could not parse value "${arrayStr}" as array of booleans for environment variable "${variableName}".`,
           {
             variableName,
             value: arrayStr,
@@ -339,7 +339,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     const validationResult = validateStringValue(value, config);
     if (typeof validationResult === 'string') {
       throw new EnvValidationError(
-        `[env.parseString] Invalid value "${value}" for environment variable "${variableName}". ${validationResult}`,
+        `[SkylineEnv.parseString] Invalid value "${value}" for environment variable "${variableName}". ${validationResult}`,
         {
           variableName,
           value,
@@ -384,7 +384,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     // Environment variable is set but could not be parsed as an array
     if (arrayStr !== undefined && valuesStr === undefined) {
       throw new EnvParsingError(
-        `[env.parseStringArray] Could not parse value "${arrayStr}" as array for environment variable "${variableName}".`,
+        `[SkylineEnv.parseStringArray] Could not parse value "${arrayStr}" as array for environment variable "${variableName}".`,
         {
           variableName,
           value: arrayStr,
@@ -396,7 +396,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     const validationResult = validateArrayValue(valuesStr, config);
     if (typeof validationResult === 'string') {
       throw new EnvValidationError(
-        `[env.parseStringArray] Invalid value "${arrayStr}" for environment variable "${variableName}". ${validationResult}`,
+        `[SkylineEnv.parseStringArray] Invalid value "${arrayStr}" for environment variable "${variableName}". ${validationResult}`,
         {
           variableName,
           value: arrayStr,
@@ -412,7 +412,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       // Environment variable is set but could not be parsed as string
       if (valuesStr.length !== values.length) {
         throw new EnvParsingError(
-          `[env.parseStringArray] Could not parse value "${arrayStr}" as array of strings for environment variable "${variableName}".`,
+          `[SkylineEnv.parseStringArray] Could not parse value "${arrayStr}" as array of strings for environment variable "${variableName}".`,
           {
             variableName,
             value: arrayStr,
@@ -438,7 +438,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       const validationResult = validateStringValue(value, config);
       if (typeof validationResult === 'string') {
         throw new EnvValidationError(
-          `[env.parseStringArray] Invalid value "${value}" for environment variable "${variableName}". ${validationResult}`,
+          `[SkylineEnv.parseStringArray] Invalid value "${value}" for environment variable "${variableName}". ${validationResult}`,
           {
             variableName,
             value: arrayStr,
@@ -504,7 +504,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     // Environment variable is set but could not be parsed as enum
     if (valueStr !== undefined && value === undefined) {
       throw new EnvParsingError(
-        `[env.parseEnum] Could not parse value "${valueStr}" as enum for environment variable "${variableName}".`,
+        `[SkylineEnv.parseEnum] Could not parse value "${valueStr}" as enum for environment variable "${variableName}".`,
         {
           variableName,
           value: valueStr,
@@ -580,7 +580,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     // Environment variable is set but could not be parsed as an array
     if (arrayStr !== undefined && valuesStr === undefined) {
       throw new EnvParsingError(
-        `[env.parseEnumArray] Could not parse value "${arrayStr}" as array for environment variable "${variableName}".`,
+        `[SkylineEnv.parseEnumArray] Could not parse value "${arrayStr}" as array for environment variable "${variableName}".`,
         {
           variableName,
           value: arrayStr,
@@ -592,7 +592,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     const validationResult = validateArrayValue(valuesStr, config);
     if (typeof validationResult === 'string') {
       throw new EnvValidationError(
-        `[env.parseEnumArray] Invalid value "${arrayStr}" for environment variable "${variableName}". ${validationResult}`,
+        `[SkylineEnv.parseEnumArray] Invalid value "${arrayStr}" for environment variable "${variableName}". ${validationResult}`,
         {
           variableName,
           value: arrayStr,
@@ -610,7 +610,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       // Environment variable is set but could not be parsed as enum
       if (valuesStr.length !== values.length) {
         throw new EnvParsingError(
-          `[env.parseEnumArray] Could not parse value "${arrayStr}" as array of enums for environment variable "${variableName}".`,
+          `[SkylineEnv.parseEnumArray] Could not parse value "${arrayStr}" as array of enums for environment variable "${variableName}".`,
           {
             variableName,
             value: arrayStr,
@@ -665,7 +665,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     // Environment variable is set but could not be parsed as number
     if (valueStr !== undefined && value === undefined) {
       throw new EnvParsingError(
-        `[env.parseNumber] Could not parse value "${valueStr}" as number for environment variable "${variableName}".`,
+        `[SkylineEnv.parseNumber] Could not parse value "${valueStr}" as number for environment variable "${variableName}".`,
         {
           variableName,
           value: valueStr,
@@ -689,7 +689,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     const validationResult = validateNumberValue(value, config);
     if (typeof validationResult === 'string') {
       throw new EnvValidationError(
-        `[env.parseNumber] Invalid value "${value}" for environment variable "${variableName}". ${validationResult}`,
+        `[SkylineEnv.parseNumber] Invalid value "${value}" for environment variable "${variableName}". ${validationResult}`,
         {
           variableName,
           value: valueStr,
@@ -734,7 +734,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     // Environment variable is set but could not be parsed as an array
     if (arrayStr !== undefined && valuesStr === undefined) {
       throw new EnvParsingError(
-        `[env.parseNumberArray] Could not parse value "${arrayStr}" as array for environment variable "${variableName}".`,
+        `[SkylineEnv.parseNumberArray] Could not parse value "${arrayStr}" as array for environment variable "${variableName}".`,
         {
           variableName,
           value: arrayStr,
@@ -746,7 +746,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     const validationResult = validateArrayValue(valuesStr, config);
     if (typeof validationResult === 'string') {
       throw new EnvValidationError(
-        `[env.parseNumberArray] Invalid value "${arrayStr}" for environment variable "${variableName}". ${validationResult}`,
+        `[SkylineEnv.parseNumberArray] Invalid value "${arrayStr}" for environment variable "${variableName}". ${validationResult}`,
         {
           variableName,
           value: arrayStr,
@@ -764,7 +764,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       // Environment variable is set but could not be parsed as number
       if (valuesStr.length !== values.length) {
         throw new EnvParsingError(
-          `[env.parseNumberArray] Could not parse value "${arrayStr}" as array of numbers for environment variable "${variableName}".`,
+          `[SkylineEnv.parseNumberArray] Could not parse value "${arrayStr}" as array of numbers for environment variable "${variableName}".`,
           {
             variableName,
             value: arrayStr,
@@ -790,7 +790,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       const validationResult = validateNumberValue(value, config);
       if (typeof validationResult === 'string') {
         throw new EnvValidationError(
-          `[env.parseNumberArray] Invalid value "${value}" for environment variable "${variableName}". ${validationResult}`,
+          `[SkylineEnv.parseNumberArray] Invalid value "${value}" for environment variable "${variableName}". ${validationResult}`,
           {
             variableName,
             value: arrayStr,
