@@ -12,13 +12,15 @@ describe('SkylineTranslate', () => {
       [Language.EN]: {
         headline: 'Register',
         greeting: 'Hello {{ username }}!',
+        greeting2: 'Hello {{{ username }}}!',
         nested: {
           one: 'One',
         },
       },
       [Language.DE]: {
         headline: 'Registrieren',
-        greeting: 'Hallo {{ username }}!',
+        greeting: 'Hallo {{username}}!',
+        greeting2: 'Hallo {{{ username }}}!',
         nested: {
           one: 'Eins',
         },
@@ -59,6 +61,13 @@ describe('SkylineTranslate', () => {
         params: { username: 'Johnny' },
       }),
     ).toBe('Hallo Johnny!');
+
+    expect(
+      Registration.translate(Registration.key.greeting2, {
+        language: Language.DE,
+        params: { username: 'Johnny' },
+      }),
+    ).toBe('Hallo {Johnny}!');
 
     expect(
       Registration.translate(Registration.key.nested.one, {
@@ -140,6 +149,14 @@ describe('SkylineTranslate', () => {
         params: { username: 'Johnny' },
       }),
     ).toBe('Hello Johnny!');
+
+    expect(
+      Registration.translate(Registration.key.subject, {
+        language: 'en',
+        interpolation: { prefix: '[', suffix: ']' },
+        params: { username: 'Johnny' },
+      }),
+    ).toBe('Hello [Johnny]!');
   });
 
   it('configureSkylineTranslate', () => {

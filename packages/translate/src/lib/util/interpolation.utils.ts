@@ -19,23 +19,26 @@ export function substituteInterpolations({
     const { prefix, suffix } = config.interpolation as { prefix: string; suffix: string };
     const prefixEscaped = prefix.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
     const suffixEscaped = suffix.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-    interpolation = new RegExp(`${prefixEscaped}([^${suffixEscaped}]+)${suffixEscaped}`, 'g');
+
+    interpolation = new RegExp(
+      `${prefixEscaped}([^${prefixEscaped}${suffixEscaped}]+)${suffixEscaped}`,
+      'g',
+    );
   } else {
     interpolation = config.interpolation as RegExp;
   }
 
   // Substitute handlebars with parameters
-  return template.replace(interpolation, (_match) => {
-    // Remove the wrapping curly braces, trim surrounding whitespace
-    const match = _match.slice(2, -2).trim();
+  return template.replace(interpolation, (match, firstMatchingGroup) => {
+    const key = (firstMatchingGroup ?? '').trim();
 
     // Get the value
-    const val = params[match];
+    const val = params[key];
 
     // Replace
     if (val === undefined || val === null) {
       if (config.handleMissingParam === 'keep') {
-        return _match;
+        return match;
       }
       if (config.handleMissingParam === 'remove') {
         return '';
