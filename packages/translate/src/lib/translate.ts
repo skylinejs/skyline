@@ -8,7 +8,7 @@ import {
 import {
   translationKeyObjFromLang,
   translate,
-  assignOptions,
+  assignPartialObject,
 } from './translate.utils';
 
 /**
@@ -28,7 +28,7 @@ export class SkylineTranslation<
       languages: config?.languages,
       defaultLanguage: config?.defaultLanguage,
 
-      interpolationRegex: config?.interpolationRegex ?? /\{\{([^}]+)\}\}/g,
+      interpolation: config?.interpolation ?? /\{\{([^}]+)\}\}/g,
       throwOnMissingParam: config?.throwOnMissingParam ?? false,
       throwOnMissingTranslation: config?.throwOnMissingTranslation ?? false,
     };
@@ -60,7 +60,7 @@ export class SkylineTranslation<
     key: TranslationString | TranslationKey | undefined | null,
     options?: Partial<TranslateConfiguration>
   ): string {
-    const config = assignOptions(this.config, options);
+    const config = assignPartialObject(this.config, options);
     let _language =
       language && typeof language === 'object' ? language.language : language;
 
@@ -93,7 +93,7 @@ export function configureSkylineTranslation(
       translations: Translations,
       config?: Partial<TranslateConfiguration>
     ) {
-      super(translations, assignOptions(defaultConfig, config));
+      super(translations, assignPartialObject(defaultConfig, config));
     }
   }
 

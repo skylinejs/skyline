@@ -294,18 +294,29 @@ export function isNotNullish<T>(el: T | null | undefined): el is T {
   return el !== null && el !== undefined;
 }
 
-export function assignOptions<T extends object>(config: T, options: any): T {
-  const result: any = { ...config };
+/**
+ * Assigns the properties of object2 to object1, but only if they are not undefined
+ * @param target Object to assign to
+ * @param source Object to assign from
+ * @returns The modified target object with the assigned properties
+ */
+export function assignPartialObject<T extends object>(
+  target: T,
+  source: Partial<T> | undefined | null
+): T {
+  const result: T = { ...target };
 
-  if (!options || typeof options !== 'object') {
+  if (!source || typeof source !== 'object') {
     return result;
   }
 
-  Object.keys(options).forEach((key) => {
-    const value = options[key];
+  Object.keys(source).forEach((_key) => {
+    const key = _key as keyof T;
+    const value = source[key];
     if (value !== undefined) {
       result[key] = value;
     }
   });
+
   return result;
 }

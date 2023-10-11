@@ -17,7 +17,7 @@ import {
 import {
   parseEnumValue,
   isNotNullish,
-  assignOptions,
+  assignPartialObject,
   parseArrayValue,
   parseBooleanValue,
   parseEnvironmentVariable,
@@ -175,7 +175,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]: boolean | (() => boolean);
     }> & { default?: boolean | (() => boolean) } & BooleanParsingptions
   ): boolean | undefined {
-    const config = assignOptions(this.config, options);
+    const config = assignPartialObject(this.config, options);
     const valueStr = parseEnvironmentVariable(variableName, config);
     let value: boolean | undefined = parseBooleanValue(valueStr, config);
 
@@ -233,7 +233,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     }> & { default?: boolean[] | (() => boolean[]) } & BooleanParsingptions &
       ArrayParsingOptions
   ): boolean[] | undefined {
-    const config = assignOptions(this.config, options);
+    const config = assignPartialObject(this.config, options);
     const arrayStr = parseEnvironmentVariable(variableName, config);
     const valuesStr = parseArrayValue(arrayStr, config);
 
@@ -317,7 +317,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]: string | (() => string);
     }> & { default?: string | (() => string) } & StringParsingOptions
   ): string | undefined {
-    const config = assignOptions(this.config, options);
+    const config = assignPartialObject(this.config, options);
     let value: string | undefined = parseEnvironmentVariable(
       variableName,
       config
@@ -377,7 +377,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     }> & { default?: string[] | (() => string[]) } & StringParsingOptions &
       ArrayParsingOptions
   ): string[] | undefined {
-    const config = assignOptions(this.config, options);
+    const config = assignPartialObject(this.config, options);
     const arrayStr = parseEnvironmentVariable(variableName, config);
     const valuesStr = parseArrayValue(arrayStr, config);
 
@@ -493,7 +493,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
         default?: TEnum[keyof TEnum] | (() => TEnum[keyof TEnum]);
       }
   ): TEnum[keyof TEnum] | undefined {
-    const config = assignOptions(this.config, options);
+    const config = assignPartialObject(this.config, options);
     const valueStr = parseEnvironmentVariable(variableName, config);
     let value: TEnum[keyof TEnum] | undefined = parseEnumValue(
       enumType,
@@ -573,7 +573,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
         default?: Array<TEnum[keyof TEnum]> | (() => Array<TEnum[keyof TEnum]>);
       }
   ): Array<TEnum[keyof TEnum]> | undefined {
-    const config = assignOptions(this.config, options);
+    const config = assignPartialObject(this.config, options);
     const arrayStr = parseEnvironmentVariable(variableName, config);
     const valuesStr = parseArrayValue(arrayStr, config);
 
@@ -658,7 +658,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]: number | (() => number);
     }> & { default?: number | (() => number) } & NumberParsingOptions
   ): number | undefined {
-    const config = assignOptions(this.config, options);
+    const config = assignPartialObject(this.config, options);
     const valueStr = parseEnvironmentVariable(variableName, config);
     let value: number | undefined = parseNumberValue(valueStr);
 
@@ -727,7 +727,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
     }> & { default?: number[] | (() => number[]) } & NumberParsingOptions &
       ArrayParsingOptions
   ): number[] | undefined {
-    const config = assignOptions(this.config, options);
+    const config = assignPartialObject(this.config, options);
     const arrayStr = parseEnvironmentVariable(variableName, config);
     const valuesStr = parseArrayValue(arrayStr, config);
 
@@ -825,7 +825,7 @@ export class SkylineEnv<RuntimeEnvironment extends { [key: string]: string }> {
       [key in keyof RuntimeEnvironment]: TJson | (() => TJson);
     }> & { default?: TJson | (() => TJson) } & JsonParsingOptions
   ): TJson | undefined {
-    const config = assignOptions(this.config, options);
+    const config = assignPartialObject(this.config, options);
     const valueStr = parseEnvironmentVariable(variableName, config);
     let value: TJson | undefined = undefined;
     if (valueStr) {
