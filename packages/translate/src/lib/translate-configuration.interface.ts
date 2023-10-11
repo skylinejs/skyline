@@ -1,4 +1,4 @@
-import { TranslateLogLevel, TranslationParametereters } from './translate.interface';
+import { TranslateLogLevel, TranslationParameters } from './translate.interface';
 
 export interface TranslateConfiguration {
   // === Language ===
@@ -16,7 +16,7 @@ export interface TranslateConfiguration {
   interpolation: RegExp | { prefix: string; suffix: string };
 
   /** The parameters to use for interpolation. Can */
-  params?: TranslationParametereters;
+  params?: TranslationParameters;
 
   /**
    * How to handle missing parameters: 'keep' (keep the handlebars), 'remove' (remove the handlebars), 'throw' (throw an error)

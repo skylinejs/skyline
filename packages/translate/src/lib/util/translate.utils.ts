@@ -2,7 +2,7 @@ import { TranslateConfiguration } from '../translate-configuration.interface';
 import {
   TranslationKey,
   RecursiveStringObject,
-  TranslationParametereters,
+  TranslationParameters,
   CastToTranslationKeys,
 } from '../translate.interface';
 import { substituteInterpolations } from './interpolation.utils';

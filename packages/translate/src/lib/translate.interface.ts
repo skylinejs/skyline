@@ -13,8 +13,8 @@ export enum TranslateLogLevel {
   ERROR = 'ERROR',
 }
 
-export interface TranslationParametereters {
-  [key: string]: TranslationParametereters | TranslationParameter;
+export interface TranslationParameters {
+  [key: string]: TranslationParameters | TranslationParameter;
 }
 
 export interface RecursiveStringObject {

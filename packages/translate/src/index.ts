@@ -4,6 +4,6 @@ export * from './lib/translate-logger';
 export {
   TranslationKey,
   TranslationParameter,
-  TranslationParametereters,
+  TranslationParameters,
 } from './lib/translate.interface';
 export { getBrowserLanguage, getBrowserCultureLanguage } from './lib/util/browser.utils';
