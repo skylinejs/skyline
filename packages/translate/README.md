@@ -3,6 +3,6 @@
 </p>
 
 <p align="center">
-
+Type safe, simple translations with fallback system.
 </p>
 <br />
