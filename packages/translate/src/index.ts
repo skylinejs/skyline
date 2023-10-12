@@ -6,4 +6,5 @@ export {
   TranslationParameter,
   TranslationParameters,
 } from './lib/translate.interface';
+export { parseHttpHeaderAcceptLanguages } from './lib/util/http-request.utils';
 export { getBrowserLanguage, getBrowserCultureLanguage } from './lib/util/browser.utils';

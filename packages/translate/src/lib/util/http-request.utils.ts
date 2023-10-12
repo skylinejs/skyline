@@ -4,23 +4,33 @@ export function parseHttpHeaderAcceptLanguages(
   // Get header value from input
   let header = '';
 
-  if (typeof headers === 'string') {
+  if (headers && typeof headers === 'string') {
     header = headers;
   }
 
-  if (Array.isArray(headers)) {
+  if (headers && Array.isArray(headers)) {
     header = headers.join(',');
   }
 
-  if (typeof headers === 'object') {
-    header = (headers as any)['accept-language'];
+  if (headers && typeof headers === 'object') {
+    // Get header case-insensitive
+    Object.keys(headers).forEach((key) => {
+      if (key?.trim()?.toLowerCase() === 'accept-language') {
+        header = (headers as any)[key];
+      }
+    });
+
     if (Array.isArray(header)) {
       header = header.join(',');
     }
   }
 
+  if (!header || typeof header !== 'string') {
+    return [];
+  }
+
   // Parse header value languages
-  const languages: { language: string; q?: number }[] = [];
+  let languages: { language: string; q?: number }[] = [];
 
   const parts = header.split(',');
   for (const part of parts) {
@@ -31,13 +41,18 @@ export function parseHttpHeaderAcceptLanguages(
     }
   }
 
-  // Sort languages by q value
-  languages.sort(({ q: q1 }, { q: q2 }) => {
-    if (q1 === q2) return 0;
-    if (q1 === undefined) return -1;
-    if (q2 === undefined) return 1;
-    return q2 - q1;
-  });
+  languages = languages
+    // Sort languages by q value
+    .sort(({ q: q1 }, { q: q2 }) => {
+      if (q1 === q2) return 0;
+      if (q1 === undefined) return -1;
+      if (q2 === undefined) return 1;
+      return q2 - q1;
+    })
+    // Remove duplciates (take highest q value)
+    .filter(
+      ({ language }, index) => languages.findIndex((l2) => l2.language === language) === index,
+    );
 
   return languages.map((l) => l.language);
 }

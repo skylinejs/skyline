@@ -27,7 +27,7 @@ describe('parseHttpHeaderAcceptLanguages', () => {
   });
 
   it('Accept-Language: "en;q=0"', () => {
-    expect(parseHttpHeaderAcceptLanguages('en;q=0')).toEqual(['en']);
+    expect(parseHttpHeaderAcceptLanguages('en;q=0')).toEqual([]);
   });
 
   it('Accept-Language: "en;q=0.8, es, pt"', () => {
@@ -40,6 +40,14 @@ describe('parseHttpHeaderAcceptLanguages', () => {
 
   it('Accept-Language: "en;q=0.9, es;q=0.8, en;q=0.7"', () => {
     expect(parseHttpHeaderAcceptLanguages('en;q=0.9, es;q=0.8, en;q=0.7')).toEqual(['en', 'es']);
+  });
+
+  it('Accept-Language: "en;q=0.7, es;q=0.8, en;q=0.9"', () => {
+    expect(parseHttpHeaderAcceptLanguages('en;q=0.7, es;q=0.8, en;q=0.9')).toEqual(['en', 'es']);
+  });
+
+  it('Accept-Language: "es;q=0.8, en;q=0.7, en;q=0.9"', () => {
+    expect(parseHttpHeaderAcceptLanguages('es;q=0.8, en;q=0.7, en;q=0.9')).toEqual(['en', 'es']);
   });
 
   it('Accept-Language: "en-US, en;q=0.8"', () => {
