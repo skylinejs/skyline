@@ -19,3 +19,11 @@ services:
     image: redis:5.0.5-alpine
     networks:
       - skyline_net
+
+  mailhog:
+    container_name: skyline_mailhog
+    hostname: skyline|mailhog
+    image: mailhog/mailhog:v1.0.1
+    entrypoint: MailHog -jim-accept 1.0	-jim-reject-recipient	1.0
+    networks:
+      - skyline_net
