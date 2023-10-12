@@ -22,8 +22,8 @@ export class SkylineTranslate<Translations extends Record<string, RecursiveStrin
     this.config = {
       // === Language ===
       language: config?.language,
-      languages: config?.languages,
       fallbackLanguage: config?.fallbackLanguage,
+      availableLanguages: config?.availableLanguages,
 
       // === Parameter interpolation ===
       params: config?.params,
