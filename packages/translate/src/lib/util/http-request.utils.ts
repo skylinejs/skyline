@@ -25,7 +25,8 @@ export function parseHttpHeaderAcceptLanguages(
   const parts = header.split(',');
   for (const part of parts) {
     const [language, q] = part.split(';q=').map((p) => p.trim());
-    if (language) {
+
+    if (language && !(q !== undefined && q === '0')) {
       languages.push({ language, q: q ? parseFloat(q) : undefined });
     }
   }
