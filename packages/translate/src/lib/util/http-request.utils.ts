@@ -1,3 +1,8 @@
+/**
+ * Parse HTTP header "Accept-Language" to get the languages accepted by the client.
+ * @param headers The HTTP request's headers object or the "Accept-Language" header value
+ * @returns The languages accepted by the client, sorted by q value (highest q value first)
+ */
 export function parseHttpHeaderAcceptLanguages(
   headers?: { [key: string]: string | string[] } | string | string[] | null | undefined,
 ): string[] {

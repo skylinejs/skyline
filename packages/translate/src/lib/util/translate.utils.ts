@@ -56,15 +56,19 @@ export function getTranslationTemplate({
 
   // Fuzzy matching for language
   if (config.languageFuzzyMatching) {
-    Object.keys(translations).forEach((lang) => {
+    for (const lang of Object.keys(translations)) {
       // Ignore case and whitespaces
       if (lang.toLowerCase().trim() === language.toLowerCase().trim()) {
         recursionObj = translations[lang];
+        break;
       }
+
+      // Support "*" wildcard
+      // TODO
 
       // Fallback to same language with no culture
       // TODO
-    });
+    }
   }
 
   for (const fragment of key.split('.')) {
