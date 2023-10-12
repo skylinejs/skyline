@@ -1,6 +1,7 @@
 import { Body, Controller, Post, Req } from '@nestjs/common';
 import { createTransport } from 'nodemailer';
 import { Translations } from './translations';
+import type { Request } from 'express';
 
 @Controller()
 export class AppController {

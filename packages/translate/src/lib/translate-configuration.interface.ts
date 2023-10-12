@@ -3,7 +3,7 @@ import { TranslateLogLevel, TranslationParameters } from './translate.interface'
 export interface TranslateConfiguration {
   // === Language ===
   /** The language to translate to. If multiple languages are provided, the first available translation is used */
-  language?: string | string[];
+  language?: string;
 
   /** The language to fallback to if no translations for the selected language are available */
   fallbackLanguage?: string;
