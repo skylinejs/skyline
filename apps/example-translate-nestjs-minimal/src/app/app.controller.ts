@@ -14,7 +14,7 @@ export class AppController {
 
   @Post('register')
   async sendRegistrationEmail(@Req() req: Request, @Body() input: { email: string }) {
-    const language = parseHttpHeaderAcceptLanguages(req.headers)[0] || 'en';
+    const language = parseHttpHeaderAcceptLanguages(req.headers)[0];
 
     // Translate email subject
     const subject = Translations.translate(Translations.key.registrationEmail.subject, {

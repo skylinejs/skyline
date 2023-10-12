@@ -29,5 +29,6 @@ export const Translations = new SkylineTranslate(
   },
   {
     fallbackLanguage: 'en',
+    languageFuzzyMatching: true,
   },
 );

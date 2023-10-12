@@ -24,6 +24,7 @@ export class SkylineTranslate<Translations extends Record<string, RecursiveStrin
       language: config?.language,
       fallbackLanguage: config?.fallbackLanguage,
       availableLanguages: config?.availableLanguages,
+      languageFuzzyMatching: config?.languageFuzzyMatching ?? false,
 
       // === Parameter interpolation ===
       params: config?.params,

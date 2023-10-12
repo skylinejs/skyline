@@ -54,6 +54,19 @@ export function getTranslationTemplate({
   // Start recursion with full language object
   let recursionObj = translations[language];
 
+  // Fuzzy matching for language
+  if (config.languageFuzzyMatching) {
+    Object.keys(translations).forEach((lang) => {
+      // Ignore case and whitespaces
+      if (lang.toLowerCase().trim() === language.toLowerCase().trim()) {
+        recursionObj = translations[lang];
+      }
+
+      // Fallback to same language with no culture
+      // TODO
+    });
+  }
+
   for (const fragment of key.split('.')) {
     // Check if wrong path was provided
     if (typeof recursionObj !== 'object') {

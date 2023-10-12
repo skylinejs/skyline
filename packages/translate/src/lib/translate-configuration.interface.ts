@@ -11,6 +11,9 @@ export interface TranslateConfiguration {
   /** Whitelist available languages. If a translations object contains a language that is not in this list, an error is thrown */
   availableLanguages?: { [key: string]: string } | string[];
 
+  /** Whether to use fuzzy matching for the language: ignore case, whitespaces, "*" wildcard support, fallback to same language with no culture or another culture */
+  languageFuzzyMatching?: boolean;
+
   // === Parameter interpolation ===
   /** The interpolation pattern, can be a RegExp or an object with prefix and suffix (e.g. { prefix: '{{', suffix: '}}' }) */
   interpolation: RegExp | { prefix: string; suffix: string };

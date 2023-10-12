@@ -104,6 +104,8 @@ Answer: Well having an additional translation file side-by-side to the rest of t
 import { Body, Controller, Post, Req } from '@nestjs/common';
 import { createTransport } from 'nodemailer';
 import { Translations } from './translations';
+import type { Request } from 'express';
+import { parseHttpHeaderAcceptLanguages } from '@skyline-js/translate';
 
 @Controller()
 export class AppController {
@@ -115,7 +117,7 @@ export class AppController {
 
   @Post('register')
   async sendRegistrationEmail(@Req() req: Request, @Body() input: { email: string }) {
-    const language = req.headers['accept-language']?.split(',')[0] || 'en';
+    const language = parseHttpHeaderAcceptLanguages(req.headers)[0];
 
     // Translate email subject
     const subject = Translations.translate(Translations.key.registrationEmail.subject, {
@@ -177,6 +179,7 @@ export const Translations = new SkylineTranslate(
   },
   {
     fallbackLanguage: 'en',
+    languageFuzzyMatching: true,
   },
 );
 ```
