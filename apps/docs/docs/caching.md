@@ -179,7 +179,7 @@ I will demonstrate the Skyline caching strategy based on the following scenario:
 
 We start with such a repository for the `user` entity:
 
-<Tabs path="apps/cache-example-nestjs-minimal/src/app/" order="user.repository.ts, user.entity.ts, user.interface.ts, user.utils.ts, user.controller.ts, database-cache.service.ts">
+<Tabs path="apps/example-cache-nestjs-minimal/src/app/" order="user.repository.ts, user.entity.ts, user.interface.ts, user.utils.ts, user.controller.ts, database-cache.service.ts">
 <TabItem value="user.repository" label="user.repository.ts">
 
 ```ts
@@ -188,23 +188,17 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, EntityNotFoundError } from 'typeorm';
 import { DatabaseCacheService } from './database-cache.service';
 import { UserEntity } from './user.entity';
-import {
-  CreateUserInputValobj,
-  UpdateUserInputValobj,
-  UserValobj,
-} from './user.interface';
+import { CreateUserInputValobj, UpdateUserInputValobj, UserValobj } from './user.interface';
 import { isUserRowOrThrow, isUserRowsOrThrow } from './user.utils';
 
 @Injectable()
 export class UserRepository {
   constructor(
     private readonly cache: DatabaseCacheService,
-    @InjectDataSource() private readonly dataSource: DataSource
+    @InjectDataSource() private readonly dataSource: DataSource,
   ) {}
 
-  async getUsersByIds(
-    userIds: number[]
-  ): Promise<Array<UserValobj | undefined>> {
+  async getUsersByIds(userIds: number[]): Promise<Array<UserValobj | undefined>> {
     if (!userIds.length) return [];
 
     // Check cache
@@ -212,11 +206,11 @@ export class UserRepository {
       'user',
       userIds,
       isUserRowOrThrow,
-      { skip: 0.5 }
+      { skip: 0.5 },
     );
 
     const missingUserIds = userIds.filter(
-      (userId) => !cachedUserRows.some((row) => row?.id === userId)
+      (userId) => !cachedUserRows.some((row) => row?.id === userId),
     );
 
     // Query database for missing userIds
@@ -249,11 +243,7 @@ export class UserRepository {
 
   async getUsersByIdOrFail(userId: number): Promise<UserValobj> {
     const user = await this.getUsersById(userId);
-    if (!user)
-      throw new EntityNotFoundError(
-        UserEntity,
-        `User with ID ${userId} not found`
-      );
+    if (!user) throw new EntityNotFoundError(UserEntity, `User with ID ${userId} not found`);
 
     return user;
   }
@@ -350,9 +340,7 @@ export interface UpdateUserInputValobj {
 ```ts
 import { UserValobj } from './user.interface';
 
-export function isUserRowsOrThrow(
-  candidates: unknown[]
-): asserts candidates is UserValobj[] {
+export function isUserRowsOrThrow(candidates: unknown[]): asserts candidates is UserValobj[] {
   if (!Array.isArray(candidates)) {
     throw new Error(`Expected array, got ${typeof candidates}`);
   }
@@ -363,22 +351,16 @@ export function isUserRowsOrThrow(
     }
 
     if (typeof (candidate as UserValobj).id !== 'number') {
-      throw new Error(
-        `Expected number, got ${typeof (candidate as UserValobj).id}`
-      );
+      throw new Error(`Expected number, got ${typeof (candidate as UserValobj).id}`);
     }
 
     if (typeof (candidate as UserValobj).name !== 'string') {
-      throw new Error(
-        `Expected string, got ${typeof (candidate as UserValobj).name}`
-      );
+      throw new Error(`Expected string, got ${typeof (candidate as UserValobj).name}`);
     }
   }
 }
 
-export function isUserRowOrThrow(
-  candidate: unknown
-): asserts candidate is UserValobj {
+export function isUserRowOrThrow(candidate: unknown): asserts candidate is UserValobj {
   isUserRowsOrThrow([candidate]);
 }
 ```

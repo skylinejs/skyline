@@ -42,7 +42,7 @@ A translation object looks like this:
 ```ts
 import { SkylineTranslate } from '@skyline-js/translate';
 
-export const RegistraionEmail = new SkylineTranslate({
+export const RegistrationEmail = new SkylineTranslate({
   EN: {
     subject: 'Please confirm your email address',
     body: 'Thanks for signing up. Confirm your email address here: {{ link }}',
@@ -94,3 +94,103 @@ Concern: "This adds huge bundle size to application!"
 Answer: Well having an additional translation file side-by-side to the rest of the code of that feature does not make a difference. If you have a lot of features you need to lazy load their code anyways, one more file hardly makes the difference. on the contrary, you do not need 2 lazy loading mechanisms but only one because the translation file is now the same as the rest of the feature's code.
 
 -->
+
+# Code example walkthrough
+
+<Tabs path="apps/example-translate-nestjs-minimal/src/app/" order="app.controller.ts, translations.ts">
+<TabItem value="app.controller" label="app.controller.ts">
+
+```ts
+import { Body, Controller, Post, Req } from '@nestjs/common';
+import { createTransport } from 'nodemailer';
+import { Translations } from './translations';
+
+@Controller()
+export class AppController {
+  private readonly transporter = createTransport({
+    host: 'skyline_mailhog',
+    port: 1025,
+    secure: false,
+  });
+
+  @Post('register')
+  async sendRegistrationEmail(@Req() req: Request, @Body() input: { email: string }) {
+    const language = req.headers['accept-language']?.split(',')[0] || 'en';
+
+    // Translate email subject
+    const subject = Translations.translate(Translations.key.registrationEmail.subject, {
+      params: { email: input.email },
+      language,
+    });
+
+    // Translate email body
+    const body = Translations.translate(Translations.key.registrationEmail.body, {
+      params: { email: input.email },
+      language,
+    });
+
+    // Send email
+    await this.transporter.sendMail({
+      from: 'info@skylinejs.com',
+      to: input.email,
+      subject,
+      text: body,
+    });
+
+    return { success: true };
+  }
+}
+```
+
+</TabItem>
+<TabItem value="translations" label="translations.ts">
+
+```ts
+import { SkylineTranslate } from '@skyline-js/translate';
+
+export const Translations = new SkylineTranslate(
+  {
+    en: {
+      registrationEmail: {
+        subject: 'Welcome to SkylineJS, {{ email }}',
+        body: `
+        Hello {{ email }},
+        Welcome to SkylineJS! We are happy to have you on board.
+
+        Best regards,
+        SkylineJS Team',
+        `,
+      },
+    },
+    de: {
+      registrationEmail: {
+        subject: 'Willkommen bei SkylineJS, {{ email }}',
+        body: `
+        Hallo {{ email }},
+        Willkommen bei SkylineJS! Wir freuen uns, dich an Bord zu haben.
+
+        Beste Grüße,
+        SkylineJS Team
+        `,
+      },
+    },
+  },
+  {
+    fallbackLanguage: 'en',
+  },
+);
+```
+
+</TabItem>
+<TabItem value="app.module" label="app.module.ts">
+
+```ts
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+
+@Module({ controllers: [AppController] })
+export class AppModule {}
+```
+
+</TabItem>
+</Tabs>
