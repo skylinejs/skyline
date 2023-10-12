@@ -6,8 +6,7 @@ const codeTheme = require('prism-react-renderer/themes/vsDark');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'SkylineJS',
-  tagline:
-    'Toolkit for building efficient, reliable and scalable server-side applications.',
+  tagline: 'Toolkit for building efficient, reliable and scalable web applications.',
   favicon: 'logo/favicon-skyline.jpeg',
   url: 'https://skylinejs.com',
   baseUrl: '/',

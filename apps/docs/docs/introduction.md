@@ -14,7 +14,7 @@ This documentation is highly opinionated and might be upsetting to some develope
 
 ## Introduction
 
-SkylineJS is a collection of libraries for building efficient, secure and scalable Node.js server-side applications. It is a companion toolkit to your framework of choice (e.g., NestJS), solving common tasks every server-side application has to perform such as parsing environment variables, performance monitoring or caching.
+SkylineJS is a collection of libraries for building efficient, secure and scalable web applications. It is a companion toolkit to your framework of choice (e.g., NestJS), solving common tasks every web application has to perform such as parsing environment variables, performance monitoring or caching.
 
 Instead of building these on your own, SkylineJS provides you with libraries that are:
 
