@@ -480,7 +480,36 @@ While the SkylineJS caching approach gives developers an easy to use caching pat
 
 The bar chart shows how many cache hits, cache misses, cache skips, cache consistency checks and cache invalidations have been performed during each 10 minute interval. The example data show a healthy caching behavior regarding the distribution of the different event types. If you have much more cache misses than cache hits this might be worth investigating. Same goes for a significant difference in the number of cache skips and cache consistency checks, as those should go hand-in-hand and have therefore comparable numbers.
 
-To collect the data for such a chart, you can use the `cache.getStatistics` and `cache.resetStatistics` methods. These are intentionally generic so you can choose your own way of implementing the periodic collection and resetting of the cache statistics e.g., using `setInterval` or the [@nestjs/schedule](https://docs.nestjs.com/techniques/task-scheduling) package
+To collect the data for such a chart, you can use the `cache.getStatistics` and `cache.resetStatistics` methods. These are intentionally generic so you can choose your own way of implementing the periodic collection and resetting of the cache statistics e.g., using `setInterval` or the [@nestjs/schedule](https://docs.nestjs.com/techniques/task-scheduling) package:
+
+```ts
+import { SkylineCache } from '@skyline-js/cache';
+
+const cache = new SkylineCache();
+
+// Collect cache statistics every 10 minutes using setInterval
+setInterval(() => {
+  const statistics = cache.getStatistics();
+  cache.resetStatistics();
+  // ... send statistics to your analytics platform (e.g., Kibana)
+}, 1000 * 60 * 10);
+```
+
+```ts
+import { Injectable, Logger } from '@nestjs/common';
+import { SkylineCache } from '@skyline-js/cache';
+import { Cron } from '@nestjs/schedule';
+
+@Injectable()
+export class CacheService extends SkylineCache {
+  @Cron('*/10 * * * *')
+  collectCacheStatistics() {
+    const statistics = this.getStatistics();
+    this.resetStatistics();
+    // ... send statistics to your analytics platform (e.g., Kibana)
+  }
+}
+```
 
 <!--
 
