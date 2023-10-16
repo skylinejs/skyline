@@ -9,7 +9,7 @@ import SkylineAdmonition from '@site/src/components/Admonition';
 # SkylineJS
 
 <SkylineAdmonition type="info">
-This documentation is highly opinionated and might be upsetting to some developers. Proceed with caution and a sense of humor.
+The following documentation contains material that may be upsetting to some developers. Proceed with caution and a sense of humor.
 </SkylineAdmonition>
 
 ## Introduction
