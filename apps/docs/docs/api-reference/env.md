@@ -4,6 +4,8 @@ label: env
 slug: env
 ---
 
+import MonacoEditor from '@site/src/components/MonacoEditor';
+
 # `@skyline-js/env`
 
 :::info
@@ -14,6 +16,8 @@ The guiding principles of the Skyline environment approach can be found here: [E
 :::
 
 <!-- TODO: use monaco editor here with index.d.ts loaded to demonstrate type-safety of package -->
+
+<MonacoEditor></MonacoEditor>
 
 ## SkylineEnv
 
@@ -36,9 +40,7 @@ const env = new SkylineEnv();
 ### EnvConfiguration
 
 ```ts path="packages/env/src/lib/env-configuration.interface.ts" skipLines="2" remove="export "
-interface EnvConfiguration<
-  RuntimeEnvironment extends { [key: string]: string } = {}
-> {
+interface EnvConfiguration<RuntimeEnvironment extends { [key: string]: string } = {}> {
   // === Logging ===
 
   /** Whether to enable logging. */
