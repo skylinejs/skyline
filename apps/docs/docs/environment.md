@@ -34,8 +34,7 @@ db.connect({
   useTLS: process.env.DB_TLS === '1' ? true : false,
   auth: {
     username: process.env.DB_USER || 'admin',
-    password:
-      process.env.DB_PASSWORD || 'strong_password_with_special_chars_%#!',
+    password: process.env.DB_PASSWORD || 'strong_password_with_special_chars_%#!',
   },
 });
 ```
@@ -148,19 +147,22 @@ export const env = {
 };
 ```
 
-Ah, this is much better.
+Ah, this is much better. The most striking difference to the previous implementation is the usage of the runtime environments feature of `@skyline-js/env`. You can define an enum of the available runtime environments for your application, e.g. `DEV` (development), `CI` (continuous integration) and `PRD` (production). For each runtime environment, a value can be specified that is used as a fallback if no environment variable has been provided. In the example above, the `env.api.host` value is set to the value of the `SERVER_API_HOST` environment variable but falls back to `http://localhost` in DEV, `http://skyline_ci_database` in CI and to `https://skyline_prd_database` in PRD. Note that the value for the DEV runtime environment is provided via the `default` property. This ensures that the environment variable always has a value, which is reflected in its type not including `undefined`, which is the case without the `default` property being set.
+
+This approach for handling different runtime environments allows the developer to quickly look up all possible values for an environment variable without having to go through `.env` files or CI environment settings. For most non-sensitive environment variables, the runtime environment fallbacks should be sufficient to configure the value properly and greatly improves the developer experience regarding the introduction of new environment variables and the debugging process.
+
+Furthermore, the example above shows off the validation features of the `@skyline-js/env` package. They are used to ensure that certain environment variable values are integers (e.g., for the API port) or match a certain regex (http or https protocol present for the API host).
 
 <!--
+
+## Best practices
 Example "email" and "file upload" that are lazy initialized and if not validated at application start can cause issues later on when they get used.
 
-## Derived state
-
+Example: Redis host + port. You might have 10 features that want to create a redis connection
 The environment is not the time to derive any state/ configs.
 The env should be an exact representation of your env vars.
 decryption/ encryption
 
-RuntimeEnvironemt -> DEV, CI, PRD
 base64 encoding etc?
 
-Example: Redis host + port. You might have 10 features that want to create a redis connection
 -->
