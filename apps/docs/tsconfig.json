@@ -4,6 +4,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "module": "Node16",
-    "moduleResolution": "Node16"
+    "moduleResolution": "Node16",
+    "resolveJsonModule": true
   }
 }

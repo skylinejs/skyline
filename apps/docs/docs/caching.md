@@ -472,10 +472,11 @@ This is the only read/write interaction with the cache that this repository has 
 
 The `updateUser` and `deleteUser` methods simply need to invalidate the cache key for the given user ID **before** the update/ deletion is performed on the database row. If the cache is invalidated after the database operation has finished, the cache would be in an inconsistent state as it still holds the old user value which now diverges from the database row. If other repositories change make changes to the user table, they need to invalidate the respective cache keys as well. One of the main advantages of the invalidation approach instead of writing the updated value to the cache is that the method performing the update of the entity does not need to know how all the new values of the affected cache keys have to look like (which can be complex derivations or aggregates). This turns out to be very useful for larger applications.
 
-<!--
 ## Monitoring
 
 <CachingChart></CachingChart>
+
+<!--
 
 ## Best practices
  - keep caching inside the data-access layer

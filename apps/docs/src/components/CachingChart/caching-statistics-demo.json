@@ -1,0 +1,1162 @@
+[
+  {
+    "timestamp": "18:10",
+    "Cache hits": 12735,
+    "Cache misses": 1325,
+    "Cache skips": 3669,
+    "Consistency checks": 3156,
+    "Cache invalidations": 4
+  },
+  {
+    "timestamp": "18:20",
+    "Cache hits": 24654,
+    "Cache misses": 10099,
+    "Cache skips": 9021,
+    "Consistency checks": 7778,
+    "Cache invalidations": 7
+  },
+  {
+    "timestamp": "18:30",
+    "Cache hits": 13991,
+    "Cache misses": 2742,
+    "Cache skips": 5903,
+    "Consistency checks": 4899,
+    "Cache invalidations": 1214
+  },
+  {
+    "timestamp": "18:40",
+    "Cache hits": 20574,
+    "Cache misses": 5216,
+    "Cache skips": 8459,
+    "Consistency checks": 7055,
+    "Cache invalidations": 1114
+  },
+  {
+    "timestamp": "18:50",
+    "Cache hits": 27063,
+    "Cache misses": 5570,
+    "Cache skips": 9636,
+    "Consistency checks": 8276,
+    "Cache invalidations": 1167
+  },
+  {
+    "timestamp": "19:00",
+    "Cache hits": 21066,
+    "Cache misses": 10346,
+    "Cache skips": 8513,
+    "Consistency checks": 7370,
+    "Cache invalidations": 2216
+  },
+  {
+    "timestamp": "19:10",
+    "Cache hits": 14293,
+    "Cache misses": 8412,
+    "Cache skips": 6095,
+    "Consistency checks": 5314,
+    "Cache invalidations": 1152
+  },
+  {
+    "timestamp": "19:20",
+    "Cache hits": 16176,
+    "Cache misses": 3664,
+    "Cache skips": 6360,
+    "Consistency checks": 5500,
+    "Cache invalidations": 2300
+  },
+  {
+    "timestamp": "19:30",
+    "Cache hits": 15701,
+    "Cache misses": 5317,
+    "Cache skips": 7049,
+    "Consistency checks": 6120,
+    "Cache invalidations": 1969
+  },
+  {
+    "timestamp": "19:40",
+    "Cache hits": 17575,
+    "Cache misses": 10759,
+    "Cache skips": 8157,
+    "Consistency checks": 6905,
+    "Cache invalidations": 2151
+  },
+  {
+    "timestamp": "19:50",
+    "Cache hits": 18057,
+    "Cache misses": 5361,
+    "Cache skips": 6081,
+    "Consistency checks": 5168,
+    "Cache invalidations": 2
+  },
+  {
+    "timestamp": "20:00",
+    "Cache hits": 23974,
+    "Cache misses": 5384,
+    "Cache skips": 8403,
+    "Consistency checks": 7247,
+    "Cache invalidations": 1581
+  },
+  {
+    "timestamp": "20:10",
+    "Cache hits": 27115,
+    "Cache misses": 6664,
+    "Cache skips": 9390,
+    "Consistency checks": 8180,
+    "Cache invalidations": 2117
+  },
+  {
+    "timestamp": "20:20",
+    "Cache hits": 22088,
+    "Cache misses": 3278,
+    "Cache skips": 7761,
+    "Consistency checks": 6662,
+    "Cache invalidations": 1977
+  },
+  {
+    "timestamp": "20:30",
+    "Cache hits": 24424,
+    "Cache misses": 4557,
+    "Cache skips": 8501,
+    "Consistency checks": 7376,
+    "Cache invalidations": 1155
+  },
+  {
+    "timestamp": "20:40",
+    "Cache hits": 18064,
+    "Cache misses": 3318,
+    "Cache skips": 6447,
+    "Consistency checks": 5751,
+    "Cache invalidations": 6
+  },
+  {
+    "timestamp": "20:50",
+    "Cache hits": 20348,
+    "Cache misses": 4524,
+    "Cache skips": 7556,
+    "Consistency checks": 6498,
+    "Cache invalidations": 5
+  },
+  {
+    "timestamp": "21:00",
+    "Cache hits": 10443,
+    "Cache misses": 2076,
+    "Cache skips": 5132,
+    "Consistency checks": 4536,
+    "Cache invalidations": 5
+  },
+  {
+    "timestamp": "21:10",
+    "Cache hits": 18864,
+    "Cache misses": 4535,
+    "Cache skips": 6963,
+    "Consistency checks": 5647,
+    "Cache invalidations": 3279
+  },
+  {
+    "timestamp": "21:20",
+    "Cache hits": 32744,
+    "Cache misses": 13644,
+    "Cache skips": 12853,
+    "Consistency checks": 11538,
+    "Cache invalidations": 2555
+  },
+  {
+    "timestamp": "21:30",
+    "Cache hits": 45783,
+    "Cache misses": 23412,
+    "Cache skips": 19638,
+    "Consistency checks": 17225,
+    "Cache invalidations": 2960
+  },
+  {
+    "timestamp": "21:40",
+    "Cache hits": 19526,
+    "Cache misses": 5179,
+    "Cache skips": 6698,
+    "Consistency checks": 6021,
+    "Cache invalidations": 1231
+  },
+  {
+    "timestamp": "21:50",
+    "Cache hits": 29559,
+    "Cache misses": 6058,
+    "Cache skips": 9466,
+    "Consistency checks": 8306,
+    "Cache invalidations": 1790
+  },
+  {
+    "timestamp": "22:00",
+    "Cache hits": 19097,
+    "Cache misses": 3918,
+    "Cache skips": 6190,
+    "Consistency checks": 5191,
+    "Cache invalidations": 1148
+  },
+  {
+    "timestamp": "22:10",
+    "Cache hits": 22835,
+    "Cache misses": 7645,
+    "Cache skips": 8216,
+    "Consistency checks": 7202,
+    "Cache invalidations": 1245
+  },
+  {
+    "timestamp": "22:20",
+    "Cache hits": 12320,
+    "Cache misses": 2898,
+    "Cache skips": 4833,
+    "Consistency checks": 4236,
+    "Cache invalidations": 8
+  },
+  {
+    "timestamp": "22:30",
+    "Cache hits": 19818,
+    "Cache misses": 3782,
+    "Cache skips": 6594,
+    "Consistency checks": 5729,
+    "Cache invalidations": 1
+  },
+  {
+    "timestamp": "22:40",
+    "Cache hits": 11798,
+    "Cache misses": 1408,
+    "Cache skips": 3601,
+    "Consistency checks": 3284,
+    "Cache invalidations": 0
+  },
+  {
+    "timestamp": "22:50",
+    "Cache hits": 21112,
+    "Cache misses": 9316,
+    "Cache skips": 7268,
+    "Consistency checks": 6282,
+    "Cache invalidations": 9
+  },
+  {
+    "timestamp": "23:00",
+    "Cache hits": 10724,
+    "Cache misses": 1696,
+    "Cache skips": 4250,
+    "Consistency checks": 3651,
+    "Cache invalidations": 6
+  },
+  {
+    "timestamp": "23:10",
+    "Cache hits": 5256,
+    "Cache misses": 1963,
+    "Cache skips": 3556,
+    "Consistency checks": 3051,
+    "Cache invalidations": 1518
+  },
+  {
+    "timestamp": "23:20",
+    "Cache hits": 2687,
+    "Cache misses": 9,
+    "Cache skips": 2084,
+    "Consistency checks": 1892,
+    "Cache invalidations": 3
+  },
+  {
+    "timestamp": "23:30",
+    "Cache hits": 6099,
+    "Cache misses": 1656,
+    "Cache skips": 3391,
+    "Consistency checks": 3102,
+    "Cache invalidations": 2
+  },
+  {
+    "timestamp": "23:40",
+    "Cache hits": 4958,
+    "Cache misses": 3,
+    "Cache skips": 2619,
+    "Consistency checks": 2432,
+    "Cache invalidations": 5
+  },
+  {
+    "timestamp": "23:50",
+    "Cache hits": 5030,
+    "Cache misses": 9,
+    "Cache skips": 3240,
+    "Consistency checks": 2712,
+    "Cache invalidations": 9
+  },
+  {
+    "timestamp": "00:00",
+    "Cache hits": 4810,
+    "Cache misses": 7,
+    "Cache skips": 2580,
+    "Consistency checks": 2418,
+    "Cache invalidations": 3
+  },
+  {
+    "timestamp": "00:10",
+    "Cache hits": 7600,
+    "Cache misses": 3597,
+    "Cache skips": 4050,
+    "Consistency checks": 3733,
+    "Cache invalidations": 1746
+  },
+  {
+    "timestamp": "00:20",
+    "Cache hits": 4517,
+    "Cache misses": 2,
+    "Cache skips": 2659,
+    "Consistency checks": 2528,
+    "Cache invalidations": 1
+  },
+  {
+    "timestamp": "00:30",
+    "Cache hits": 5887,
+    "Cache misses": 1163,
+    "Cache skips": 3102,
+    "Consistency checks": 2921,
+    "Cache invalidations": 6
+  },
+  {
+    "timestamp": "00:40",
+    "Cache hits": 2429,
+    "Cache misses": 3,
+    "Cache skips": 1763,
+    "Consistency checks": 1674,
+    "Cache invalidations": 0
+  },
+  {
+    "timestamp": "00:50",
+    "Cache hits": 3879,
+    "Cache misses": 4,
+    "Cache skips": 2412,
+    "Consistency checks": 2300,
+    "Cache invalidations": 8
+  },
+  {
+    "timestamp": "01:00",
+    "Cache hits": 5783,
+    "Cache misses": 2385,
+    "Cache skips": 3153,
+    "Consistency checks": 2905,
+    "Cache invalidations": 0
+  },
+  {
+    "timestamp": "01:10",
+    "Cache hits": 9853,
+    "Cache misses": 3794,
+    "Cache skips": 4465,
+    "Consistency checks": 3969,
+    "Cache invalidations": 1248
+  },
+  {
+    "timestamp": "01:20",
+    "Cache hits": 5323,
+    "Cache misses": 2,
+    "Cache skips": 2594,
+    "Consistency checks": 2288,
+    "Cache invalidations": 7
+  },
+  {
+    "timestamp": "01:30",
+    "Cache hits": 7838,
+    "Cache misses": 1777,
+    "Cache skips": 3404,
+    "Consistency checks": 3114,
+    "Cache invalidations": 2
+  },
+  {
+    "timestamp": "01:40",
+    "Cache hits": 5644,
+    "Cache misses": 8,
+    "Cache skips": 2749,
+    "Consistency checks": 2594,
+    "Cache invalidations": 1810
+  },
+  {
+    "timestamp": "01:50",
+    "Cache hits": 7318,
+    "Cache misses": 2485,
+    "Cache skips": 3407,
+    "Consistency checks": 3223,
+    "Cache invalidations": 44927
+  },
+  {
+    "timestamp": "02:00",
+    "Cache hits": 8268,
+    "Cache misses": 1,
+    "Cache skips": 3617,
+    "Consistency checks": 3172,
+    "Cache invalidations": 24851
+  },
+  {
+    "timestamp": "02:10",
+    "Cache hits": 7494,
+    "Cache misses": 1350,
+    "Cache skips": 3265,
+    "Consistency checks": 2955,
+    "Cache invalidations": 18628
+  },
+  {
+    "timestamp": "02:20",
+    "Cache hits": 9713,
+    "Cache misses": 1537,
+    "Cache skips": 3526,
+    "Consistency checks": 3259,
+    "Cache invalidations": 2
+  },
+  {
+    "timestamp": "02:30",
+    "Cache hits": 12049,
+    "Cache misses": 2495,
+    "Cache skips": 4389,
+    "Consistency checks": 3966,
+    "Cache invalidations": 9
+  },
+  {
+    "timestamp": "02:40",
+    "Cache hits": 8282,
+    "Cache misses": 1043,
+    "Cache skips": 2947,
+    "Consistency checks": 2769,
+    "Cache invalidations": 1
+  },
+  {
+    "timestamp": "02:50",
+    "Cache hits": 5426,
+    "Cache misses": 9,
+    "Cache skips": 2708,
+    "Consistency checks": 2576,
+    "Cache invalidations": 3
+  },
+  {
+    "timestamp": "03:00",
+    "Cache hits": 5494,
+    "Cache misses": 6,
+    "Cache skips": 2452,
+    "Consistency checks": 2283,
+    "Cache invalidations": 5
+  },
+  {
+    "timestamp": "03:10",
+    "Cache hits": 5944,
+    "Cache misses": 1385,
+    "Cache skips": 3009,
+    "Consistency checks": 2827,
+    "Cache invalidations": 1095
+  },
+  {
+    "timestamp": "03:20",
+    "Cache hits": 7250,
+    "Cache misses": 3829,
+    "Cache skips": 2795,
+    "Consistency checks": 2619,
+    "Cache invalidations": 9
+  },
+  {
+    "timestamp": "03:30",
+    "Cache hits": 6906,
+    "Cache misses": 2467,
+    "Cache skips": 2962,
+    "Consistency checks": 2815,
+    "Cache invalidations": 1440
+  },
+  {
+    "timestamp": "03:40",
+    "Cache hits": 6181,
+    "Cache misses": 1295,
+    "Cache skips": 2715,
+    "Consistency checks": 2506,
+    "Cache invalidations": 1154
+  },
+  {
+    "timestamp": "03:50",
+    "Cache hits": 8421,
+    "Cache misses": 1814,
+    "Cache skips": 3397,
+    "Consistency checks": 3139,
+    "Cache invalidations": 1193
+  },
+  {
+    "timestamp": "04:00",
+    "Cache hits": 9608,
+    "Cache misses": 2866,
+    "Cache skips": 3780,
+    "Consistency checks": 3436,
+    "Cache invalidations": 3998
+  },
+  {
+    "timestamp": "04:10",
+    "Cache hits": 8334,
+    "Cache misses": 2419,
+    "Cache skips": 3426,
+    "Consistency checks": 3084,
+    "Cache invalidations": 1110
+  },
+  {
+    "timestamp": "04:20",
+    "Cache hits": 3134,
+    "Cache misses": 4,
+    "Cache skips": 1923,
+    "Consistency checks": 1633,
+    "Cache invalidations": 5
+  },
+  {
+    "timestamp": "04:30",
+    "Cache hits": 4282,
+    "Cache misses": 1185,
+    "Cache skips": 2305,
+    "Consistency checks": 2203,
+    "Cache invalidations": 0
+  },
+  {
+    "timestamp": "04:40",
+    "Cache hits": 3050,
+    "Cache misses": 5,
+    "Cache skips": 1882,
+    "Consistency checks": 1811,
+    "Cache invalidations": 5
+  },
+  {
+    "timestamp": "04:50",
+    "Cache hits": 5588,
+    "Cache misses": 1580,
+    "Cache skips": 2974,
+    "Consistency checks": 2817,
+    "Cache invalidations": 8
+  },
+  {
+    "timestamp": "05:00",
+    "Cache hits": 10101,
+    "Cache misses": 2988,
+    "Cache skips": 3625,
+    "Consistency checks": 3216,
+    "Cache invalidations": 11751
+  },
+  {
+    "timestamp": "05:10",
+    "Cache hits": 5228,
+    "Cache misses": 1185,
+    "Cache skips": 2538,
+    "Consistency checks": 2473,
+    "Cache invalidations": 1
+  },
+  {
+    "timestamp": "05:20",
+    "Cache hits": 4828,
+    "Cache misses": 0,
+    "Cache skips": 1938,
+    "Consistency checks": 1879,
+    "Cache invalidations": 2
+  },
+  {
+    "timestamp": "05:30",
+    "Cache hits": 10280,
+    "Cache misses": 5401,
+    "Cache skips": 4119,
+    "Consistency checks": 3953,
+    "Cache invalidations": 1342
+  },
+  {
+    "timestamp": "05:40",
+    "Cache hits": 7871,
+    "Cache misses": 2991,
+    "Cache skips": 2855,
+    "Consistency checks": 2711,
+    "Cache invalidations": 1802
+  },
+  {
+    "timestamp": "05:50",
+    "Cache hits": 5574,
+    "Cache misses": 1344,
+    "Cache skips": 2882,
+    "Consistency checks": 2764,
+    "Cache invalidations": 7
+  },
+  {
+    "timestamp": "06:00",
+    "Cache hits": 10942,
+    "Cache misses": 2156,
+    "Cache skips": 3370,
+    "Consistency checks": 3061,
+    "Cache invalidations": 1216
+  },
+  {
+    "timestamp": "06:10",
+    "Cache hits": 9673,
+    "Cache misses": 4675,
+    "Cache skips": 6014,
+    "Consistency checks": 4671,
+    "Cache invalidations": 1697
+  },
+  {
+    "timestamp": "06:20",
+    "Cache hits": 9113,
+    "Cache misses": 8181,
+    "Cache skips": 4750,
+    "Consistency checks": 3573,
+    "Cache invalidations": 4
+  },
+  {
+    "timestamp": "06:30",
+    "Cache hits": 7943,
+    "Cache misses": 5299,
+    "Cache skips": 3978,
+    "Consistency checks": 3505,
+    "Cache invalidations": 3
+  },
+  {
+    "timestamp": "06:40",
+    "Cache hits": 9647,
+    "Cache misses": 2641,
+    "Cache skips": 4124,
+    "Consistency checks": 3832,
+    "Cache invalidations": 6
+  },
+  {
+    "timestamp": "06:50",
+    "Cache hits": 17573,
+    "Cache misses": 8098,
+    "Cache skips": 6991,
+    "Consistency checks": 6359,
+    "Cache invalidations": 1216
+  },
+  {
+    "timestamp": "07:00",
+    "Cache hits": 13406,
+    "Cache misses": 4881,
+    "Cache skips": 6314,
+    "Consistency checks": 5278,
+    "Cache invalidations": 1215
+  },
+  {
+    "timestamp": "07:10",
+    "Cache hits": 13554,
+    "Cache misses": 6336,
+    "Cache skips": 6664,
+    "Consistency checks": 5438,
+    "Cache invalidations": 1192
+  },
+  {
+    "timestamp": "07:20",
+    "Cache hits": 11601,
+    "Cache misses": 3067,
+    "Cache skips": 5249,
+    "Consistency checks": 4381,
+    "Cache invalidations": 6
+  },
+  {
+    "timestamp": "07:30",
+    "Cache hits": 16106,
+    "Cache misses": 4742,
+    "Cache skips": 6539,
+    "Consistency checks": 5712,
+    "Cache invalidations": 3213
+  },
+  {
+    "timestamp": "07:40",
+    "Cache hits": 51802,
+    "Cache misses": 14477,
+    "Cache skips": 19304,
+    "Consistency checks": 16866,
+    "Cache invalidations": 2876
+  },
+  {
+    "timestamp": "07:50",
+    "Cache hits": 29884,
+    "Cache misses": 6071,
+    "Cache skips": 11220,
+    "Consistency checks": 9557,
+    "Cache invalidations": 1357
+  },
+  {
+    "timestamp": "08:00",
+    "Cache hits": 39064,
+    "Cache misses": 17519,
+    "Cache skips": 15751,
+    "Consistency checks": 10686,
+    "Cache invalidations": 1142
+  },
+  {
+    "timestamp": "08:10",
+    "Cache hits": 62113,
+    "Cache misses": 28929,
+    "Cache skips": 28316,
+    "Consistency checks": 20473,
+    "Cache invalidations": 2600
+  },
+  {
+    "timestamp": "08:20",
+    "Cache hits": 69518,
+    "Cache misses": 27079,
+    "Cache skips": 31819,
+    "Consistency checks": 19531,
+    "Cache invalidations": 2221
+  },
+  {
+    "timestamp": "08:30",
+    "Cache hits": 67370,
+    "Cache misses": 23430,
+    "Cache skips": 36287,
+    "Consistency checks": 23499,
+    "Cache invalidations": 2269
+  },
+  {
+    "timestamp": "08:40",
+    "Cache hits": 64360,
+    "Cache misses": 21856,
+    "Cache skips": 38335,
+    "Consistency checks": 20950,
+    "Cache invalidations": 1863
+  },
+  {
+    "timestamp": "08:50",
+    "Cache hits": 69015,
+    "Cache misses": 28355,
+    "Cache skips": 41964,
+    "Consistency checks": 23802,
+    "Cache invalidations": 1452
+  },
+  {
+    "timestamp": "09:00",
+    "Cache hits": 69018,
+    "Cache misses": 26080,
+    "Cache skips": 55617,
+    "Consistency checks": 24950,
+    "Cache invalidations": 2349
+  },
+  {
+    "timestamp": "09:10",
+    "Cache hits": 94231,
+    "Cache misses": 29149,
+    "Cache skips": 74283,
+    "Consistency checks": 34902,
+    "Cache invalidations": 3541
+  },
+  {
+    "timestamp": "09:20",
+    "Cache hits": 113032,
+    "Cache misses": 38501,
+    "Cache skips": 89933,
+    "Consistency checks": 42180,
+    "Cache invalidations": 2491
+  },
+  {
+    "timestamp": "09:30",
+    "Cache hits": 100393,
+    "Cache misses": 30436,
+    "Cache skips": 82138,
+    "Consistency checks": 34159,
+    "Cache invalidations": 13103
+  },
+  {
+    "timestamp": "09:40",
+    "Cache hits": 96481,
+    "Cache misses": 30597,
+    "Cache skips": 76298,
+    "Consistency checks": 35728,
+    "Cache invalidations": 3060
+  },
+  {
+    "timestamp": "09:50",
+    "Cache hits": 97522,
+    "Cache misses": 31037,
+    "Cache skips": 81880,
+    "Consistency checks": 33771,
+    "Cache invalidations": 3750
+  },
+  {
+    "timestamp": "10:00",
+    "Cache hits": 59861,
+    "Cache misses": 15803,
+    "Cache skips": 79805,
+    "Consistency checks": 27324,
+    "Cache invalidations": 2607
+  },
+  {
+    "timestamp": "10:10",
+    "Cache hits": 68975,
+    "Cache misses": 25083,
+    "Cache skips": 87553,
+    "Consistency checks": 29603,
+    "Cache invalidations": 4639
+  },
+  {
+    "timestamp": "10:20",
+    "Cache hits": 85449,
+    "Cache misses": 36833,
+    "Cache skips": 97540,
+    "Consistency checks": 34095,
+    "Cache invalidations": 3094
+  },
+  {
+    "timestamp": "10:30",
+    "Cache hits": 125518,
+    "Cache misses": 50724,
+    "Cache skips": 112209,
+    "Consistency checks": 45786,
+    "Cache invalidations": 4764
+  },
+  {
+    "timestamp": "10:40",
+    "Cache hits": 122290,
+    "Cache misses": 31129,
+    "Cache skips": 105490,
+    "Consistency checks": 45590,
+    "Cache invalidations": 3854
+  },
+  {
+    "timestamp": "10:50",
+    "Cache hits": 67484,
+    "Cache misses": 25657,
+    "Cache skips": 97057,
+    "Consistency checks": 33802,
+    "Cache invalidations": 3038
+  },
+  {
+    "timestamp": "11:00",
+    "Cache hits": 86797,
+    "Cache misses": 24206,
+    "Cache skips": 104991,
+    "Consistency checks": 36613,
+    "Cache invalidations": 4685
+  },
+  {
+    "timestamp": "11:10",
+    "Cache hits": 90544,
+    "Cache misses": 22434,
+    "Cache skips": 102989,
+    "Consistency checks": 32382,
+    "Cache invalidations": 6791
+  },
+  {
+    "timestamp": "11:20",
+    "Cache hits": 85558,
+    "Cache misses": 21434,
+    "Cache skips": 103703,
+    "Consistency checks": 35441,
+    "Cache invalidations": 3250
+  },
+  {
+    "timestamp": "11:30",
+    "Cache hits": 86842,
+    "Cache misses": 26377,
+    "Cache skips": 98007,
+    "Consistency checks": 34466,
+    "Cache invalidations": 4313
+  },
+  {
+    "timestamp": "11:40",
+    "Cache hits": 89002,
+    "Cache misses": 37996,
+    "Cache skips": 115183,
+    "Consistency checks": 36474,
+    "Cache invalidations": 3094
+  },
+  {
+    "timestamp": "11:50",
+    "Cache hits": 121529,
+    "Cache misses": 36803,
+    "Cache skips": 119837,
+    "Consistency checks": 45311,
+    "Cache invalidations": 3631
+  },
+  {
+    "timestamp": "12:00",
+    "Cache hits": 91040,
+    "Cache misses": 35693,
+    "Cache skips": 110153,
+    "Consistency checks": 35100,
+    "Cache invalidations": 4004
+  },
+  {
+    "timestamp": "12:10",
+    "Cache hits": 91481,
+    "Cache misses": 27800,
+    "Cache skips": 110537,
+    "Consistency checks": 35456,
+    "Cache invalidations": 3717
+  },
+  {
+    "timestamp": "12:20",
+    "Cache hits": 88144,
+    "Cache misses": 31837,
+    "Cache skips": 114016,
+    "Consistency checks": 37521,
+    "Cache invalidations": 3043
+  },
+  {
+    "timestamp": "12:30",
+    "Cache hits": 107530,
+    "Cache misses": 35249,
+    "Cache skips": 109642,
+    "Consistency checks": 40126,
+    "Cache invalidations": 4206
+  },
+  {
+    "timestamp": "12:40",
+    "Cache hits": 92436,
+    "Cache misses": 32125,
+    "Cache skips": 100182,
+    "Consistency checks": 33906,
+    "Cache invalidations": 6302
+  },
+  {
+    "timestamp": "12:50",
+    "Cache hits": 81829,
+    "Cache misses": 29374,
+    "Cache skips": 94248,
+    "Consistency checks": 30995,
+    "Cache invalidations": 2715
+  },
+  {
+    "timestamp": "13:00",
+    "Cache hits": 80448,
+    "Cache misses": 29860,
+    "Cache skips": 105860,
+    "Consistency checks": 34396,
+    "Cache invalidations": 3512
+  },
+  {
+    "timestamp": "13:10",
+    "Cache hits": 77298,
+    "Cache misses": 23803,
+    "Cache skips": 103373,
+    "Consistency checks": 30506,
+    "Cache invalidations": 2810
+  },
+  {
+    "timestamp": "13:20",
+    "Cache hits": 115612,
+    "Cache misses": 34219,
+    "Cache skips": 112426,
+    "Consistency checks": 40021,
+    "Cache invalidations": 3082
+  },
+  {
+    "timestamp": "13:30",
+    "Cache hits": 101737,
+    "Cache misses": 29047,
+    "Cache skips": 107691,
+    "Consistency checks": 40929,
+    "Cache invalidations": 3677
+  },
+  {
+    "timestamp": "13:40",
+    "Cache hits": 133219,
+    "Cache misses": 75059,
+    "Cache skips": 114723,
+    "Consistency checks": 49104,
+    "Cache invalidations": 6560
+  },
+  {
+    "timestamp": "13:50",
+    "Cache hits": 146898,
+    "Cache misses": 46068,
+    "Cache skips": 123825,
+    "Consistency checks": 51743,
+    "Cache invalidations": 3844
+  },
+  {
+    "timestamp": "14:00",
+    "Cache hits": 106722,
+    "Cache misses": 32286,
+    "Cache skips": 100856,
+    "Consistency checks": 36563,
+    "Cache invalidations": 4033
+  },
+  {
+    "timestamp": "14:10",
+    "Cache hits": 88608,
+    "Cache misses": 24104,
+    "Cache skips": 104038,
+    "Consistency checks": 34590,
+    "Cache invalidations": 4157
+  },
+  {
+    "timestamp": "14:20",
+    "Cache hits": 101807,
+    "Cache misses": 25391,
+    "Cache skips": 97290,
+    "Consistency checks": 36448,
+    "Cache invalidations": 4177
+  },
+  {
+    "timestamp": "14:30",
+    "Cache hits": 74548,
+    "Cache misses": 22603,
+    "Cache skips": 92935,
+    "Consistency checks": 32585,
+    "Cache invalidations": 2473
+  },
+  {
+    "timestamp": "14:40",
+    "Cache hits": 116239,
+    "Cache misses": 37919,
+    "Cache skips": 89465,
+    "Consistency checks": 37765,
+    "Cache invalidations": 5548
+  },
+  {
+    "timestamp": "14:50",
+    "Cache hits": 129964,
+    "Cache misses": 54498,
+    "Cache skips": 93897,
+    "Consistency checks": 40632,
+    "Cache invalidations": 4377
+  },
+  {
+    "timestamp": "15:00",
+    "Cache hits": 114862,
+    "Cache misses": 45068,
+    "Cache skips": 91031,
+    "Consistency checks": 36642,
+    "Cache invalidations": 4755
+  },
+  {
+    "timestamp": "15:10",
+    "Cache hits": 80394,
+    "Cache misses": 28442,
+    "Cache skips": 85536,
+    "Consistency checks": 33806,
+    "Cache invalidations": 3200
+  },
+  {
+    "timestamp": "15:20",
+    "Cache hits": 107624,
+    "Cache misses": 39424,
+    "Cache skips": 87645,
+    "Consistency checks": 36342,
+    "Cache invalidations": 3660
+  },
+  {
+    "timestamp": "15:30",
+    "Cache hits": 113422,
+    "Cache misses": 43031,
+    "Cache skips": 85412,
+    "Consistency checks": 37450,
+    "Cache invalidations": 4793
+  },
+  {
+    "timestamp": "15:40",
+    "Cache hits": 117653,
+    "Cache misses": 32936,
+    "Cache skips": 84539,
+    "Consistency checks": 37702,
+    "Cache invalidations": 3575
+  },
+  {
+    "timestamp": "15:50",
+    "Cache hits": 105016,
+    "Cache misses": 39775,
+    "Cache skips": 83163,
+    "Consistency checks": 36922,
+    "Cache invalidations": 4891
+  },
+  {
+    "timestamp": "16:00",
+    "Cache hits": 104644,
+    "Cache misses": 39963,
+    "Cache skips": 79744,
+    "Consistency checks": 36627,
+    "Cache invalidations": 5936
+  },
+  {
+    "timestamp": "16:10",
+    "Cache hits": 87428,
+    "Cache misses": 29140,
+    "Cache skips": 72525,
+    "Consistency checks": 34811,
+    "Cache invalidations": 49337
+  },
+  {
+    "timestamp": "16:20",
+    "Cache hits": 70532,
+    "Cache misses": 17973,
+    "Cache skips": 61745,
+    "Consistency checks": 27647,
+    "Cache invalidations": 2671
+  },
+  {
+    "timestamp": "16:30",
+    "Cache hits": 74560,
+    "Cache misses": 23371,
+    "Cache skips": 61584,
+    "Consistency checks": 26709,
+    "Cache invalidations": 3161
+  },
+  {
+    "timestamp": "16:40",
+    "Cache hits": 88352,
+    "Cache misses": 31202,
+    "Cache skips": 60488,
+    "Consistency checks": 32449,
+    "Cache invalidations": 3230
+  },
+  {
+    "timestamp": "16:50",
+    "Cache hits": 70167,
+    "Cache misses": 20602,
+    "Cache skips": 55862,
+    "Consistency checks": 26944,
+    "Cache invalidations": 4673
+  },
+  {
+    "timestamp": "17:00",
+    "Cache hits": 84036,
+    "Cache misses": 25504,
+    "Cache skips": 53893,
+    "Consistency checks": 28358,
+    "Cache invalidations": 3209
+  },
+  {
+    "timestamp": "17:10",
+    "Cache hits": 75883,
+    "Cache misses": 22751,
+    "Cache skips": 49255,
+    "Consistency checks": 25379,
+    "Cache invalidations": 6318
+  },
+  {
+    "timestamp": "17:20",
+    "Cache hits": 112062,
+    "Cache misses": 37645,
+    "Cache skips": 56438,
+    "Consistency checks": 32387,
+    "Cache invalidations": 7002
+  },
+  {
+    "timestamp": "17:30",
+    "Cache hits": 83740,
+    "Cache misses": 31707,
+    "Cache skips": 44583,
+    "Consistency checks": 26040,
+    "Cache invalidations": 4470
+  },
+  {
+    "timestamp": "17:40",
+    "Cache hits": 94260,
+    "Cache misses": 32952,
+    "Cache skips": 41846,
+    "Consistency checks": 26260,
+    "Cache invalidations": 3259
+  },
+  {
+    "timestamp": "17:50",
+    "Cache hits": 64028,
+    "Cache misses": 19568,
+    "Cache skips": 33055,
+    "Consistency checks": 21488,
+    "Cache invalidations": 4528
+  },
+  {
+    "timestamp": "18:00",
+    "Cache hits": 86794,
+    "Cache misses": 31401,
+    "Cache skips": 39232,
+    "Consistency checks": 26846,
+    "Cache invalidations": 2934
+  },
+  {
+    "timestamp": "18:10",
+    "Cache hits": 40684,
+    "Cache misses": 12215,
+    "Cache skips": 20298,
+    "Consistency checks": 13825,
+    "Cache invalidations": 3331
+  }
+]
