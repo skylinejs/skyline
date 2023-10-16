@@ -502,6 +502,7 @@ import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class CacheService extends SkylineCache {
+  // Collect cache statistics every 10 minutes using @nestjs/schedule
   @Cron('*/10 * * * *')
   collectCacheStatistics() {
     const statistics = this.getStatistics();
