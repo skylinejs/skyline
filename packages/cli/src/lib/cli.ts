@@ -1,11 +1,7 @@
 import { CliConfiguration } from './cli-configuration.interface';
 import { CliInactivityTimeout } from './cli-inactivity-timeout';
 import inquirer from 'inquirer';
-import {
-  getCommandDisplayName,
-  getCommandIds,
-  getCommandPromptMessage,
-} from './cli.utils';
+import { getCommandDisplayName, getCommandIds, getCommandPromptMessage } from './cli.utils';
 import InquirerAutocompletePrompt from 'inquirer-autocomplete-prompt';
 import { SkylineCliCommand } from './command/cli-command';
 import { fuzzyFilter } from './fuzzy-filter';
@@ -62,6 +58,10 @@ export class SkylineCli {
     this.registerCommand(ExitCommand);
   }
 
+  /**
+   * Register a command class to be available in the CLI.
+   * @param command Command class
+   */
   registerCommand(command: typeof SkylineCliCommand) {
     if (this.config.commands.find((c) => c === command)) return;
     this.config.commands.push(command);
@@ -77,9 +77,7 @@ export class SkylineCli {
         command,
       }));
 
-      const Command = commands.find((command) =>
-        command.ids.includes(commandId)
-      )?.command;
+      const Command = commands.find((command) => command.ids.includes(commandId))?.command;
 
       if (!Command) {
         console.error(`Unknown command "${commandId}"`);

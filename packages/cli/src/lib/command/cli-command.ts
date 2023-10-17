@@ -42,17 +42,19 @@ export class SkylineCliCommand {
     throw new Error('Not implemented');
   }
 
+  async parse(command: typeof SkylineCliCommand): Promise<any> {
+    const flags = command.flags ?? {};
+  }
+
   help(command: typeof SkylineCliCommand) {
     const output: string[] = [];
 
     // Command ID
-    const commandId =
-      command.commandId ?? getCommandIds(command, this.config)[0];
+    const commandId = command.commandId ?? getCommandIds(command, this.config)[0];
     output.push(chalk.bold(chalk.blue('# ' + commandId)));
 
     // Display name
-    const displayName =
-      command.displayName ?? getCommandDisplayName(command, this.config);
+    const displayName = command.displayName ?? getCommandDisplayName(command, this.config);
     output.push(displayName + '\n');
 
     // Description
