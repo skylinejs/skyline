@@ -26,9 +26,9 @@ export default class MonacoEditor extends React.Component<{
           options={{
             language: 'typescript',
             theme: 'vs-dark',
-            contextmenu: false,
+            contextmenu: true,
             fixedOverflowWidgets: true,
-            lineDecorationsWidth: 16,
+            lineDecorationsWidth: 12,
             padding: {
               top: 16,
               bottom: 16,
@@ -41,7 +41,7 @@ export default class MonacoEditor extends React.Component<{
             minimap: {
               enabled: false,
             },
-            folding: false,
+            folding: true,
           }}
           defaultValue={this.getStringChildren()}
           onMount={(editor, monaco) => {

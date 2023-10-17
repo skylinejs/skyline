@@ -32,9 +32,8 @@ class MonacoService {
       noSyntaxValidation: false,
       diagnosticCodesToIgnore: [
         TOP_LEVEL_AWAIT,
-        2304,
         2339, // Property does not exist on union type
-        2345, // map on a union type wit desctructuring, e.g. for reassigning field values
+        2345, // map on a union type with desctructuring
         2451,
         2584,
         2585,
