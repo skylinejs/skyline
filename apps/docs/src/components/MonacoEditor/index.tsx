@@ -6,11 +6,41 @@ import monacoService from './monaco.service';
 export default class MonacoEditor extends React.Component<{ content: string }> {
   render(): React.ReactNode {
     return (
-      <div style={{ width: '100%', height: '300px' }}>
+      <div
+        style={{
+          width: '100%',
+          height: '300px',
+          overflow: 'hidden',
+          background: 'rgb(30, 30, 30)',
+          borderRadius: 'var(--ifm-code-border-radius)',
+        }}
+      >
         <Editor
           height="100%"
           width="100%"
           language="typescript"
+          defaultLanguage="typescript"
+          theme="vs-dark"
+          options={{
+            language: 'typescript',
+            theme: 'vs-dark',
+            contextmenu: false,
+            fixedOverflowWidgets: true,
+            lineDecorationsWidth: 16,
+            padding: {
+              top: 16,
+              bottom: 16,
+            },
+            scrollbar: {
+              vertical: 'auto',
+              handleMouseWheel: true,
+              alwaysConsumeMouseWheel: false,
+            },
+            minimap: {
+              enabled: false,
+            },
+            folding: false,
+          }}
           defaultValue={this.props.content}
           onMount={(editor, monaco) => {
             monacoService.initMonaco(monaco);
