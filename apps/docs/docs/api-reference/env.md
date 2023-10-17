@@ -15,10 +15,6 @@ The guiding principles of the Skyline environment approach can be found here: [E
 
 :::
 
-<!-- TODO: use monaco editor here with index.d.ts loaded to demonstrate type-safety of package -->
-
-<MonacoEditor></MonacoEditor>
-
 ## SkylineEnv
 
 Installation
@@ -27,13 +23,12 @@ Installation
 npm install @skyline-js/env
 ```
 
-```ts
-import { SkylineEnv } from '@skyline-js/env';
+## Sandbox
 
+<MonacoEditor height="200px" value={
+`import { SkylineEnv } from '@skyline-js/env';\n
 const env = new SkylineEnv();
-```
-
-<br />
+\n\n\n\n\n\n`}> </MonacoEditor>
 
 ## Interfaces
 

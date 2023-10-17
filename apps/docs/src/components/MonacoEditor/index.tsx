@@ -3,13 +3,13 @@ import Layout from '@theme/Layout';
 import * as React from 'react';
 import monacoService from './monaco.service';
 
-export default class MonacoEditor extends React.Component<{ content: string }> {
+export default class MonacoEditor extends React.Component<{ value: string; height?: number }> {
   render(): React.ReactNode {
     return (
       <div
         style={{
           width: '100%',
-          height: '300px',
+          height: this.props.height ?? '300px',
           overflow: 'hidden',
           background: 'rgb(30, 30, 30)',
           borderRadius: 'var(--ifm-code-border-radius)',
@@ -41,7 +41,7 @@ export default class MonacoEditor extends React.Component<{ content: string }> {
             },
             folding: false,
           }}
-          defaultValue={this.props.content}
+          defaultValue={this.props.value}
           onMount={(editor, monaco) => {
             monacoService.initMonaco(monaco);
           }}
