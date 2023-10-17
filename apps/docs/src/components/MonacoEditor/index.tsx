@@ -1,5 +1,4 @@
 import Editor from '@monaco-editor/react';
-import Layout from '@theme/Layout';
 import * as React from 'react';
 import monacoService from './monaco.service';
 

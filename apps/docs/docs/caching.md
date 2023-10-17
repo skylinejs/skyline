@@ -477,8 +477,11 @@ The `updateUser` and `deleteUser` methods simply need to invalidate the cache ke
 
 While the SkylineJS caching approach gives developers an easy to use caching pattern that prevents many of the common caching bug sources, the invalidation of caches is still an issue. It is very easy to forget invalidating all caches that are affected by modifying some data inside the primary data storage. As it is a certainty that developers will forget to invalidate certain caches and this code will find its way into production, we need a monitoring strategy in place to make these cache inconsistencies visible and actionable. A simple chart like the one above can be created using the caching statistics features of the `@skyline-js/cache` library:
 
+<br />
+
 <CachingChart></CachingChart>
 
+<br /><br />
 The bar chart shows how many cache hits, cache misses, cache skips, cache consistency checks and cache invalidations have been performed during each 10 minute interval. The example data show a healthy caching behavior regarding the distribution of the different event types. If you have much more cache misses than cache hits this might be worth investigating. Same goes for a significant difference in the number of cache skips and cache consistency checks, as those should go hand-in-hand and have therefore comparable numbers.
 
 To collect the data for such a chart, you can use the `cache.getStatistics` and `cache.resetStatistics` methods. These are intentionally generic so you can choose your own way of implementing the periodic collection and resetting of the cache statistics e.g., using `setInterval` or the [@nestjs/schedule](https://docs.nestjs.com/techniques/task-scheduling) package:
