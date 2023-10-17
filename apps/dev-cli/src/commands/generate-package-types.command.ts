@@ -36,10 +36,23 @@ export class GeneratePackageTypesCommand extends SkylineCliCommand {
       `declare module "@skyline-js/${packageName}" ` +
       tscOutput.slice(declareModuleIndexEnd);
 
+    // Export everything as string
+    tscOutput = `export default \`\n${tscOutput.replace(/`/g, '\\`')}\n\`;`;
+
     // Write final output
     writeFileSync(
       `apps/docs/src/components/MonacoEditor/packages/${packageName}-types.d.ts`,
       tscOutput,
+    );
+
+    // Rename file to .ts
+    execSync(
+      `
+        mv \
+        apps/docs/src/components/MonacoEditor/packages/${packageName}-types.d.ts \
+        apps/docs/src/components/MonacoEditor/packages/${packageName}-types.ts
+      `,
+      { cwd: '/repo' },
     );
   }
 }
