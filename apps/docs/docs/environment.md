@@ -156,7 +156,9 @@ Furthermore, the example above shows off the validation features of the `@skylin
 
 ## Sandbox
 
-<MonacoEditor height="200px" value={
+You can try out the `@skyline-js/env` package API and the excellent TypeScript support here:
+
+<MonacoEditor height="500px" value={
 `import { SkylineEnv } from '@skyline-js/env';\n
 const env = new SkylineEnv();
 \n\n\n\n\n\n`}> </MonacoEditor>

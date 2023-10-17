@@ -50,7 +50,7 @@ class MonacoService {
       target: this.monaco.languages.typescript.ScriptTarget.ES2020,
       module: this.monaco.languages.typescript.ModuleKind.ESNext,
       allowNonTsExtensions: true,
-      noLib: true,
+      noLib: false,
     });
 
     this.monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true);

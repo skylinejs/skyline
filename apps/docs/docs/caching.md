@@ -530,7 +530,9 @@ TODO:
 
 ## Sandbox
 
-<MonacoEditor height="200px" value={
+You can try out the `@skyline-js/cache` package API and the excellent TypeScript support here:
+
+<MonacoEditor height="500px" value={
 `import { SkylineCache } from '@skyline-js/cache';\n
 const cache = new SkylineCache();
 \n\n\n\n\n\n`}> </MonacoEditor>
