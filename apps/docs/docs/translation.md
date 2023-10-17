@@ -5,6 +5,8 @@ title: Translation
 draft: true
 ---
 
+import MonacoEditor from '@site/src/components/MonacoEditor';
+
 # Translation
 
 :::info
@@ -197,3 +199,17 @@ export class AppModule {}
 
 </TabItem>
 </Tabs>
+
+## Sandbox
+
+You can try out the `@skyline-js/translate` package API and the excellent TypeScript support here:
+
+<MonacoEditor height="500px">
+
+```ts
+import { SkylineTranslate } from '@skyline-js/translate';
+
+const translation = new SkylineTranslate({});
+```
+
+</MonacoEditor>

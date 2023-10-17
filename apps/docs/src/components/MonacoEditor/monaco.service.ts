@@ -13,7 +13,6 @@ class MonacoService {
 
   initMonaco(monaco: Monaco) {
     if (this.initialized) return;
-    console.log('initMonaco');
     this.initialized = true;
     this.monaco = monaco;
 

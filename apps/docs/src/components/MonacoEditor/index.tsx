@@ -2,7 +2,10 @@ import Editor from '@monaco-editor/react';
 import * as React from 'react';
 import monacoService from './monaco.service';
 
-export default class MonacoEditor extends React.Component<{ value: string; height?: number }> {
+export default class MonacoEditor extends React.Component<{
+  height?: number;
+  children: React.ReactElement;
+}> {
   render(): React.ReactNode {
     return (
       <div
@@ -40,7 +43,7 @@ export default class MonacoEditor extends React.Component<{ value: string; heigh
             },
             folding: false,
           }}
-          defaultValue={this.props.value}
+          defaultValue={this.getStringChildren()}
           onMount={(editor, monaco) => {
             monacoService.initMonaco(monaco);
           }}
@@ -49,8 +52,16 @@ export default class MonacoEditor extends React.Component<{ value: string; heigh
     );
   }
 
-  componentDidMount(): void {
-    // eslint-disable-next-line no-console
-    console.log('mounted');
+  private getStringChildren(): string {
+    let children = this.props.children;
+    while (typeof children !== 'string' && children?.props?.children) {
+      children = children.props.children;
+    }
+
+    if (typeof children === 'string') {
+      return children;
+    }
+
+    return '';
   }
 }

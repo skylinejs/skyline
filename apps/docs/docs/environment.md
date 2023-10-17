@@ -158,10 +158,15 @@ Furthermore, the example above shows off the validation features of the `@skylin
 
 You can try out the `@skyline-js/env` package API and the excellent TypeScript support here:
 
-<MonacoEditor height="500px" value={
-`import { SkylineEnv } from '@skyline-js/env';\n
+<MonacoEditor height="500px">
+
+```ts
+import { SkylineEnv } from '@skyline-js/env';
+
 const env = new SkylineEnv();
-\n\n\n\n\n\n`}> </MonacoEditor>
+```
+
+</MonacoEditor>
 
 <!--
 

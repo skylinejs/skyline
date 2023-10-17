@@ -23,10 +23,15 @@ Installation
 npm install @skyline-js/env
 ```
 
-<MonacoEditor height="200px" value={
-`import { SkylineEnv } from '@skyline-js/env';\n
+<MonacoEditor height="200px">
+
+```ts
+import { SkylineEnv } from '@skyline-js/env';
+
 const env = new SkylineEnv();
-\n\n\n\n\n\n`}> </MonacoEditor>
+```
+
+</MonacoEditor>
 
 ## Interfaces
 

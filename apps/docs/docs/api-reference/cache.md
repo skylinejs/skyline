@@ -23,10 +23,15 @@ Installation
 npm install @skyline-js/cache
 ```
 
-<MonacoEditor height="200px" value={
-`import { SkylineCache } from '@skyline-js/cache';\n
+<MonacoEditor height="200px">
+
+```ts
+import { SkylineCache } from '@skyline-js/cache';
+
 const cache = new SkylineCache();
-\n\n\n\n\n\n`}> </MonacoEditor>
+```
+
+</MonacoEditor>
 
 ### cache.get
 

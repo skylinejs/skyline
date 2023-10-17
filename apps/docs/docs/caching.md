@@ -532,7 +532,12 @@ TODO:
 
 You can try out the `@skyline-js/cache` package API and the excellent TypeScript support here:
 
-<MonacoEditor height="500px" value={
-`import { SkylineCache } from '@skyline-js/cache';\n
+<MonacoEditor height="500px">
+
+```ts
+import { SkylineCache } from '@skyline-js/cache';
+
 const cache = new SkylineCache();
-\n\n\n\n\n\n`}> </MonacoEditor>
+```
+
+</MonacoEditor>
