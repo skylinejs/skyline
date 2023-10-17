@@ -4,6 +4,8 @@ label: cache
 slug: cache
 ---
 
+import MonacoEditor from '@site/src/components/MonacoEditor';
+
 # `@skyline-js/cache`
 
 :::info
@@ -21,11 +23,10 @@ Installation
 npm install @skyline-js/cache
 ```
 
-```ts
-import { SkylineCache } from '@skyline-js/cache';
-
+<MonacoEditor height="200px" value={
+`import { SkylineCache } from '@skyline-js/cache';\n
 const cache = new SkylineCache();
-```
+\n\n\n\n\n\n`}> </MonacoEditor>
 
 ### cache.get
 

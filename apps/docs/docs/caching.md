@@ -7,6 +7,7 @@ label: Caching
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CachingChart from '@site/src/components/CachingChart';
+import MonacoEditor from '@site/src/components/MonacoEditor';
 
 # Caching
 
@@ -523,3 +524,10 @@ TODO:
 - Document BigInt what is necessary for stringify/ parse
 - Handle storage engine failures (e.g., Redis not reachable)
 -->
+
+## Sandbox
+
+<MonacoEditor height="200px" value={
+`import { SkylineCache } from '@skyline-js/cache';\n
+const cache = new SkylineCache();
+\n\n\n\n\n\n`}> </MonacoEditor>

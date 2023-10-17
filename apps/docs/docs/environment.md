@@ -6,6 +6,7 @@ label: Environment
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import MonacoEditor from '@site/src/components/MonacoEditor';
 
 # Environment
 
@@ -152,6 +153,13 @@ Ah, this is much better. The most striking difference to the previous implementa
 This approach for handling different runtime environments allows the developer to quickly look up all possible values for an environment variable without having to go through `.env` files or CI environment settings. For most non-sensitive environment variables, the runtime environment fallbacks should be sufficient to configure the value properly and greatly improves the developer experience regarding the introduction of new environment variables and the debugging process.
 
 Furthermore, the example above shows off the validation features of the `@skyline-js/env` package. They are used to ensure that certain environment variable values are integers (e.g., for the API port) or match a certain regex (http or https protocol present for the API host).
+
+## Sandbox
+
+<MonacoEditor height="200px" value={
+`import { SkylineEnv } from '@skyline-js/env';\n
+const env = new SkylineEnv();
+\n\n\n\n\n\n`}> </MonacoEditor>
 
 <!--
 
