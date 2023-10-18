@@ -2,8 +2,8 @@ import axios from 'axios';
 
 describe('SkylineTranslate minimal NestJS example', () => {
   beforeAll(async () => {
-    await axios.delete(`http://skyline_mailhog:8025/api/v1/messages`);
     // Clear mailhog inbox
+    await axios.delete(`http://skyline_mailhog:8025/api/v1/messages`);
   });
 
   it('Send user registration email (no language header)', async () => {

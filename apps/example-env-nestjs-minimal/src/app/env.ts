@@ -49,4 +49,12 @@ export const env = {
       default: 'hello@skylinejs.com',
     }),
   },
+
+  registration: {
+    /** What email addresses are allowed to register */
+    emailPattern: parser.parseString('SERVER_REGISTRATION_EMAIL_PATTERN', {
+      default: '^registrationd+@skylinejs.com$',
+      CI: '^registrationd+@skylinejs.com$',
+    }),
+  },
 };

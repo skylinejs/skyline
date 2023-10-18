@@ -5,9 +5,10 @@ import { env } from './app/env';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api');
   await app.listen(env.api.port);
 
-  Logger.log(`🚀 Application is running on: http://${env.api.host}:${env.api.port}`);
+  Logger.log(`🚀 Application is running on: http://${env.api.host}:${env.api.port}/api`);
 }
 
 bootstrap();

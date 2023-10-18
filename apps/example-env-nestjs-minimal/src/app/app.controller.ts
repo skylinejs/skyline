@@ -12,11 +12,19 @@ export class AppController {
 
   @Get('runtime-env')
   getServerRuntimeEnvironment() {
-    return env.runtime;
+    return {
+      runtime: env.runtime,
+    };
   }
 
   @Post('register')
   async sendRegistrationEmail(@Body() { email }: { email: string }) {
+    // Check if email is allowed to register
+    if (new RegExp(env.registration.emailPattern).test(email) === false) {
+      throw new Error('Email is not allowed to register');
+    }
+
+    // Send registration email
     await this.transporter.sendMail({
       from: env.mail.from,
       to: email,
