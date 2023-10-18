@@ -1,14 +1,14 @@
 john:
   name: Monolith John
   title: Loves monoliths and monorepos
-  image_url: /author-profile/skyline-profile-1.png
+  image_url: /profile/skylinejs-jordan.png
 
 lucy:
   name: Typesafe Lucy
   title: Interfaces are the best thing since sliced bread
-  image_url: /author-profile/skyline-profile-8.png
+  image_url: /profile/skylinejs-lucy.png
 
 william:
   name: William WET
   title: Enjoys typing more than fixing bugs
-  image_url: /author-profile/skyline-profile-2.png
+  image_url: /profile/skylinejs-tony.png
