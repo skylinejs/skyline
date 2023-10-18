@@ -130,7 +130,7 @@ export class SkylineCli {
 
   async runCommand(Command: typeof SkylineCliCommand) {
     const config = await Config.load();
-    const command = new Command(process.argv.slice(2), config);
+    const command = new Command(process.argv.slice(3), config);
     command.options = this.config;
     const result = await command.run();
     return result;

@@ -1,12 +1,26 @@
-import { SkylineCliCommand } from '@skyline-js/cli';
+import { Flags, SkylineCliCommand } from '@skyline-js/cli';
 import { execSync } from 'child_process';
 import { readFileSync, writeFileSync } from 'fs';
 
 export class GeneratePackageTypesCommand extends SkylineCliCommand {
+  static flags = {
+    packages: Flags.string({
+      char: 'p',
+      default: ['env', 'cache', 'translate'],
+      options: ['env', 'cache', 'translate'],
+      multiple: true,
+    }),
+  };
+
   async run() {
-    await this.generatePackageTypes('env');
-    await this.generatePackageTypes('cache');
-    await this.generatePackageTypes('translate');
+    const {
+      flags: { packages },
+    } = await this.parse(GeneratePackageTypesCommand);
+    for (const packageName of packages) {
+      process.stdout.write(`Generating types for package ${packageName}... `);
+      await this.generatePackageTypes(packageName);
+      process.stdout.write(`Done\n`);
+    }
   }
 
   generatePackageTypes(packageName: string) {
@@ -17,14 +31,14 @@ export class GeneratePackageTypesCommand extends SkylineCliCommand {
         --p packages/${packageName}/tsconfig.lib.json \
         --declaration \
         --emitDeclarationOnly \
-        --outFile apps/docs/src/components/MonacoEditor/packages/${packageName}-types.js
+        --outFile /repo/apps/docs/src/components/MonacoEditor/packages/${packageName}-types.js
       `,
       { cwd: '/repo' },
     );
 
     // Post-process final module export
     let tscOutput = readFileSync(
-      `apps/docs/src/components/MonacoEditor/packages/${packageName}-types.d.ts`,
+      `/repo/apps/docs/src/components/MonacoEditor/packages/${packageName}-types.d.ts`,
       'utf-8',
     );
     const declareModuleIndexStart = tscOutput.lastIndexOf('declare module "');
@@ -41,7 +55,7 @@ export class GeneratePackageTypesCommand extends SkylineCliCommand {
 
     // Write final output
     writeFileSync(
-      `apps/docs/src/components/MonacoEditor/packages/${packageName}-types.d.ts`,
+      `/repo/apps/docs/src/components/MonacoEditor/packages/${packageName}-types.d.ts`,
       tscOutput,
     );
 
@@ -49,8 +63,8 @@ export class GeneratePackageTypesCommand extends SkylineCliCommand {
     execSync(
       `
         mv \
-        apps/docs/src/components/MonacoEditor/packages/${packageName}-types.d.ts \
-        apps/docs/src/components/MonacoEditor/packages/${packageName}-types.ts
+        /repo/apps/docs/src/components/MonacoEditor/packages/${packageName}-types.d.ts \
+        /repo/apps/docs/src/components/MonacoEditor/packages/${packageName}-types.ts
       `,
       { cwd: '/repo' },
     );
