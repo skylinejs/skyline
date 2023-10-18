@@ -38,7 +38,9 @@ const env = new SkylineEnv();
 ### EnvConfiguration
 
 ```ts path="packages/env/src/lib/env-configuration.interface.ts" skipLines="2" remove="export "
-interface EnvConfiguration<RuntimeEnvironment extends { [key: string]: string } = {}> {
+interface EnvConfiguration<
+  RuntimeEnvironment extends { [key: string]: string } = {}
+> {
   // === Logging ===
 
   /** Whether to enable logging. */

@@ -16,9 +16,7 @@ export class SynchronizeDocsCodeSnippetsCommand extends SkylineCliCommand {
     console.log('Done');
   }
 
-  private parseCodeBlockProperties(
-    line: string
-  ): CodeBlockProperties | undefined {
+  private parseCodeBlockProperties(line: string): CodeBlockProperties | undefined {
     const properties: CodeBlockProperties = {};
 
     const pathMatch = line.match(/path="([^"]+)"/);
@@ -42,11 +40,7 @@ export class SynchronizeDocsCodeSnippetsCommand extends SkylineCliCommand {
     return properties;
   }
 
-  private readeSourceFile({
-    filepath,
-    remove,
-    skipLines,
-  }: CodeBlockProperties): string {
+  private readeSourceFile({ filepath, remove, skipLines }: CodeBlockProperties): string {
     const fileContent = readFileSync(filepath, 'utf-8');
     const lines = fileContent.split('\n');
 
@@ -79,9 +73,7 @@ export class SynchronizeDocsCodeSnippetsCommand extends SkylineCliCommand {
     // Get all markdown files
     const dirpath = '/repo/apps/docs/docs/';
     const filepaths = await walk(dirpath);
-    const markdownfilepaths = filepaths.filter((filepath) =>
-      filepath.endsWith('.md')
-    );
+    const markdownfilepaths = filepaths.filter((filepath) => filepath.endsWith('.md'));
 
     // Replace all code blocks with path property with the respective file's content
     for (const filepath of markdownfilepaths) {
@@ -106,19 +98,16 @@ export class SynchronizeDocsCodeSnippetsCommand extends SkylineCliCommand {
         end += '```'.length;
         // console.log({ filepath, content: content.slice(start, end) });
 
-        const codeProperties = this.parseCodeBlockProperties(
-          content.slice(start, end)
-        );
+        const codeProperties = this.parseCodeBlockProperties(content.slice(start, end));
         if (codeProperties) {
           // Write new content
           const firstLine = content.substring(
             start,
-            start + content.substring(start).indexOf('\n')
+            start + content.substring(start).indexOf('\n'),
           );
           replacements.push({
             source: content.slice(start, end),
-            target:
-              `${firstLine}\n` + this.readeSourceFile(codeProperties) + '```',
+            target: `${firstLine}\n` + this.readeSourceFile(codeProperties) + '```',
           });
         }
 
@@ -138,9 +127,7 @@ export class SynchronizeDocsCodeSnippetsCommand extends SkylineCliCommand {
     // Get all markdown files
     const dirpath = '/repo/apps/docs/docs/';
     const filepaths = await walk(dirpath);
-    const markdownfilepaths = filepaths.filter((filepath) =>
-      filepath.endsWith('.md')
-    );
+    const markdownfilepaths = filepaths.filter((filepath) => filepath.endsWith('.md'));
 
     // Replace all code blocks with path property with the respective file's content
     for (const filepath of markdownfilepaths) {
@@ -165,27 +152,20 @@ export class SynchronizeDocsCodeSnippetsCommand extends SkylineCliCommand {
 
         end += '</Tabs>'.length;
 
-        let pathProperty = content
-          .substring(start, end)
-          .match(/path="([^"]+)"/)?.[1];
+        let pathProperty = content.substring(start, end).match(/path="([^"]+)"/)?.[1];
         if (!pathProperty.endsWith('/')) {
           pathProperty += '/';
         }
 
-        const orderProperty = content
-          .substring(start, end)
-          .match(/order="([^"]+)"/)?.[1];
+        const orderProperty = content.substring(start, end).match(/order="([^"]+)"/)?.[1];
 
         const codeSnippets = await this.getMarkdownCodeTabItemsForAllFiles(
           pathProperty,
-          orderProperty
+          orderProperty,
         );
 
         // Write new content
-        const firstLine = content.substring(
-          start,
-          start + content.substring(start).indexOf('\n')
-        );
+        const firstLine = content.substring(start, start + content.substring(start).indexOf('\n'));
 
         replacements.push({
           source: content.slice(start, end),
@@ -204,16 +184,11 @@ export class SynchronizeDocsCodeSnippetsCommand extends SkylineCliCommand {
     }
   }
 
-  private async getMarkdownCodeTabItemsForAllFiles(
-    dirpath: string,
-    orderStr?: string
-  ) {
+  private async getMarkdownCodeTabItemsForAllFiles(dirpath: string, orderStr?: string) {
     const order = (orderStr ?? '').split(',').map((s) => s.trim());
     const filepaths = await walk(dirpath);
     const tsFilepaths = filepaths
-      .filter(
-        (filepath) => filepath.endsWith('.ts') && !filepath.endsWith('.spec.ts')
-      )
+      .filter((filepath) => filepath.endsWith('.ts') && !filepath.endsWith('.spec.ts'))
       .sort((a, b) => {
         const aIndex = order.findIndex((s) => a.endsWith(s));
         const bIndex = order.findIndex((s) => b.endsWith(s));
