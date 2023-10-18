@@ -48,10 +48,20 @@ I call this approach "end-to-end type safety". If you can rely on the runtime va
 
 ## Compiler options that are worth your time
 
-These compile options are pretty cool and should be used in every TypeScript project! They are ordered by most to least important. You can check out the complete list of options here: https://www.typescriptlang.org/tsconfig
+These compiler options are pretty cool and should be used in every TypeScript project! They are ordered by most to least important. You can check out the complete list of options here: https://www.typescriptlang.org/tsconfig
+
+Here is a summary of all options that are discussed in detail below. Note that the `strict` option is a convenient shortcut to activate all of the strict type checking options:
+
+```json
+{
+  "strict": true,
+  "noImplicitReturns": true,
+  "noFallthroughCasesInSwitch": true
+}
+```
 
 ### `strictNullChecks`
 
-Strict null checks are not merely a convenient way to reduce the number of `cannot read property of undefined` errors, they are a way of living!<!-- walking through life --> Developers with `strictNullChecks` enabled have a certain spring in their step, they ooze with confidence and are generally
+Strict null checks are not merely a convenient way to reduce the number of `cannot read property of undefined` errors, they are a way of living!<!-- walking through life --> Developers with `strictNullChecks` enabled have a certain spring in their step, they ooze with confidence and are generally more enlightened. A study shows that 42% of developers report an immediate increase in happiness in their work and personal life after activating `strictNullChecks` at the beginning of a new project.
 
 ### `noImplicitReturns`
