@@ -14,7 +14,7 @@ The following documentation contains material that may be upsetting to some deve
 
 ## Introduction
 
-SkylineJS is a collection of libraries for building efficient, secure and scalable web applications. It is a companion toolkit to your framework of choice (e.g., NestJS), solving common tasks every web application has to perform such as parsing environment variables, performance monitoring or caching.
+SkylineJS is a collection of libraries for building efficient, secure and scalable web applications. It is a companion toolkit to your framework of choice, solving common tasks every web application has to perform such as parsing environment variables, performance monitoring or caching.
 
 Instead of building these on your own, SkylineJS provides you with libraries that are:
 
@@ -40,7 +40,7 @@ Have a look at how this might change your situation to the better:
 
 Ideally, your framework + SkylineJS should take care of all the basic scaffolding your application needs, everything else is domain-specific functionality that depends on the particular features you would like to build (e.g., remote controlling your toaster via a REST API).
 
-CTA: Get started or check out the architecture primer
+<!-- CTA: Get started or check out the architecture primer -->
 
 Each Skyline library can be used on its own. However, all libraries play nicely together because they adhere to the same guiding principles. This coherence makes it easy for a developer to pick up a new Skyline library and use the same patterns to integrate the library into their own codebase. Below is a short introduction into the guiding principles.
 
@@ -66,14 +66,16 @@ SkylineJS has been architected with this distinction in mind. The APIs are desig
 
 ## Compile-time versus runtime errors
 
-If you are not convinced that TypeScript is the best thing that happend to the JavaScript ecosystem since ..., SkylineJS is not for you. The philosophy that permeates each and every SkylineJS library is that every error that occurs at runtime but could have been detected at compile-time has to be made detectable at compile-time. The biggest productivity drain for a developer is not writing a lot of simple and repetitive code but to spend hours inside a debugger in a non-reproducible environment due to a lack of the aformentioned boring and repetitive code. Remember kids: an interface a day keeps the middle-of-the-night-production-hotfix-sessions away.
+The philosophy that permeates each SkylineJS library is that every error that occurs at runtime but could have been detected at compile-time has to be made detectable at compile-time. The biggest productivity drain for a developer is not writing a lot of simple and repetitive code but to spend hours inside a debugger in a non-reproducible environment due to a lack of the aformentioned boring and repetitive code. Remember kids: an interface a day keeps the middle-of-the-night-production-hotfix-sessions away.
 
-There are two ways SkylineJS reduces runtime errors to a minimum:
+There are two main ways SkylineJS reduces runtime errors to a minimum:
 
 1. Leverage the TypeScript compiler
 2. Validate runtime values and throw if they are not matching their interface
 
-Graphic of a system boundary where everything that enters gets validated, the core is always green because it always functions under its assumptions.
+The following image illustrates the advantage of such an approach:
+
+<br />
 
 ```mermaid
 flowchart TB
@@ -102,15 +104,23 @@ flowchart TB
     linkStyle 7 stroke:green;
 ```
 
-## Pure functions versus side effects
+<br />
+
+As you can see, we create a boundary between your application (the recatangle) and the outer world. Inside the application boundary, everything is under you control. The different components (e.g., API, business logic and data access) can safely talk to each other and rely on each other to fulfill their public interfaces. This assumes that you are correctly leveraging the TypeScript compiler to create type-safe interfaces and contracts instead of casting everywhere and using `any` inflationary.
+
+While TypeScript can ensure that no runtime errors happen when passing data between the type-safe components of your application, the data might still have an "unsafe" origin. An example for an origin that cannot be validated by the TypeScript compiler is the result of an SQL query. While you can specify an interface for the result data, the SQL query might still return totally different data at runtime. This can lead to issues that are difficult to debug, so we should fix the root cause by validating that the result of the SQL query machtes the TypeScript interface. We can accomplish this by using JSON schema validation without introducing any real performance penalty (e.g., by using the `ajv` library). The same approach can and should be taken for all other unsafe sources of runtime values such as environment variables or HTTP requests.
+
+I call this approach "end-to-end type safety". If you can rely on the runtime values to match their TypeScript interface - because you validate them when they enter your application boundary - and your application ensures the correct accessing and passing of such values using TypeScript, you pretty much eliminate all runtime errors. Of course there are always edge-cases that slip through, but you should be able to reduce the time you spend inside a debugger by 90+ percent. Note that this approach works the best when you leverage as many TypeScript features as possible, such as the `strictNullChecks` option (highly recommended!).
 
 <!--
+## Pure functions versus side effects
+
 Example: util functions that depend on env vars
 -->
 
+<!--
 ## Theoretical optimum vs lived experience
 
-<!--
 "Everybody has a plan until they get hit in the face".
 Example: cache inconsistency observability strategy.
 -->
