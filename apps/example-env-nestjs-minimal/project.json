@@ -1,0 +1,74 @@
+{
+  "name": "example-env-nestjs-minimal",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/example-env-nestjs-minimal/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/example-env-nestjs-minimal",
+        "main": "apps/example-env-nestjs-minimal/src/main.ts",
+        "tsConfig": "apps/example-env-nestjs-minimal/tsconfig.app.json",
+        "assets": [
+          "apps/example-env-nestjs-minimal/src/assets"
+        ],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/example-env-nestjs-minimal/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "example-env-nestjs-minimal:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "example-env-nestjs-minimal:build:development"
+        },
+        "production": {
+          "buildTarget": "example-env-nestjs-minimal:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "apps/example-env-nestjs-minimal/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "options": {
+        "jestConfig": "apps/example-env-nestjs-minimal/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}
