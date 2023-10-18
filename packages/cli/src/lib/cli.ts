@@ -7,6 +7,7 @@ import { SkylineCliCommand } from './command/cli-command';
 import { fuzzyFilter } from './fuzzy-filter';
 import { HelpCommand } from './command/help.command';
 import { ExitCommand } from './command/exit.command';
+import { Config } from '@oclif/core';
 
 export class SkylineCli {
   private readonly config: CliConfiguration;
@@ -128,8 +129,9 @@ export class SkylineCli {
   }
 
   async runCommand(Command: typeof SkylineCliCommand) {
-    const command = new Command();
-    command.config = this.config;
+    const config = await Config.load();
+    const command = new Command(process.argv.slice(2), config);
+    command.options = this.config;
     const result = await command.run();
     return result;
   }

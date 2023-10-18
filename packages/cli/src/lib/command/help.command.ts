@@ -7,14 +7,14 @@ export class HelpCommand extends SkylineCliCommand {
 
   override async run() {
     // CLI name and version
-    console.log(`${this.config.cliName} v${this.config.cliVersion}\n`);
+    console.log(`${this.options.cliName} v${this.options.cliVersion}\n`);
 
-    this.config.commands
+    this.options.commands
       .filter((command) => !command.hidden)
       .forEach((Command) => {
-        const command = new Command();
-        command.config = this.config;
-        command.help(Command);
+        // const command = new Command();
+        // command.options = this.options;
+        // command.help(Command);
       });
   }
 }
