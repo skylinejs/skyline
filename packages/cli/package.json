@@ -2,6 +2,9 @@
   "name": "@skyline-js/cli",
   "version": "0.0.1",
   "dependencies": {
+    "@oclif/core": "^3.3.2",
+    "@oclif/plugin-help": "^6.0.3",
+    "@oclif/plugin-plugins": "^3.9.3",
     "chalk": "^4.1.2",
     "inquirer": "^8.0.0",
     "inquirer-autocomplete-prompt": "^2.0.1",
