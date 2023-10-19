@@ -97,3 +97,7 @@ The "noUnusedLocals" option in the TypeScript compiler is designed to help ident
 1. Testing and experimentation: During development and debugging, developers may temporarily add variables for testing, debugging, or experimentation purposes. Forgetting to remove these variables promptly might trigger warnings, potentially adding unnecessary overhead to the development process.
 
 2. Code refactoring: Enforcing this option might require developers to spend time and effort refactoring their code to remove unused variables. This can be particularly challenging in large codebases, and it may introduce a risk of unintentional code changes and regressions.
+
+## Conclusion
+
+The TypeScript compiler is a mighty tool that helps you to write clean, structured code and greatly reduces the number of runtime errors. Type-safety always pays off for larger codebases that need to be evolved and maintain over many years to come. And always remember: an interface a day keeps the middle-of-the-night-production-hotfix-sessions away.
