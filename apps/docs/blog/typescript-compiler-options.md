@@ -65,3 +65,5 @@ Here is a summary of all options that are discussed in detail below. Note that t
 Strict null checks are not merely a convenient way to reduce the number of `cannot read property of undefined` errors, they are a way of living!<!-- walking through life --> Developers with `strictNullChecks` enabled have a certain spring in their step, they ooze with confidence and are generally more enlightened. A study shows that 42% of developers report an immediate increase in happiness in their work and personal life after activating `strictNullChecks` at the beginning of a new project.
 
 ### `noImplicitReturns`
+
+### `noFallthroughCasesInSwitch`
