@@ -120,6 +120,24 @@ const config = {
         theme: codeTheme,
       },
     }),
+
+  // Privacy-preserving analytics with Umami. See https://umami.is/docs/about
+  // Needed to understand which parts of the documentation are most useful or need fixing.
+  // Needed to see whether it is worth it to keep writing this open-source software in my free time.
+  headTags:
+    process.env.NODE_ENV === 'development'
+      ? []
+      : [
+          {
+            tagName: 'script',
+            attributes: {
+              src: 'https://analytics.eu.umami.is/script.js',
+              'data-website-id': '77b5f98a-171f-4c63-bf57-d61a8b198cb1',
+              defer: 'true',
+              async: 'true',
+            },
+          },
+        ],
 };
 
 module.exports = config;
