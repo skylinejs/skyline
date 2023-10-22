@@ -6,7 +6,7 @@ export class PublishDocsToGithubPagesCommand extends SkylineCliCommand {
   async run() {
     console.log('Publishing docs to github-pages');
     console.log('Running npm run build ...');
-    execSync('NODE_ENV=production npm run build', {
+    execSync('RUNTIME=production npm run build', {
       cwd: '/repo/apps/docs/',
       stdio: 'pipe',
       timeout: 60_000,

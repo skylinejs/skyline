@@ -114,7 +114,7 @@ const config = {
             ],
           },
         ],
-        // copyright: `Copyright © ${new Date().getFullYear()} SkylineJS`,
+        copyright: `Copyright © ${new Date().getFullYear()} SkylineJS`,
       },
       prism: {
         theme: codeTheme,
@@ -125,7 +125,7 @@ const config = {
   // Needed to understand which parts of the documentation are most useful or need fixing.
   // Needed to see whether it is worth it to keep writing this open-source software in my free time.
   headTags:
-    process.env.NODE_ENV === 'development'
+    process.env.RUNTIME !== 'production'
       ? []
       : [
           {
