@@ -1,6 +1,20 @@
 {
   "name": "@skyline-js/cli",
   "version": "0.0.1",
+  "homepage": "https://skylinejs.com",
+  "keywords": [
+    "cli"
+  ],
+  "bugs": {
+    "url": "https://github.com/skylinejs/skyline/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skylinejs/skyline/tree/main/packages/cli"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@oclif/core": "^3.3.2",
     "@oclif/plugin-help": "^6.0.3",

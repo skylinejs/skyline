@@ -1,11 +1,8 @@
-# cli
+<p align="center">
+  <a href="https://skylinejs.com/docs/cli" target="blank"><img src="https://raw.githubusercontent.com/skylinejs/skyline/main/apps/docs/static/img/skylinejs-social.png" width="100%" alt="Skyline" /></a>
+</p>
 
-This library was generated with [Nx](https://nx.dev).
-
-## Building
-
-Run `nx build cli` to build the library.
-
-## Running unit tests
-
-Run `nx test cli` to execute the unit tests via [Jest](https://jestjs.io).
+<p align="center">
+Simple CLI framework for creating interactive CLIs in your monorepo.
+</p>
+<br />
