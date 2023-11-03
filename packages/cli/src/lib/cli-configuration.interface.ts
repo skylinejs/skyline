@@ -53,6 +53,9 @@ export interface CliConfiguration {
   commandPathSeparator: string;
   commandDisplayNameCapitalize: boolean;
 
+  // === Providers ===
+  providers: Array<unknown>;
+
   // === Error handling ===
   exitOnCommandError?: boolean | number;
 

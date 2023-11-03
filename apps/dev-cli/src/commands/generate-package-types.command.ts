@@ -3,6 +3,10 @@ import { execSync } from 'child_process';
 import { readFileSync, writeFileSync } from 'fs';
 
 export class GeneratePackageTypesCommand extends SkylineCliCommand {
+  constructor() {
+    super();
+  }
+
   static flags = {
     packages: Flags.string({
       char: 'p',

@@ -1,6 +1,7 @@
 import { Command } from '@oclif/core';
 import { CliConfiguration } from '../cli-configuration.interface';
 import { Config } from '@oclif/core';
+import { oclifAdapter } from '../oclif-adapter';
 
 export class SkylineCliCommand extends Command {
   /**
@@ -20,6 +21,10 @@ export class SkylineCliCommand extends Command {
   public static displayName?: string;
 
   options!: CliConfiguration;
+
+  constructor() {
+    super(process.argv.slice(3), oclifAdapter.getOclifConfig());
+  }
 
   async run(): Promise<void> {
     throw new Error(`${this.id}: Not implemented`);

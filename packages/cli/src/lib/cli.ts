@@ -8,6 +8,7 @@ import { fuzzyFilter } from './fuzzy-filter';
 import { HelpCommand } from './command/help.command';
 import { ExitCommand } from './command/exit.command';
 import { Config } from '@oclif/core';
+import { oclifAdapter } from './oclif-adapter';
 
 export class SkylineCli {
   private readonly config: CliConfiguration;
@@ -29,6 +30,9 @@ export class SkylineCli {
       commandPromptMessage: config.commandPromptMessage ?? 'Execute a command',
       commandPromptPageSize: config.commandPromptPageSize ?? 10,
       commandDisplayNameCapitalize: config.commandDisplayNameCapitalize ?? true,
+
+      // === Providers ===
+      providers: config.providers ?? [],
 
       configurationFilePath: config.configurationFilePath ?? '.skylinerc.json',
     };
@@ -54,9 +58,11 @@ export class SkylineCli {
       process.exit(0);
     });
 
-    // Register commands
-    this.registerCommand(HelpCommand);
-    this.registerCommand(ExitCommand);
+    // Register commands if none were provided
+    if (this.config.commands.length === 0) {
+      this.registerCommand(HelpCommand);
+      this.registerCommand(ExitCommand);
+    }
   }
 
   /**
@@ -129,8 +135,8 @@ export class SkylineCli {
   }
 
   async runCommand(Command: typeof SkylineCliCommand) {
-    const config = await Config.load();
-    const command = new Command(process.argv.slice(3), config);
+    await oclifAdapter.loadOclifConfig();
+    const command = new Command();
     command.options = this.config;
     const result = await command.run();
     return result;
