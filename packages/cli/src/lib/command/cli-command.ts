@@ -22,7 +22,7 @@ export class SkylineCliCommand extends Command {
 
   options!: CliConfiguration;
 
-  constructor() {
+  constructor(...dependencies: any[]) {
     super(process.argv.slice(3), oclifAdapter.getOclifConfig());
   }
 

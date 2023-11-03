@@ -7,3 +7,6 @@ export { Flags } from '@oclif/core';
 export * from './lib/command/cli-command';
 export * from './lib/command/help.command';
 export * from './lib/command/exit.command';
+
+// Decorators
+export * from './lib/decorators';

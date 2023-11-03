@@ -1,18 +1,20 @@
+import { INestApplicationContext, Module } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import inquirer from 'inquirer';
+import InquirerAutocompletePrompt from 'inquirer-autocomplete-prompt';
 import { CliConfiguration } from './cli-configuration.interface';
 import { CliInactivityTimeout } from './cli-inactivity-timeout';
-import inquirer from 'inquirer';
 import { getCommandDisplayName, getCommandIds, getCommandPromptMessage } from './cli.utils';
-import InquirerAutocompletePrompt from 'inquirer-autocomplete-prompt';
 import { SkylineCliCommand } from './command/cli-command';
-import { fuzzyFilter } from './fuzzy-filter';
-import { HelpCommand } from './command/help.command';
 import { ExitCommand } from './command/exit.command';
-import { Config } from '@oclif/core';
+import { HelpCommand } from './command/help.command';
+import { fuzzyFilter } from './fuzzy-filter';
 import { oclifAdapter } from './oclif-adapter';
 
 export class SkylineCli {
   private readonly config: CliConfiguration;
   private readonly timeout?: CliInactivityTimeout;
+  private container?: INestApplicationContext;
 
   private exit = false;
 
@@ -134,9 +136,23 @@ export class SkylineCli {
     }
   }
 
+  private async createDependencyContainer() {
+    if (!this.config.providers.length) return;
+    if (this.container) return;
+
+    @Module({
+      providers: [...this.config.commands, ...this.config.providers],
+      exports: [...this.config.commands, ...this.config.providers],
+    })
+    class CliModule {}
+    this.container = await NestFactory.createApplicationContext(CliModule, { logger: false });
+  }
+
   async runCommand(Command: typeof SkylineCliCommand) {
     await oclifAdapter.loadOclifConfig();
-    const command = new Command();
+    await this.createDependencyContainer();
+
+    const command = this.container?.get(Command) ?? new Command();
     command.options = this.config;
     const result = await command.run();
     return result;

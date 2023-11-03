@@ -108,15 +108,21 @@ This example shows a simple yet powerful control flow.
 
 <!-- <Include path="apps/docs/docs/api-reference/cache.md" skipLines="18"> -->
 
+Installation
+
 ```sh
 npm install @skyline-js/cache
 ```
+
+<MonacoEditor height="200px">
 
 ```ts
 import { SkylineCache } from '@skyline-js/cache';
 
 const cache = new SkylineCache();
 ```
+
+</MonacoEditor>
 
 ### cache.get
 
@@ -353,7 +359,7 @@ interface CacheConfiguration {
    */
   staleThresholdMs: number;
 
-  // Disabling namespaces
+  // === Disabling namespaces ===
   /**
    * Whether to disable namespaces on cache inconsistency.
    * Defaults to "false"
@@ -378,7 +384,7 @@ interface CacheConfiguration {
    */
   disabledNamespaceExpirationMs: number;
 
-  // Blocking keys
+  // === Blocking keys ===
   /**
    * The value written to a key to block it.
    * Defaults to "blocked"
@@ -391,14 +397,14 @@ interface CacheConfiguration {
    */
   blockedKeyExpirationMs: number;
 
-  // Error handling
+  // === Error handling ===
   /**
    * Whether to throw if an error occurrs.
    * Defaults to "false"
    */
   throwOnError: boolean;
 
-  // Logging
+  // === Logging ===
   /**
    * Whether logging is enabled.
    * Defaults to "true"
@@ -411,7 +417,7 @@ interface CacheConfiguration {
    */
   logLevels: CacheLogLevel[];
 
-  // Random
+  // === Random ===
   /**
    * The seed for the random number generator
    * Defaults to "cache-rnd-seed"

@@ -1,5 +1,6 @@
 import type { SkylineCliCommand } from './command/cli-command';
 import { CliInactivityTimeout } from './cli-inactivity-timeout';
+import { SkylineCliProvider } from './decorators';
 
 export interface CliConfiguration {
   cliVersion?: string;
@@ -54,7 +55,7 @@ export interface CliConfiguration {
   commandDisplayNameCapitalize: boolean;
 
   // === Providers ===
-  providers: Array<unknown>;
+  providers: Array<SkylineCliProvider>;
 
   // === Error handling ===
   exitOnCommandError?: boolean | number;

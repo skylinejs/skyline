@@ -1,8 +1,8 @@
 import { SkylineCli } from '@skyline-js/cli';
-import { PublishDocsToGithubPagesCommand } from './commands/publish-docs-to-github-pages.command';
-import { SynchronizeDocsCodeSnippetsCommand } from './commands/synchronized-docs-code-snippets.command';
-import { SynchronizeReadmeCodeSnippetsCommand } from './commands/synchronize-readme-code-snippets';
 import { GeneratePackageTypesCommand } from './commands/generate-package-types.command';
+import { PublishDocsToGithubPagesCommand } from './commands/publish-docs-to-github-pages.command';
+import { SynchronizeReadmeCodeSnippetsCommand } from './commands/synchronize-readme-code-snippets';
+import { SynchronizeDocsCodeSnippetsCommand } from './commands/synchronized-docs-code-snippets.command';
 
 new SkylineCli({
   commands: [
