@@ -1,6 +1,6 @@
 import { INestApplicationContext, Module } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import inquirer from 'inquirer';
+import inquirer, { PromptModule } from 'inquirer';
 import InquirerAutocompletePrompt from 'inquirer-autocomplete-prompt';
 import { CliConfiguration } from './cli-configuration.interface';
 import { CliInactivityTimeout } from './cli-inactivity-timeout';
@@ -14,6 +14,7 @@ import { oclifAdapter } from './oclif-adapter';
 export class SkylineCli {
   private readonly config: CliConfiguration;
   private readonly timeout?: CliInactivityTimeout;
+  private readonly inquirerPrompt: PromptModule;
   private container?: INestApplicationContext;
 
   private exit = false;
@@ -40,7 +41,8 @@ export class SkylineCli {
     };
 
     // Inquirer
-    inquirer.registerPrompt('autocomplete', InquirerAutocompletePrompt);
+    this.inquirerPrompt = inquirer.createPromptModule();
+    this.inquirerPrompt.registerPrompt('autocomplete', InquirerAutocompletePrompt);
 
     // Inactivity timeout
     if (config.inactivityTimeout instanceof CliInactivityTimeout) {
@@ -110,7 +112,7 @@ export class SkylineCli {
       process.stdout.write('\n');
 
       // Prompt for command
-      const { Command } = await inquirer.prompt<{
+      const { Command } = await this.inquirerPrompt<{
         Command: typeof SkylineCliCommand;
       }>([
         {
