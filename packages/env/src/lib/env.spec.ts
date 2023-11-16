@@ -729,4 +729,32 @@ describe('SkylineEnv', () => {
       test10: 'string1,string2',
     });
   });
+
+  it('Parse string environment variable with environment defaults set', () => {
+    // Parse string environment variable
+    const parser = new SkylineEnv<typeof RuntimeEnvironment>({
+      runtime: RuntimeEnvironment.DEV,
+      processEnv: {},
+    });
+
+    const env = {
+      test1: parser.parseString('test1', {
+        default: 'test1default',
+      }),
+
+      test2: parser.parseString('test2', {
+        default: undefined,
+      }),
+
+      test3: parser.parseString('test3', {}),
+    };
+
+    // TODO: Test default without runtime set
+
+    expect(env).toEqual({
+      test1: 'test1default',
+      test2: undefined,
+      test3: undefined,
+    });
+  });
 });
